@@ -1,13 +1,28 @@
 type User {
   name: String!
-  email: String!
+  email: String! @unique
   password: String!
   phone: String
+  spaces: [Space]! @relation
+  properties: [Property]! @relation
+}
+
+type Space {
+  name: String!
+  owner: User!
+  properties: [Property]! @relation
+}
+
+type Property {
+  name: String!
+  owner: User!
+  spaces: [Space]! @relation
 }
 
 type Mutation {
   registerUser(email: String!, password: String!, name: String!): User @resolver(name: "RegisterUser")
   login(email: String!, password: String!): Token @resolver(name: "LoginUser")
+  createSpace({ name: String!, owner: String! }): Space @resolver(name: "CreateSpace")
 }
 
 type Query {
