@@ -28,7 +28,7 @@ export default function SignIn() {
     e.preventDefault();
     loginFunc({
         variables: {
-          email: 'danya@gmail.com',
+          email: 'user1@gmail.com',
           password: 'Pass1234',
         }
     })
