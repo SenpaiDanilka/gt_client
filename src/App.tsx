@@ -1,44 +1,15 @@
-import { useMutation, gql } from "@apollo/client";
-import { MouseEvent } from "react";
+import { Routes, Route } from "react-router-dom";
+import SignIn from "./views/SignIn";
+import Home from "./views/Home";
 
-const LOGIN = gql`
-  mutation UserLogin($email: String!, $password: String! ) {
-    login(email: $email, password: $password) {
-      ttl
-      secret
-      email
-    }
-  }
-`;
-
-export default function Home() {
-
-  const [loginFunc, { loading, error }] = useMutation(LOGIN)
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    console.error(error);
-    return null;
-  }
-
-  const doLogin = (e: MouseEvent) => {
-    e.preventDefault();
-    loginFunc({
-        variables: {
-          email: 'danya@gmail.com',
-          password: 'Pass1234',
-        }
-    })
-    .then(resp => console.log('==>', resp))
-    .catch(e => console.log(e))   
-  }
+export default function App() {
 
   return (
-    <div>
-      <button onClick={doLogin}>Login</button>
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="sign_in" element={<SignIn />} />
+      </Routes>
     </div>
   )
 }
