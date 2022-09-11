@@ -1,0 +1,6 @@
+{
+  "requiredField": "Обязательное поле",
+  "invalidEmail": "Некоректный email",
+  "minLength": "Минимальная длина {{length}}",
+  "maxLength": "Максимальная длина {{length}}"
+}
