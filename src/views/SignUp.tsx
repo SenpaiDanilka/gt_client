@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Cookie from 'js-cookie'
 
 const SIGNUP = gql`
   mutation UserSignUp( $name: String!, $email: String!, $password: String! ) {
@@ -30,6 +31,8 @@ export default function SignUp() {
   });
 
   interface State {
+    name: string;
+    email: string;
     password: string;
     showPassword: boolean;
   }
@@ -63,6 +66,7 @@ export default function SignUp() {
 
   const doRegister = (e: MouseEvent) => {
     e.preventDefault();
+    Cookie.remove('fauna-session')
     signUpFunc({
         variables: {
           name: values.name,

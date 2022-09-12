@@ -23,6 +23,7 @@ type Mutation {
   registerUser(name: String!, email: String!, password: String!): User @resolver(name: "RegisterUser")
   login(email: String!, password: String!): Token @resolver(name: "LoginUser")
   createSpace({ name: String!, owner: String! }): Space @resolver(name: "CreateSpace")
+  createProperty({ name: String!, owner: String! }): Property @resolver(name: "CreateProperty")
 }
 
 type Query {

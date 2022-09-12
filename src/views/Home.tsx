@@ -1,11 +1,16 @@
-import { Link } from "react-router-dom";
+import { useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
+import Cookie from 'js-cookie'
 
-export default function SignIn() {
-  return (
-    <div>
-      <h1>Home</h1>
-      <Link to="/sign_up">SignUp</Link>
-      <Link to="/sign_in">SignIn</Link>
-    </div>
-  )
+export default function Home() {
+  const navigate = useNavigate()
+  const cookies = Cookie.get('fauna-session');
+
+  useEffect(() => {
+    if(!cookies) {
+      navigate('/sign_in')
+    } 
+  }, [cookies, navigate])
+
+  return <div>Home</div>
 }
