@@ -1,21 +1,16 @@
-import {Link} from "react-router-dom";
-import {useTranslation} from "react-i18next";
+import { useEffect } from 'react'
+import { useNavigate } from "react-router-dom";
+import Cookie from 'js-cookie'
 
-const Home = () => {
-  const {t} = useTranslation('common');
+export default function Home() {
+  const navigate = useNavigate()
+  const cookies = Cookie.get('fauna-session');
 
-  return (
-    <>
-      <h1>Home</h1>
-      <Link
-        to="/sign_up"
-        className="first:mr-2"
-      >
-        {t('signUp')}
-      </Link>
-      <Link to="/sign_in">{t('signIn')}</Link>
-    </>
-  );
+  useEffect(() => {
+    if(!cookies) {
+      navigate('/sign_in')
+    } 
+  }, [cookies, navigate])
+
+  return <div>Home</div>
 }
-
-export default Home;
