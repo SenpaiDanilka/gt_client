@@ -3,5 +3,9 @@
   "email": "Email",
   "name": "Имя",
   "signIn": "Войти",
-  "signUp": "Зарегистрироваться"
+  "signUp": "Зарегистрироваться",
+  "signOut": "Выйти",
+  "items": "Предметы",
+  "spaces": "Spaces",
+  "contacts": "Контакты"
 }

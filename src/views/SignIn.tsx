@@ -6,6 +6,9 @@ import PasswordVisibilityButton from "../components/PasswordVisibilityButton";
 import {useTranslation} from "react-i18next";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import {isRequired, isValidEmail, minLength} from "../utils/validate";
+import Cookie from "js-cookie";
+import {useNavigate} from "react-router-dom";
+import BaseContainer from "../components/BaseComponents/BaseContainer";
 
 const LOGIN = gql`
   mutation UserLogin($email: String!, $password: String! ) {
@@ -32,6 +35,7 @@ const SignIn = () => {
   const { formData, isNotValidData, handleBlur, handleFocus, handleChange } = useForm(initialState);
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const [loginFunc, {loading, error}] = useMutation(LOGIN);
+  const navigate = useNavigate();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -51,7 +55,11 @@ const SignIn = () => {
         password: formData.password.value
       }
     })
-      .then(resp => console.log('==>', resp))
+      .then(resp => {
+        console.log('==>', resp);
+        Cookie.set('fauna-session', resp.data.secret, { expires: 7 });
+        navigate('/');
+      })
       .catch(e => console.log(e))
   };
 
@@ -83,16 +91,18 @@ const SignIn = () => {
   ];
 
   return (
-    <div className="flex justify-center items-center bg-blue-600 w-screen h-screen">
-      <BaseForm
-        formFieldsData={formFieldsData}
-        onSubmit={doLogin}
-        onChange={handleChange}
-        onBlur={handleBlur}
-        onFocus={handleFocus}
-        controls={<Controls disabled={isNotValidData} />}
-        className="w-[320px] h-[200px]"
-      />
+    <div className="flex items-center bg-blue-600 w-screen h-screen">
+      <BaseContainer>
+        <BaseForm
+          formFieldsData={formFieldsData}
+          onSubmit={doLogin}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
+          controls={<Controls disabled={isNotValidData} />}
+          className="w-[380px] h-[260px]"
+        />
+      </BaseContainer>
     </div>
   );
 }

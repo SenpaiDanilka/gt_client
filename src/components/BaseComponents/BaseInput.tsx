@@ -22,8 +22,10 @@ export interface BaseInputPropsType {
 
 const textFieldSX = {
   '& .MuiOutlinedInput-root': {
+    backgroundColor: 'white',
+
     '& fieldset': {
-      className: '#6B7280',
+      borderColor: '#6B7280',
     },
     '&:not(.Mui-disabled):not(.Mui-error):hover fieldset' : {
       borderColor: '#3B82F6',

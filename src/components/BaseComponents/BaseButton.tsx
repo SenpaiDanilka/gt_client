@@ -2,15 +2,16 @@ import {Button, IconButton} from "@mui/material";
 import React, {ReactNode} from "react";
 
 interface Props {
-  children: ReactNode,
-  onClick?: () => void,
-  className?: string,
-  type?: "button" | "submit" | "reset",
-  variant?: "text" | "contained" | "outlined",
-  size?: "small" | "medium" | "large",
-  disabled?: boolean,
-  edge?: false | "start" | "end",
-  buttonType?: "loading" | "icon" /*TODO loading btn isn't ready for the core mui lib */
+  children: ReactNode;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  className?: string;
+  type?: "button" | "submit" | "reset";
+  variant?: "text" | "contained" | "outlined";
+  size?: "small" | "medium" | "large";
+  disabled?: boolean;
+  href?: string;
+  edge?: false | "start" | "end";
+  buttonType?: "loading" | "icon"; /*TODO loading btn isn't ready for the core mui lib */
 }
 
 const BaseButton: React.FC<Props> = ({
@@ -22,7 +23,8 @@ const BaseButton: React.FC<Props> = ({
   onClick,
   disabled,
   buttonType,
-  edge
+  edge,
+  href
 }) => {
   if (buttonType === "icon") {
     return (
@@ -30,6 +32,7 @@ const BaseButton: React.FC<Props> = ({
         size={size}
         edge={edge}
         onClick={onClick}
+        className={className}
       >
         { children }
       </IconButton>
@@ -38,6 +41,7 @@ const BaseButton: React.FC<Props> = ({
 
   return (
     <Button
+      href={href}
       type={type}
       variant={variant}
       size={size}
