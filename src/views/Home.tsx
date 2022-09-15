@@ -16,11 +16,11 @@ export default function Home() {
   const navigate = useNavigate();
   const cookies = Cookie.get('fauna-session');
 
-  useEffect(() => {
+/*  useEffect(() => {
     if(!cookies) {
       navigate('/sign_in')
     } 
-  }, [cookies, navigate])
+  }, [cookies, navigate])*/
 
   return (
     <div className="bg-gray-100 h-screen w-screen p-4">
