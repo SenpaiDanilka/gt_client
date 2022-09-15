@@ -5,6 +5,7 @@ import {ButtonGroup, Divider} from "@mui/material";
 import BaseButton from "./BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
 import BaseContainer from "./BaseComponents/BaseContainer";
+import {useNavigate} from "react-router-dom";
 
 interface Props {
   user: UserType
@@ -14,6 +15,8 @@ const UserProfile: React.FC<Props> = ({
   user
 }) => {
   const {t} = useTranslation('common');
+  const navigate = useNavigate();
+  /*TODO needs refactor with nested url*/
   const buttonGroupButtons = ['items', 'spaces', 'contacts']
     .map((key) => {
       const counterKey = `${key}_count` as keyof UserType;
@@ -21,7 +24,7 @@ const UserProfile: React.FC<Props> = ({
         <BaseButton
           variant="outlined"
           key={key}
-          href={`${key}`}
+          onClick={() => navigate(`/${key}`)}
         >
           {t(key) + ': ' + user[counterKey]}
         </BaseButton>

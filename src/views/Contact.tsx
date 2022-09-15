@@ -22,7 +22,7 @@ export default function Contact() {
   }, [setUserData]);
 
   return (
-    <div className="p-4 bg-gray-100 h-screen w-screen">
+    <div className="p-4">
       <p className="text-3xl pb-4 font-bold">{ `User ${id}` }</p>
       <UserProfile user={userData} />
     </div>

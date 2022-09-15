@@ -1,4 +1,4 @@
-import {useRoutes} from "react-router-dom";
+import {Navigate, Outlet, useRoutes} from "react-router-dom";
 import SignUp from "./views/SignUp";
 import SignIn from "./views/SignIn";
 import Home from "./views/Home";
@@ -20,58 +20,98 @@ export default function App() {
   const logout = () => {
     Cookie.remove('fauna-session');
   };
+  const UnLoggedLayout = () => {
+    if (!!cookies) {
+      return <Navigate to="/" />;
+    }
+
+    return (
+      <div className="flex items-center bg-blue-600 w-screen h-screen">
+        <Outlet />
+        <div className="absolute bottom-4 right-4 [&>*]:bg-white [&>*]:h-8 [&>*]:w-16">
+          <LanguageSelect />
+        </div>
+      </div>
+    )
+  }
+
+  function LoggedLayout() {
+    if (!cookies) {
+      return <Navigate to="/sign_in" />;
+    }
+
+    return (
+      <div className="w-screen h-screen bg-gray-100">
+        <div className="bg-blue-600 h-[70px] w-screen flex items-center justify-end">
+          {
+            !!cookies && (
+              <BaseButton
+                variant="outlined"
+                size="small"
+                onClick={logout}
+                className="bg-white"
+              >
+                {t('signOut')}
+              </BaseButton>
+            )
+          }
+          <div className="[&>*]:bg-white [&>*]:h-8 [&>*]:w-16 mx-4">
+            <LanguageSelect />
+          </div>
+        </div>
+        <Outlet />
+      </div>
+    );
+  }
+
   const routes = useRoutes([
     {
-      path: "/sign_up", element: <SignUp />
-    },
-    {
-      path: "/sign_in", element: <SignIn />
-    },
-    {
-      path: "/", element: <Home />
-    },
-    {
-      path: "/items",
+      element: <UnLoggedLayout />,
       children: [
-        { index: true, element: <Items /> },
-        { path: ":id", element: <Item /> },
-        { path: "new", element: <Item /> }
+        {
+          path: "/sign_up", element: <SignUp />
+        },
+        {
+          path: "/sign_in", element: <SignIn />
+        }
       ]
     },
     {
-      path: "/spaces",
+      element: <LoggedLayout />,
       children: [
-        { index: true, element: <Spaces /> },
-        { path: ":id", element: <Space /> },
-        { path: "new", element: <Space /> }
-      ]
-    },
-    {
-      path: "/contacts",
-      children: [
-        { index: true, element: <Contacts /> },
-        { path: ":id", element: <Contact /> },
+        {
+          path: "/", element: <Home />
+        },
+        {
+          path: "/items",
+          children: [
+            { index: true, element: <Items /> },
+            { path: ":id", element: <Item /> },
+            { path: "new", element: <Item /> }
+          ]
+        },
+        {
+          path: "/spaces",
+          children: [
+            { index: true, element: <Spaces /> },
+            { path: ":id", element: <Space /> },
+            { path: "new", element: <Space /> }
+          ]
+        },
+        {
+          path: "/contacts",
+          children: [
+            { index: true, element: <Contacts /> },
+            { path: ":id", element: <Contact /> },
+          ]
+        }
       ]
     }
   ]);
 
   return (
-    <div className="w-screen h-screen bg-gray-100">
+    <>
       { routes }
-      <LanguageSelect/>
-      {
-        !!cookies && (
-          <BaseButton
-            variant="outlined"
-            size="small"
-            onClick={logout}
-            className="absolute bottom-4 left-4"
-          >
-            {t('signOut')}
-          </BaseButton>
-        )
-      }
-
-    </div>
+    </>
   );
 }

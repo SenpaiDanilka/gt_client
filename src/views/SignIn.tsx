@@ -23,16 +23,16 @@ const LOGIN = gql`
 const initialState = {
   email: {
     value: '',
-      errors: []
+    errors: []
   },
   password: {
     value: '',
-      errors: []
+    errors: []
   }
 };
 
 const SignIn = () => {
-  const { formData, isNotValidData, handleBlur, handleFocus, handleChange } = useForm(initialState);
+  const {formData, isNotValidData, handleBlur, handleFocus, handleChange} = useForm(initialState);
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const [loginFunc, {loading, error}] = useMutation(LOGIN);
   const navigate = useNavigate();
@@ -57,7 +57,7 @@ const SignIn = () => {
     })
       .then(resp => {
         console.log('==>', resp);
-        Cookie.set('fauna-session', resp.data.secret, { expires: 7 });
+        Cookie.set('fauna-session', resp.data.secret, {expires: 7});
         navigate('/');
       })
       .catch(e => console.log(e))
@@ -78,7 +78,7 @@ const SignIn = () => {
       type: passwordVisibility ? 'text' : 'password',
       rules: [
         (v: string) => isRequired(v),
-        (v: string) => minLength(v,6)
+        (v: string) => minLength(v, 6)
       ],
       iconEnd: (
         <PasswordVisibilityButton
@@ -91,19 +91,17 @@ const SignIn = () => {
   ];
 
   return (
-    <div className="flex items-center bg-blue-600 w-screen h-screen">
-      <BaseContainer>
-        <BaseForm
-          formFieldsData={formFieldsData}
-          onSubmit={doLogin}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          onFocus={handleFocus}
-          controls={<Controls disabled={isNotValidData} />}
-          className="w-[380px] h-[260px]"
-        />
-      </BaseContainer>
-    </div>
+    <BaseContainer>
+      <BaseForm
+        formFieldsData={formFieldsData}
+        onSubmit={doLogin}
+        onChange={handleChange}
+        onBlur={handleBlur}
+        onFocus={handleFocus}
+        controls={<Controls disabled={isNotValidData}/>}
+        className="w-[380px] h-[260px]"
+      />
+    </BaseContainer>
   );
 }
 
@@ -113,7 +111,7 @@ interface ControlsProps {
   disabled: boolean
 }
 
-const Controls: React.FC<ControlsProps> = ({ disabled }) => {
+const Controls: React.FC<ControlsProps> = ({disabled}) => {
   const {t} = useTranslation('common');
 
   return (
