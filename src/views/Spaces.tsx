@@ -17,7 +17,7 @@ const Spaces = () => {
     {
       text: 'View space',
       id: 'view',
-      onClick: () => { navigate(`spaces/${id}`) } /* TODO needs fix */
+      onClick: () => { navigate(`/spaces/${id}`) }
     }
   ]);
 

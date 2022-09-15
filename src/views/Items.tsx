@@ -19,7 +19,7 @@ const Items = () => {
     {
       text: 'View item',
       id: 'view',
-      onClick: () => { navigate(`items/${id}`) } /* TODO needs fix */
+      onClick: () => { navigate(`/items/${id}`) }
     }
   ]);
 

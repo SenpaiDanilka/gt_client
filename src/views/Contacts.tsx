@@ -18,7 +18,7 @@ const Contacts = () => {
     {
       text: 'View profile',
       id: 'view',
-      onClick: () => { navigate(`users/${id}`) } /* TODO needs fix */
+      onClick: () => { navigate(`/contacts/${id}`) }
     }
   ]);
 

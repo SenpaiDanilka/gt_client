@@ -6,6 +6,7 @@ import {UserType} from "../models/AuthModels";
 
 const mockedUserData: UserType = {
   name: "Mocked User",
+  photo: "",
   email: "some email",
   contacts_count: 3,
   items_count: 11,

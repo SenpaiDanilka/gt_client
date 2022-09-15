@@ -1,4 +1,4 @@
-import {Route, Routes} from "react-router-dom";
+import {useRoutes} from "react-router-dom";
 import SignUp from "./views/SignUp";
 import SignIn from "./views/SignIn";
 import Home from "./views/Home";
@@ -12,6 +12,7 @@ import Space from "./views/Space";
 import BaseButton from "./components/BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
 import Cookie from "js-cookie";
+import Contact from "./views/Contact";
 
 export default function App() {
   const {t} = useTranslation('common');
@@ -19,19 +20,44 @@ export default function App() {
   const logout = () => {
     Cookie.remove('fauna-session');
   };
+  const routes = useRoutes([
+    {
+      path: "/sign_up", element: <SignUp />
+    },
+    {
+      path: "/sign_in", element: <SignIn />
+    },
+    {
+      path: "/", element: <Home />
+    },
+    {
+      path: "/items",
+      children: [
+        { index: true, element: <Items /> },
+        { path: ":id", element: <Item /> },
+        { path: "new", element: <Item /> }
+      ]
+    },
+    {
+      path: "/spaces",
+      children: [
+        { index: true, element: <Spaces /> },
+        { path: ":id", element: <Space /> },
+        { path: "new", element: <Space /> }
+      ]
+    },
+    {
+      path: "/contacts",
+      children: [
+        { index: true, element: <Contacts /> },
+        { path: ":id", element: <Contact /> },
+      ]
+    }
+  ]);
 
   return (
     <div className="w-screen h-screen bg-gray-100">
-      <Routes>
-        <Route path="sign_up" element={<SignUp/>}/>
-        <Route path="sign_in" element={<SignIn/>}/>
-        <Route path="/" element={<Home/>}/>
-        <Route path="items" element={<Items/>}/>
-        <Route path="spaces" element={<Spaces/>}/>
-        <Route path="contacts" element={<Contacts/>}/>
-        <Route path="items/:id" element={<Item/>}/>
-        <Route path="spaces/:id" element={<Space/>}/>
-      </Routes>
+      { routes }
       <LanguageSelect/>
       {
         !!cookies && (
