@@ -17,6 +17,7 @@ import Contact from "./views/Contact";
 export default function App() {
   const {t} = useTranslation('common');
   const cookies = Cookie.get('fauna-session');
+  //const cookies = true
   const logout = () => {
     Cookie.remove('fauna-session');
   };

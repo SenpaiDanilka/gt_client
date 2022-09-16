@@ -2,6 +2,8 @@
   "password": "Password",
   "email": "Email",
   "name": "Name",
+  "haveAccount": "Already have an account?",
+  "haveNoAccount": "Don't have an account yet?",
   "signIn": "Sign In",
   "signUp": "Sign Up",
   "signOut": "Sign Out",

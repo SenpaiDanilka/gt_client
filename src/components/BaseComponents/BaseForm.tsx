@@ -27,7 +27,7 @@ const BaseForm: React.FC<Props> = ({
   return (
     <form
       className={
-      `${className} border-box p-8 flex flex-col items-center justify-between rounded-xl`
+      `${className} border-box flex flex-col items-center justify-between rounded-xl`
     }
       onSubmit={onSubmit}
     >

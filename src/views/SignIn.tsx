@@ -7,8 +7,8 @@ import {useTranslation} from "react-i18next";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import {isRequired, isValidEmail, minLength} from "../utils/validate";
 import Cookie from "js-cookie";
-import {useNavigate} from "react-router-dom";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
+import {Link} from "react-router-dom";
 
 const LOGIN = gql`
   mutation UserLogin($email: String!, $password: String! ) {
@@ -35,7 +35,7 @@ const SignIn = () => {
   const {formData, isNotValidData, handleBlur, handleFocus, handleChange} = useForm(initialState);
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const [loginFunc, {loading, error}] = useMutation(LOGIN);
-  const navigate = useNavigate();
+  const {t} = useTranslation('common');
 
   if (loading) {
     return <div>Loading...</div>;
@@ -58,7 +58,6 @@ const SignIn = () => {
       .then(resp => {
         console.log('==>', resp);
         Cookie.set('fauna-session', resp.data.secret, {expires: 7});
-        navigate('/');
       })
       .catch(e => console.log(e))
   };
@@ -91,7 +90,17 @@ const SignIn = () => {
   ];
 
   return (
-    <BaseContainer>
+    <BaseContainer className="p-4">
+      <p className="text-center font-bold text-2xl">{t('signIn')}</p>
+      <div className="flex justify-center my-4">
+        <span className="mr-2">{t('haveNoAccount')}</span>
+        <Link
+          to="/sign_up"
+          className="text-blue-600 hover:underline"
+        >
+          {t('signUp')}
+        </Link>
+      </div>
       <BaseForm
         formFieldsData={formFieldsData}
         onSubmit={doLogin}
