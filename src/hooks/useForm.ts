@@ -1,4 +1,4 @@
-import {FormDataType} from "../models/AuthModels";
+import {FormDataType} from "../models/CommonModels";
 import React, {useEffect, useState} from "react";
 import {validator} from "../utils/validate";
 import {ValidationRule} from "../models/CommonModels";

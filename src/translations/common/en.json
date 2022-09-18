@@ -9,5 +9,7 @@
   "signOut": "Sign Out",
   "items": "Items",
   "spaces": "Spaces",
-  "contacts": "Contacts"
+  "contacts": "Contacts",
+  "settings": "Settings",
+  "save": "Save"
 }

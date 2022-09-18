@@ -18,6 +18,10 @@ export interface BaseInputPropsType {
   className?: string;
   autoFocus?: boolean;
   disabled?: boolean;
+  multiline?: boolean;
+  rows?: number;
+  maxRows?: number;
+  minRows?: number;
 }
 
 const textFieldSX = {
@@ -51,7 +55,11 @@ const BaseInput: React.FC<BaseInputPropsType> = ({
   iconStart,
   iconEnd,
   className,
-  autoFocus
+  autoFocus,
+  rows,
+  maxRows,
+  multiline,
+  minRows
 }) => {
   const {t} = useTranslation('validations');
   const inputProps = {
@@ -74,6 +82,10 @@ const BaseInput: React.FC<BaseInputPropsType> = ({
       autoFocus={autoFocus}
       disabled={disabled}
       sx={textFieldSX}
+      rows={rows}
+      maxRows={maxRows}
+      minRows={minRows}
+      multiline={multiline}
       size="small"
       fullWidth
       label={label}

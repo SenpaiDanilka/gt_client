@@ -10,12 +10,12 @@ const Spaces = () => {
   const [searchValue, setSearchValue] = useState('');
   const menuOptions = (id: string) => ([
     {
-      text: 'Delete',
+      children: 'Delete',
       id: 'delete',
       onClick: () => {console.log(`delete space ${id}`)}
     },
     {
-      text: 'View space',
+      children: 'View space',
       id: 'view',
       onClick: () => { navigate(`/spaces/${id}`) }
     }

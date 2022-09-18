@@ -12,12 +12,12 @@ const Items = () => {
 
   const menuOptions = (id: string) => ([
     {
-      text: 'Delete',
+      children: 'Delete',
       id: 'delete',
       onClick: () => {console.log(`delete item ${id}`)}
     },
     {
-      text: 'View item',
+      children: 'View item',
       id: 'view',
       onClick: () => { navigate(`/items/${id}`) }
     }
@@ -31,7 +31,7 @@ const Items = () => {
       >
         <div className="flex justify-between items-center p-4 w-full">
           <BaseAvatar
-            alt={`Mocked User ${value}`}
+            alt={`Mocked Item ${value}`}
             size={40}
             variant="square"
             className="mr-2"
@@ -55,7 +55,7 @@ const Items = () => {
       <EditableListWithSearch
         searchValue={searchValue}
         setSearchValue={setSearchValue}
-        onAddClick={() => {}}
+        onAddClick={() => navigate('/items/new')}
         list={List}
       />
     </div>

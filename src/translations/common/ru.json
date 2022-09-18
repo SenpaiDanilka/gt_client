@@ -9,5 +9,7 @@
   "signOut": "Выйти",
   "items": "Предметы",
   "spaces": "Spaces",
-  "contacts": "Контакты"
+  "contacts": "Контакты",
+  "settings": "Настройки",
+  "save": "Сохранить"
 }

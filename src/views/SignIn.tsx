@@ -90,7 +90,7 @@ const SignIn = () => {
   ];
 
   return (
-    <BaseContainer className="p-4">
+    <BaseContainer className="p-8">
       <p className="text-center font-bold text-2xl">{t('signIn')}</p>
       <div className="flex justify-center my-4">
         <span className="mr-2">{t('haveNoAccount')}</span>
@@ -108,7 +108,7 @@ const SignIn = () => {
         onBlur={handleBlur}
         onFocus={handleFocus}
         controls={<Controls disabled={isNotValidData}/>}
-        className="w-[380px] h-[260px]"
+        className="max-w-[360px] h-[220px]"
       />
     </BaseContainer>
   );

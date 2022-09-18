@@ -11,12 +11,12 @@ const Contacts = () => {
   const [searchValue, setSearchValue] = useState('');
   const menuOptions = (id: string) => ([
     {
-      text: 'Delete',
+      children: 'Delete',
       id: 'delete',
       onClick: () => {console.log(`delete user ${id}`)}
     },
     {
-      text: 'View profile',
+      children: 'View profile',
       id: 'view',
       onClick: () => { navigate(`/contacts/${id}`) }
     }

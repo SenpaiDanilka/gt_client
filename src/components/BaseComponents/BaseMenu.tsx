@@ -6,10 +6,12 @@ import BaseButton from "./BaseButton";
 
 interface Props {
   options: any[]
+  triggerBtnColor?: string;
 }
 
 const BaseMenu: React.FC<Props> = ({
-  options
+  options,
+  triggerBtnColor
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -25,6 +27,7 @@ const BaseMenu: React.FC<Props> = ({
       <BaseButton
         buttonType="icon"
         onClick={handleOpen}
+        className={triggerBtnColor}
       >
         <MoreVertIcon />
       </BaseButton>
@@ -44,9 +47,8 @@ const BaseMenu: React.FC<Props> = ({
               option.onClick();
               handleClose();
             }}
-          >
-            {option.text}
-          </MenuItem>
+            children={option.children}
+          />
         ))}
       </Menu>
     </div>

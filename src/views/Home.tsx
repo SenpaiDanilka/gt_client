@@ -7,7 +7,8 @@ const mockedUserData: UserType = {
   email: "some email",
   contacts_count: 3,
   items_count: 11,
-  spaces_count: 5
+  spaces_count: 5,
+  id: "1"
 }
 
 export default function Home() {
