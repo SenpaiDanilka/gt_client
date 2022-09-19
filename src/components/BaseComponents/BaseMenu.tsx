@@ -3,9 +3,14 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import BaseButton from "./BaseButton";
+import {ReactNode} from "react";
 
 interface Props {
-  options: any[]
+  options: {
+    id: string;
+    children: ReactNode;
+    onClick?: () => void;
+  }[];
   triggerBtnColor?: string;
 }
 
@@ -32,10 +37,6 @@ const BaseMenu: React.FC<Props> = ({
         <MoreVertIcon />
       </BaseButton>
       <Menu
-        id="long-menu"
-        MenuListProps={{
-          'aria-labelledby': 'long-button',
-        }}
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
@@ -44,10 +45,11 @@ const BaseMenu: React.FC<Props> = ({
           <MenuItem
             key={option.id}
             onClick={() => {
-              option.onClick();
-              handleClose();
+              option.onClick?.();
+              option.onClick && handleClose();
             }}
             children={option.children}
+            className="justify-center"
           />
         ))}
       </Menu>

@@ -49,7 +49,7 @@ const Items = () => {
 
   return (
     <div className="p-4">
-      <p className="text-3xl p-4 font-bold">
+      <p className="text-3xl font-bold">
         {t('items')}
       </p>
       <EditableListWithSearch
