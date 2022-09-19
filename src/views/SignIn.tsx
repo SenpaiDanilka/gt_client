@@ -8,7 +8,7 @@ import BaseButton from "../components/BaseComponents/BaseButton";
 import {isRequired, isValidEmail, minLength} from "../utils/validate";
 import Cookie from "js-cookie";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 const LOGIN = gql`
   mutation UserLogin($email: String!, $password: String! ) {
@@ -36,6 +36,7 @@ const SignIn = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const [loginFunc, {loading, error}] = useMutation(LOGIN);
   const {t} = useTranslation('common');
+  const navigate = useNavigate()
 
   if (loading) {
     return <div>Loading...</div>;
@@ -55,9 +56,9 @@ const SignIn = () => {
         password: formData.password.value
       }
     })
-      .then(resp => {
-        console.log('==>', resp);
-        Cookie.set('fauna-session', resp.data.secret, {expires: 7});
+      .then(async (resp) => {
+        await Cookie.set('fauna-session', resp.data.login.secret);
+        navigate('/')
       })
       .catch(e => console.log(e))
   };

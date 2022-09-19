@@ -3,10 +3,10 @@ import BaseMenu from "../BaseComponents/BaseMenu";
 import LanguageSelect from "../LanguageSelect";
 import React from "react";
 import {useTranslation} from "react-i18next";
+import { logout } from "../../services/AuthService";
 
 interface Props {
   cookies: boolean;
-  logout: () => void;
 }
 
 const SignedInLayout: React.FC<Props> = (props) => {
@@ -36,7 +36,7 @@ const SignedInLayout: React.FC<Props> = (props) => {
               {
                 children: t('signOut'),
                 id: 'signOut',
-                onClick: props.logout
+                onClick: () => logout(navigate)
               }
             ]
           } />

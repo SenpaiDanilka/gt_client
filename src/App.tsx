@@ -2,7 +2,6 @@ import {useRoutes} from "react-router-dom";
 import SignUp from "./views/SignUp";
 import SignIn from "./views/SignIn";
 import Home from "./views/Home";
-import React, {useState} from "react";
 import Items from "./views/Items";
 import Spaces from "./views/Spaces";
 import Contacts from "./views/Contacts";
@@ -17,13 +16,7 @@ import ItemNew from "./views/ItemNew";
 
 export default function App() {
   /* TODO refactor when Sign In fixed */
-  //const cookies = Cookie.get('fauna-session'));
-  const [cookies, setCookies] = useState(true);
-  const logout = () => {
-    setCookies(false)
-    //Cookie.remove('fauna-session');
-  };
-
+  const cookies = !!Cookie.get('fauna-session');
   const routes = useRoutes([
     {
       element: <SignedOutLayout cookies={cookies}/>,
@@ -39,7 +32,6 @@ export default function App() {
     {
       element: (
         <SignedInLayout
-          logout={logout}
           cookies={cookies}
         />
       ),

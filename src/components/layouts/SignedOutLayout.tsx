@@ -7,7 +7,7 @@ interface Props {
 }
 
 const SignedOutLayout: React.FC<Props> = (props) => {
-  if (!!props.cookies) {
+  if (props.cookies) {
     return <Navigate to="/"/>;
   }
 
