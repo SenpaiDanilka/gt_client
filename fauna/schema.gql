@@ -1,0 +1,71 @@
+type User {
+  name: String!
+  email: String! @unique
+  password: String!
+  phone: String
+  spaces: [Space]! @relation
+  items: [Item]! @relation
+}
+
+type Space {
+  name: String!
+  owner: User!
+}
+
+type Item {
+  name: String!
+  owner: User!
+}
+
+type AvailableItem {
+  model: AvailvabilityModel!
+  model_id: String!
+  item: Item!
+}
+
+type SpaceUser {
+  space: Space!
+  user: User!
+}
+
+enum AvailvabilityModel {
+  SPACE
+  USER
+}
+
+type Token @embedded {
+  ttl: Time!
+  secret: String!
+  email: String!
+  userId: String!
+}
+
+type Mutation {
+
+  registerUser(
+    name: String!,
+    email: String!,
+    password: String!
+  ): User @resolver(name: "RegisterUser")
+
+  login(
+    email: String!,
+    password: String!
+  ): Token @resolver(name: "LoginUser")
+
+  createSpace(
+    name: String!,
+    owner: String!
+  ): Space @resolver(name: "CreateSpace")
+
+  createItem(
+    name: String!,
+    owner: String!
+  ): Item @resolver(name: "CreateItem")
+
+}
+
+type Query {
+  findUserByEmail(email: String): User
+  listUsers: [User]
+}
