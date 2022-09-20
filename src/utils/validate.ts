@@ -1,3 +1,5 @@
+import {ValidationFunction, ValidationError} from "../models/CommonModels";
+
 export const isRequired = (val: string) => !!val || { text: 'requiredField' }
 export const isValidEmail = (val: string) =>
   /^([\w.%+-]+)@([\w-]+\.)+(\w{2,})$/i.test(val) || { text: 'invalidEmail' };
@@ -6,9 +8,9 @@ export const minLength = (val: string, length: number) =>
 export const maxLength = (val: string, length: number) =>
   val.length <= length || { text: 'maxLength', additionalData: { length } };
 
-export const validator = (val: string, rules: any[]) => {
-  const errors: Set<string> = new Set();
-  const addError = (ruleCheck: (v: string) => true | string) => {
+export const validator = (val: string, rules: ValidationFunction[] = []) => {
+  const errors: Set<ValidationError> = new Set();
+  const addError = (ruleCheck: ValidationFunction) => {
     const res = ruleCheck(val);
     res !== true && errors.add(res);
   }

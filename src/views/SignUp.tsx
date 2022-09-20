@@ -33,9 +33,35 @@ const initialState = {
   }
 }
 
+const formFieldsRules = {
+  name: [
+    (v: string) => isRequired(v),
+    (v: string) => minLength(v, 3),
+    (v: string) => maxLength(v, 20)
+  ],
+  email: [
+    (v: string) => isRequired(v),
+    (v: string) => isValidEmail(v)
+  ],
+  password: [
+    (v: string) => isRequired(v),
+    (v: string) => minLength(v, 6)
+  ]
+};
+
 const SignUp = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const {formData, isNotValidData, handleBlur, handleFocus, handleChange} = useForm(initialState);
+  const {
+    formData,
+    isNotValidData,
+    handleBlur,
+    handleChange,
+    handleKeyPress
+  } = useForm({
+    initialState,
+    onSubmit: doRegister,
+    rules: formFieldsRules
+  });
   const [signUpFunc, {loading, error}] = useMutation(SIGNUP);
   const {t} = useTranslation('common');
   const navigate = useNavigate();
@@ -49,7 +75,7 @@ const SignUp = () => {
     return null;
   }
 
-  const doRegister = (e: React.FormEvent) => {
+  function doRegister(e: React.FormEvent) {
     e.preventDefault();
     !isNotValidData && signUpFunc({
       variables: {
@@ -63,34 +89,24 @@ const SignUp = () => {
           navigate('/sign_in', { replace: true });
       })
       .catch(e => console.log(e));
-  };
+  }
 
   const formFieldsData = [
     {
       id: 'name',
-      rules: [
-        (v: string) => isRequired(v),
-        (v: string) => minLength(v, 3),
-        (v: string) => maxLength(v, 20)
-      ],
+      rules: formFieldsRules['name'],
       autofocus: true,
       data: formData.name
     },
     {
       id: 'email',
-      rules: [
-        (v: string) => isRequired(v),
-        (v: string) => isValidEmail(v)
-      ],
+      rules: formFieldsRules['email'],
       data: formData.email
     },
     {
       id: 'password',
       type: passwordVisibility ? 'text' : 'password',
-      rules: [
-        (v: string) => isRequired(v),
-        (v: string) => minLength(v, 6)
-      ],
+      rules: formFieldsRules['password'],
       iconEnd: (
         <PasswordVisibilityButton
           visibility={passwordVisibility}
@@ -118,7 +134,7 @@ const SignUp = () => {
         onSubmit={doRegister}
         onChange={handleChange}
         onBlur={handleBlur}
-        onFocus={handleFocus}
+        onKeyDown={handleKeyPress}
         controls={<Controls disabled={isNotValidData}/>}
         className="max-w-[360px] h-[280px]"
       />

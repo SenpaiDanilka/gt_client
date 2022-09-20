@@ -31,8 +31,29 @@ const initialState = {
   }
 };
 
+const formFieldsRules = {
+  email: [
+    (v: string) => isRequired(v),
+    (v: string) => isValidEmail(v)
+  ],
+  password: [
+    (v: string) => isRequired(v),
+    (v: string) => minLength(v, 6)
+  ]
+};
+
 const SignIn = () => {
-  const {formData, isNotValidData, handleBlur, handleFocus, handleChange} = useForm(initialState);
+  const {
+    formData,
+    isNotValidData,
+    handleBlur,
+    handleChange,
+    handleKeyPress
+  } = useForm({
+    initialState,
+    onSubmit: doLogin,
+    rules: formFieldsRules
+  });
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const [loginFunc, {loading, error}] = useMutation(LOGIN);
   const {t} = useTranslation('common');
@@ -47,8 +68,7 @@ const SignIn = () => {
     return null;
   }
 
-
-  const doLogin = (e: React.FormEvent) => {
+  function doLogin(e: React.FormEvent) {
     e.preventDefault();
     !isNotValidData && loginFunc({
       variables: {
@@ -58,28 +78,22 @@ const SignIn = () => {
     })
       .then(async (resp) => {
         await Cookie.set('fauna-session', resp.data.login.secret);
-        navigate('/')
+        navigate('/', { replace: true });
       })
-      .catch(e => console.log(e))
-  };
+      .catch(e => console.log(e));
+  }
 
   const formFieldsData = [
     {
       id: 'email',
-      rules: [
-        (v: string) => isRequired(v),
-        (v: string) => isValidEmail(v)
-      ],
+      rules: formFieldsRules['email'],
       autofocus: true,
       data: formData.email
     },
     {
       id: 'password',
+      rules: formFieldsRules['password'],
       type: passwordVisibility ? 'text' : 'password',
-      rules: [
-        (v: string) => isRequired(v),
-        (v: string) => minLength(v, 6)
-      ],
       iconEnd: (
         <PasswordVisibilityButton
           visibility={passwordVisibility}
@@ -107,7 +121,7 @@ const SignIn = () => {
         onSubmit={doLogin}
         onChange={handleChange}
         onBlur={handleBlur}
-        onFocus={handleFocus}
+        onKeyDown={handleKeyPress}
         controls={<Controls disabled={isNotValidData}/>}
         className="max-w-[360px] h-[220px]"
       />

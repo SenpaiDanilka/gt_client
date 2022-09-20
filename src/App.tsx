@@ -13,13 +13,15 @@ import SignedInLayout from "./components/layouts/SignedInLayout";
 import SignedOutLayout from "./components/layouts/SignedOutLayout";
 import Settings from "./views/Settings";
 import ItemNew from "./views/ItemNew";
+import React from "react";
+
+export const AuthContext = React.createContext(false);
 
 export default function App() {
-  /* TODO refactor when Sign In fixed */
   const cookies = !!Cookie.get('fauna-session');
   const routes = useRoutes([
     {
-      element: <SignedOutLayout cookies={cookies}/>,
+      element: <SignedOutLayout/>,
       children: [
         {
           path: "/sign_up", element: <SignUp/>
@@ -31,9 +33,7 @@ export default function App() {
     },
     {
       element: (
-        <SignedInLayout
-          cookies={cookies}
-        />
+        <SignedInLayout/>
       ),
       children: [
         {
@@ -71,8 +71,8 @@ export default function App() {
   ]);
 
   return (
-    <>
+    <AuthContext.Provider value={cookies}>
       {routes}
-    </>
+    </AuthContext.Provider>
   );
 }

@@ -1,13 +1,12 @@
 import {Navigate, Outlet} from "react-router-dom";
 import LanguageSelect from "../LanguageSelect";
-import React from "react";
+import React, {useContext} from "react";
+import {AuthContext} from "../../App";
 
-interface Props {
-  cookies: boolean;
-}
+const SignedOutLayout = () => {
+  const cookies = useContext(AuthContext);
 
-const SignedOutLayout: React.FC<Props> = (props) => {
-  if (props.cookies) {
+  if (cookies) {
     return <Navigate to="/"/>;
   }
 

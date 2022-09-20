@@ -1,19 +1,17 @@
 import {Navigate, Outlet, useNavigate} from "react-router-dom";
 import BaseMenu from "../BaseComponents/BaseMenu";
 import LanguageSelect from "../LanguageSelect";
-import React from "react";
+import React, {useContext} from "react";
 import {useTranslation} from "react-i18next";
 import { logout } from "../../services/AuthService";
+import {AuthContext} from "../../App";
 
-interface Props {
-  cookies: boolean;
-}
-
-const SignedInLayout: React.FC<Props> = (props) => {
+const SignedInLayout = () => {
   const {t} = useTranslation('common');
   const navigate = useNavigate();
+  const cookies = useContext(AuthContext);
 
-  if (!props.cookies) {
+  if (!cookies) {
     return <Navigate to="/sign_in" />;
   }
 

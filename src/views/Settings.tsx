@@ -13,25 +13,41 @@ const initialState = {
   }
 }
 
+const formFieldsRules = {
+  name: [
+    (v: string) => isRequired(v),
+    (v: string) => minLength(v, 3),
+    (v: string) => maxLength(v, 20)
+  ],
+};
+
 const Settings = () => {
   const {t} = useTranslation('common');
-  const { formData, isNotValidData, handleBlur, handleFocus, handleChange } = useForm(initialState);
+  const {
+    formData,
+    isNotValidData,
+    handleBlur,
+    handleChange,
+    handleKeyPress
+  } = useForm({
+    initialState,
+    onSubmit: save,
+    rules: formFieldsRules
+  });
+
   const formFieldsData = [
     {
       id: 'name',
-      rules: [
-        (v: string) => isRequired(v),
-        (v: string) => minLength(v, 3),
-        (v: string) => maxLength(v, 20)
-      ],
+      rules: formFieldsRules['name'],
       autofocus: true,
       data: formData.name
     }
   ];
-  const save = (e: React.FormEvent) => {
+
+  function save(e: React.FormEvent) {
     e.preventDefault()
     console.log(formData, 'saved');
-  };
+  }
 
   return (
     <div className="p-4">
@@ -41,7 +57,7 @@ const Settings = () => {
           onSubmit={save}
           onChange={handleChange}
           onBlur={handleBlur}
-          onFocus={handleFocus}
+          onKeyDown={handleKeyPress}
           formFieldsData={formFieldsData}
           controls={
             <BaseButton

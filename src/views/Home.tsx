@@ -1,9 +1,7 @@
 import UserProfile from "../components/UserProfile";
 import {UserType} from "../models/AuthModels";
-import { useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
-import Cookie from 'js-cookie'
-import { useLazyQuery, gql } from '@apollo/client';
+import {useEffect} from 'react';
+import {useLazyQuery, gql} from '@apollo/client';
 
 const mockedUserData: UserType = {
   name: "Mocked User",
@@ -39,26 +37,21 @@ const FindUserByEmail = gql`
 `;
 
 export default function Home() {
-  const navigate = useNavigate()
-  const cookies = Cookie.get('fauna-session');
-  const [getCurrentUser, { data }] = useLazyQuery(FindUserByEmail);
+  const [getCurrentUser, {data}] = useLazyQuery(FindUserByEmail);
 
   useEffect(() => {
-    if(!cookies) {
-      navigate('/sign_in')
-    } else {
-      getCurrentUser({
-        variables: {
-          email: "user1@gmail.com"
-        }
-      }).then(res => console.log(res));
-    }
+    getCurrentUser({
+      variables: {
+        email: "user1@gmail.com"
+      }
+    }).then(res => console.log(res));
+
   }, [])
 
   return (
     <div className="p-4">
       <p className="text-3xl pb-4 font-bold">Home</p>
-      <UserProfile user={mockedUserData} />
+      <UserProfile user={mockedUserData}/>
     </div>
   );
 }

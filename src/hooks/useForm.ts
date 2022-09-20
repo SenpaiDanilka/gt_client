@@ -1,42 +1,46 @@
-import {FormDataType} from "../models/CommonModels";
-import React, {useEffect, useState} from "react";
+import {FormDataType, ValidationFunction} from "../models/CommonModels";
+import React, {useState} from "react";
 import {validator} from "../utils/validate";
-import {ValidationRule} from "../models/CommonModels";
 
-const useForm = (initialData: FormDataType) => {
-  const [formData, setFormData] = useState<FormDataType>(initialData);
+interface Props {
+  initialState: FormDataType;
+  onSubmit: (e: any) => void;
+  rules?: {[K: string]: ValidationFunction[]};
+}
 
-  useEffect(() => {
-    const keyDownHandler = (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-      }
-    };
-    document.addEventListener('keydown', keyDownHandler);
-
-    return () => {
-      document.removeEventListener('keydown', keyDownHandler);
-    };
-  }, []);
-
+const useForm = ({initialState, onSubmit, rules}: Props) => {
+  const [formData, setFormData] = useState(initialState);
   const isNotValidData = Object.values(formData).some(field => !!field.errors.length);
 
-  const handleBlur = (e: React.FocusEvent, rules: ValidationRule[]) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      let isError = false;
+      Object.keys(formData).forEach((key) => {
+        const res = Array.from(validator(formData[key].value, rules?.[key]));
+        if (!isError) {
+          isError = !!res.length;
+        }
+        setFormData(formData => ({
+          ...formData,
+          [key]: {...formData[key], errors: res}
+        }));
+      });
+      !isError && onSubmit(e);
+    }
+  };
+
+  const handleBlur = (e: React.FocusEvent, rules?: ValidationFunction[]) => {
     const key = e.target.id as keyof typeof formData;
     const res = validator(formData[key].value, rules);
     setFormData({...formData, [key]: {...formData[key], errors: Array.from(res)}});
   };
 
-  const handleFocus = (e: React.FocusEvent) => {
-    const key = e.target.id as keyof typeof formData;
-    setFormData({...formData, [key]: {...formData[key], errors: []}});
-  };
-
   const handleChange = (val: string, key: keyof typeof formData) => {
-    setFormData({...formData, [key]: {...formData[key], value: val}});
+    setFormData({...formData, [key]: {value: val, errors: []}});
   };
 
-  return { formData, isNotValidData, setFormData, handleBlur, handleFocus, handleChange };
+  return { formData, isNotValidData, setFormData, handleKeyPress, handleBlur, handleChange };
 }
 
 export default useForm;

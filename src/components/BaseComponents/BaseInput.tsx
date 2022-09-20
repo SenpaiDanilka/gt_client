@@ -1,6 +1,7 @@
 import {InputAdornment, TextField} from "@mui/material";
 import React, {ReactNode} from "react";
 import {useTranslation} from "react-i18next";
+import {ValidationError} from "../../models/CommonModels";
 
 export interface BaseInputPropsType {
   id?: string;
@@ -12,7 +13,7 @@ export interface BaseInputPropsType {
   onBlur?: (e: React.FocusEvent) => void;
   onFocus?: (e: React.FocusEvent) => void;
   required?: boolean;
-  errors?: any[];
+  errors?: ValidationError[];
   iconStart?: ReactNode;
   iconEnd?: ReactNode;
   className?: string;
@@ -73,7 +74,6 @@ const BaseInput: React.FC<BaseInputPropsType> = ({
       ) : null,
     className: "rounded-xl"
   };
-
   const helperText = !!errors.length && t(errors[0].text, errors[0].additionalData);
 
   return (
