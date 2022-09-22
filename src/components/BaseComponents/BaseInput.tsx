@@ -23,6 +23,7 @@ export interface BaseInputPropsType {
   rows?: number;
   maxRows?: number;
   minRows?: number;
+  placeholder?: string;
 }
 
 const textFieldSX = {
@@ -60,7 +61,8 @@ const BaseInput: React.FC<BaseInputPropsType> = ({
   rows,
   maxRows,
   multiline,
-  minRows
+  minRows,
+  placeholder
 }) => {
   const {t} = useTranslation('validations');
   const inputProps = {
@@ -99,6 +101,7 @@ const BaseInput: React.FC<BaseInputPropsType> = ({
       error={!!errors.length}
       helperText={helperText}
       InputProps={inputProps}
+      placeholder={placeholder}
       className={className}
     />
   );

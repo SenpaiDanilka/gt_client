@@ -40,7 +40,7 @@ const useForm = ({initialState, onSubmit, rules}: Props) => {
     setFormData({...formData, [key]: {value: val, errors: []}});
   };
 
-  return { formData, isNotValidData, setFormData, handleKeyPress, handleBlur, handleChange };
+  return { formData, isNotValidData, handleKeyPress, handleBlur, handleChange };
 }
 
 export default useForm;

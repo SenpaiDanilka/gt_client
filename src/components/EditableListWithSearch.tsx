@@ -4,6 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import BaseButton from "./BaseComponents/BaseButton";
 import AddIcon from "@mui/icons-material/Add";
 import BaseContainer from "./BaseComponents/BaseContainer";
+import AddButton from "./AddButton";
 
 interface Props {
   searchValue: string;
@@ -32,14 +33,7 @@ const EditableListWithSearch: React.FC<Props> = ({
           iconEnd={<SearchIcon fontSize="small"/>}
           className="mr-4 max-w-[700px]"
         />
-        <BaseButton
-          variant="contained"
-          buttonType="icon"
-          onClick={handleAddClick}
-          className="bg-blue-600 hover:bg-blue-700 text-white rounded-md"
-        >
-          <AddIcon fontSize="small"/>
-        </BaseButton>
+        <AddButton onClick={handleAddClick}/>
       </div>
       <BaseContainer className="divide-y-2 max-w-[700px]">
         { list }
