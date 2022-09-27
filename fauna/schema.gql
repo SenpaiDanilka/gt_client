@@ -62,10 +62,10 @@ type Mutation {
     name: String!,
     owner: String!
   ): Item @resolver(name: "CreateItem")
-
 }
 
 type Query {
   findUserByEmail(email: String): User
+  getUserByEmail(email: String): User @resolver(name: "GetUserByEmail")
   listUsers: [User]
 }

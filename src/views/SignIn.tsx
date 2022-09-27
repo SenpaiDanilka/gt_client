@@ -1,5 +1,5 @@
 import BaseForm from "./../components/BaseComponents/BaseForm";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {gql, useMutation} from "@apollo/client";
 import useForm from "../hooks/useForm";
 import PasswordVisibilityButton from "../components/PasswordVisibilityButton";
@@ -43,45 +43,53 @@ const formFieldsRules = {
 };
 
 const SignIn = () => {
-  const {
-    formData,
-    isNotValidData,
-    handleBlur,
-    handleChange,
-    handleKeyPress
-  } = useForm({
-    initialState,
-    onSubmit: doLogin,
-    rules: formFieldsRules
-  });
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const [loginFunc, {loading, error}] = useMutation(LOGIN);
+  const [loginFunc, {data, loading, error}] = useMutation(LOGIN);
   const {t} = useTranslation('common');
   const navigate = useNavigate()
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    console.error(error);
-    return null;
-  }
-
-  function doLogin(e: React.FormEvent) {
-    e.preventDefault();
-    !isNotValidData && loginFunc({
-      variables: {
-        email: formData.email.value,
-        password: formData.password.value
+  
+  useEffect(() => {
+    if(data) {
+      Cookie.set(
+        'fauna-session', 
+        JSON.stringify(data.login),
+        { expires: data.ttl }
+        )
+        navigate('/')
       }
-    })
-      .then(async (resp) => {
-        await Cookie.set('fauna-session', resp.data.login.secret);
-        navigate('/', { replace: true });
-      })
-      .catch(e => console.log(e));
+    }, [data])
+    
+    const doLogin = (e: React.FormEvent) => {
+      e.preventDefault();
+      Cookie.remove('fauna-session')
+      !isNotValidData && loginFunc({
+        variables: {
+          email: formData.email.value,
+          password: formData.password.value
+        }
+      }).catch(e => console.log(e))   
+    }
+    
+    const {
+      formData,
+      isNotValidData,
+      handleBlur,
+      handleChange,
+      handleKeyPress
+    } = useForm({
+      initialState,
+      onSubmit: doLogin,
+      rules: formFieldsRules
+    });
+    
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+    
+    if (error) {
+      return null;
   }
+
 
   const formFieldsData = [
     {
