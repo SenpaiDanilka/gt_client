@@ -1,21 +1,21 @@
 export interface SpaceType {
   name: string;
-  desc: string;
+  description: string;
   id: string;
 }
 
 export class Space implements SpaceType {
   name
-  desc
+  description
   id
 
   constructor({
     name = "",
-    desc = "",
+    description = "",
     id = "new"
   } = {}) {
     this.name = name;
-    this.desc = desc;
+    this.description = description;
     this.id = id;
   }
 }

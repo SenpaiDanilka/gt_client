@@ -9,7 +9,7 @@ interface Props {
   options: {
     id: string;
     children: ReactNode;
-    onClick?: () => void;
+    onClick?: Function;
   }[];
   triggerBtnColor?: string;
 }

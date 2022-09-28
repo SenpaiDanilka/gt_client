@@ -1,28 +1,21 @@
-export interface ItemType {
-  name: string;
-  photo?: string;
-  desc: string;
-  type: string;
-  id: string;
-}
-
-export class Item implements ItemType {
+export type ItemType = 'VEHICLE' | 'REAL_ESTATE' | 'ELECTRONICS' | 'OTHER'
+export class Item {
   name
   photo
-  desc
+  description
   type
   id
 
   constructor({
     name = "",
     photo = "",
-    desc = "",
+    description = "",
     type = "",
     id = "new"
  } = {}) {
     this.name = name;
     this.photo = photo;
-    this.desc = desc;
+    this.description = description;
     this.type = type;
     this.id = id;
   }

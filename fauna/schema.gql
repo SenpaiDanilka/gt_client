@@ -14,6 +14,8 @@ type Space {
 
 type Item {
   name: String!
+  description: String
+  type: ItemType!
   owner: User!
 }
 
@@ -31,6 +33,13 @@ type SpaceUser {
 enum AvailvabilityModel {
   SPACE
   USER
+}
+
+enum ItemType {
+  VEHICLE
+  REAL_ESTATE
+  ELECTRONICS
+  OTHER
 }
 
 type Token @embedded {
@@ -60,6 +69,8 @@ type Mutation {
 
   createItem(
     name: String!,
+    description: String!,
+    type: ItemType!,
     owner: String!
   ): Item @resolver(name: "CreateItem")
 }
@@ -67,8 +78,8 @@ type Mutation {
 type ShortUser @embedded {
   name: String!
   email: String!
-  spacesCount: Int!
-  itemsCount: Int!
+  spaces_count: Int!
+  items_count: Int!
 }
 
 type Query {

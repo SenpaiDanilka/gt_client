@@ -5,7 +5,7 @@ const SpacesService = {
     return new Promise<Space>((resolve, reject) => {
       resolve({
         name: 'Service Item',
-        desc: 'Some very important desc',
+        description: 'Some very important description',
         id: id
       })
     });

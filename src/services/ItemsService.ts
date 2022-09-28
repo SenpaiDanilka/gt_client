@@ -5,7 +5,7 @@ const ItemsService = {
     return new Promise<Item>((resolve, reject) => {
       resolve({
         name: 'Service Item',
-          desc: 'Some very important desc',
+          description: 'Some very important description',
         type: 'Some type',
         id: id,
         photo: ''

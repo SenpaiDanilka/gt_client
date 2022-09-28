@@ -1,11 +1,44 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import EditableListWithSearch from "../components/EditableListWithSearch";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
+import {gql, useMutation, useQuery} from '@apollo/client';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+
+const FindUserByID = gql`
+  query FindUserByID($id: ID!) {
+    findUserByID(id: $id) {
+      items {
+        data {
+          _id
+          description
+          name
+          type
+        }
+      }
+    }
+  }
+`;
+
+const DeleteItem = gql`
+  mutation DeleteItem($id: ID!) {
+    deleteItem(id: $id) {
+      _id
+    }
+  }
+`;
 
 const Items = () => {
+  const userId = localStorage.getItem("userId")
+  const {data} = useQuery(FindUserByID, {
+    variables: {
+      id: userId
+    }
+  })
+  const [deleteItem] = useMutation(DeleteItem)
   const {t} = useTranslation('common');
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
@@ -14,7 +47,15 @@ const Items = () => {
     {
       children: 'Delete',
       id: 'delete',
-      onClick: () => {console.log(`delete item ${id}`)}
+      onClick: () => {
+        deleteItem({
+          variables: {
+            id: id
+          }
+        }).then(res => {
+          console.log(`delete item ${res}`)
+        })
+      }
     },
     {
       children: 'View item',
@@ -23,28 +64,32 @@ const Items = () => {
     }
   ]);
 
+  const items = data?.findUserByID?.items.data
+
   const List = (
-    [1,2,3].map((value) => (
+    items ? items.map((item: any) => (
       <div
         className="flex justify-between items-center"
-        key={value}
+        key={item._id}
       >
         <div className="flex justify-between items-center p-4 w-full">
           <BaseAvatar
-            alt={`Mocked Item ${value}`}
+            alt={`Mocked Item ${item.name}`}
             size={40}
             variant="square"
             className="mr-2"
           />
           <div className="flex flex-col flex-1">
-            <span>{`Item name ${value}`}</span>
-            <span>{`Item desc: ${value}`}</span>
+            <span>{`${item.name}`}</span>
+            <span>{`${item.description}`}</span>
           </div>
-          <span>{`Item type: type ${value}`}</span>
+          <span>{`${item.type}`}</span>
         </div>
-        <BaseMenu options={menuOptions(String(value))}/>
+        <BaseMenu options={menuOptions(String(item._id))}/>
       </div>
-    ))
+    )) : <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+    <CircularProgress />
+  </Box>
   );
 
   return (

@@ -30,7 +30,7 @@ export default function Item() {
             <span>{item.type}</span>
           </div>
         </div>
-        <p className="my-4">{item.desc}</p>
+        <p className="my-4">{item.description}</p>
         <div>
           Spaces Table
         </div>

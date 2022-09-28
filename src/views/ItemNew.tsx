@@ -1,12 +1,25 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {Item as ItemClass} from "../models/ItemsModels";
 import BaseInput from "../components/BaseComponents/BaseInput";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
+import {gql, useMutation} from "@apollo/client";
+
+const CreateItem = gql`
+  mutation CreateItem($name: String!, $description: String!, $type: ItemType!, $owner: String! ) {
+    createItem(name: $name, description: $description, type: $type, owner: $owner) {
+      _id
+      name
+      description
+      type
+    }
+  }
+`;
 
 export default function ItemNew() {
+  const [createItemFunc, {data, loading, error}] = useMutation(CreateItem);
   const {t} = useTranslation('common');
   const [item, setItem] = useState(new ItemClass());
 
@@ -18,6 +31,14 @@ export default function ItemNew() {
   };
 
   const handleSave = () => {
+    createItemFunc({
+      variables: {
+        name: item.name,
+        description: item.description,
+        type: item.type,
+        owner: localStorage.getItem("userId")
+      }
+    })
     console.log(item, 'saved');
   };
 
@@ -46,11 +67,11 @@ export default function ItemNew() {
           </div>
         </div>
         <BaseInput
-          label="desc"
-          value={item.desc}
+          label="description"
+          value={item.description}
           rows={4}
           multiline
-          onChange={(val) => handleChange(val, "desc")}
+          onChange={(val) => handleChange(val, "description")}
           className="my-4"
         />
         <BaseButton

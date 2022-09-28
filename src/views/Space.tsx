@@ -69,7 +69,7 @@ export default function Space() {
                     />
                     <div className="flex flex-col flex-1">
                       <span>{`Item name ${value}`}</span>
-                      <span>{`Item desc: ${value}`}</span>
+                      <span>{`Item description: ${value}`}</span>
                     </div>
                     <span>{`Item type: type ${value}`}</span>
                   </div>
@@ -123,7 +123,7 @@ export default function Space() {
       <BaseContainer className="p-4">
         <div className="flex flex-col space-y-4">
           <span>{space.name}</span>
-          <span>{space.desc}</span>
+          <span>{space.description}</span>
         </div>
         <div className="flex justify-center items-center">
           {
