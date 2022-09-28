@@ -13,15 +13,10 @@ const mockedUserData: UserType = {
 }
 
 const FindUserByEmail = gql`
-  query FindUserByEmail($email: String!) {
-    findUserByEmail(email: $email) {
+  query GetUserByEmail($email: String!) {
+    getUserByEmail(email: $email) {
       name
-      email
-      phone
-      spaces {
-        after
-        before
-      }
+      spacesCount
     }
   }
 `;
