@@ -12,19 +12,22 @@ const mockedUserData: UserType = {
   id: "1"
 }
 
-const FindUserByEmail = gql`
-  query GetUserByEmail($email: String!) {
-    getUserByEmail(email: $email) {
+const GetUserByID = gql`
+  query GetUserById($id: String!) {
+    getUserById(id: $id) {
       name
+      email
       spacesCount
+      itemsCount
     }
   }
 `;
 
 const Home = () => {
-  const {data, loading} = useQuery(FindUserByEmail, {
+  const {data, loading} = useQuery(GetUserByID, {
     variables: {
-      email: "user1@gmail.com"
+      id: localStorage.getItem("userId")
+      // id: "342861426893783248"
     }
   })
 

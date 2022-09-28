@@ -16,6 +16,7 @@ const LOGIN = gql`
       ttl
       secret
       email
+      userId
     }
   }
 `;
@@ -52,9 +53,10 @@ const SignIn = () => {
     if(data) {
       Cookie.set(
         'fauna-session', 
-        JSON.stringify(data.login),
+        JSON.stringify(data.login.secret),
         { expires: data.ttl }
         )
+        localStorage.setItem("userId", data.login.userId)
         navigate('/')
       }
     }, [data])

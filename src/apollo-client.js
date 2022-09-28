@@ -13,8 +13,8 @@ const logoutLink = onError(({ networkError, graphQLErrors }) => {
 })
 
 const authLink = setContext((_, { headers }) => {
-  const cookies = Cookie.get('fauna-session');
-  const token = cookies ? JSON.parse(cookies).secret : process.env.REACT_APP_PUBLIC_FAUNA_SECRET
+  const secret = Cookie.get('fauna-session');
+  const token = secret ? JSON.parse(secret) : process.env.REACT_APP_PUBLIC_FAUNA_SECRET
   return {
     headers: {
       ...headers,

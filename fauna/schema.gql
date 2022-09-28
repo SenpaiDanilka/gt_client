@@ -67,12 +67,13 @@ type Mutation {
 type ShortUser @embedded {
   name: String!
   email: String!
-  phone: String
   spacesCount: Int!
+  itemsCount: Int!
 }
 
 type Query {
   findUserByEmail(email: String): User
   getUserByEmail(email: String): ShortUser @resolver(name: "GetUserByEmail")
+  getUserById(id: String): ShortUser @resolver(name: "GetUserById")
   listUsers: [User]
 }
