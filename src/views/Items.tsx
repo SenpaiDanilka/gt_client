@@ -94,9 +94,6 @@ const Items = () => {
 
   return (
     <div className="p-4">
-      <p className="text-3xl font-bold">
-        {t('items')}
-      </p>
       <EditableListWithSearch
         searchValue={searchValue}
         setSearchValue={setSearchValue}
