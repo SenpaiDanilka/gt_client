@@ -1,4 +1,4 @@
-export interface UserType {
+export interface UserModel {
   name: string;
   photo?: string;
   email: string;
@@ -8,7 +8,7 @@ export interface UserType {
   id: string;
 }
 
-export class User implements UserType {
+export class User implements UserModel {
   name
   photo
   email

@@ -1,8 +1,7 @@
 import UserProfile from "../components/UserProfile";
 import {gql, useQuery} from '@apollo/client';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 import { NetworkStatus } from '@apollo/client';
+import {BaseLoader} from "../components/BaseComponents/BaseLoader";
 
 const GetUserByID = gql`
   query GetUserById($id: String!) {
@@ -24,11 +23,7 @@ const Home = () => {
   })
 
   if (networkStatus === NetworkStatus.refetch || loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </Box>
-    )
+    return <BaseLoader />
   } else {
     return (
       <div className="p-4">
