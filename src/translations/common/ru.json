@@ -9,8 +9,9 @@
   "signOut": "Выйти",
   "items": "Предметы",
   "users": "Пользователи",
-  "spaces": "Spaces",
+  "spaces": "Группы",
   "contacts": "Контакты",
   "settings": "Настройки",
-  "save": "Сохранить"
+  "save": "Сохранить",
+  "delete": "Удалить"
 }

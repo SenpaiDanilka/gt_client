@@ -1,17 +1,34 @@
-import {Item} from "../models/ItemsModels";
+import {gql} from '@apollo/client';
 
-const ItemsService = {
-  getItem(id: string) {
-    return new Promise<Item>((resolve, reject) => {
-      resolve({
-        name: 'Service Item',
-          description: 'Some very important description',
-        type: 'Some type',
-        id: id,
-        photo: ''
-      })
-    });
+export const DeleteItem = gql`
+  mutation DeleteItem($id: ID!) {
+    deleteItem(id: $id) {
+      _id
+    }
   }
-}
+`;
 
-export default ItemsService;
+export const GetUserItems = gql`
+  query FindUserByID($id: ID!) {
+    findUserByID(id: $id) {
+      items {
+        data {
+          _id
+          description
+          name
+          type
+        }
+      }
+    }
+  }
+`;
+export const FindItemByID = gql`
+  query FindItemByID($id: ID!) {
+    findItemByID(id: $id) {
+      _id
+      name
+      description
+      type
+    }
+  }
+`;
