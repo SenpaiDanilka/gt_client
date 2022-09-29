@@ -24,6 +24,8 @@ export interface BaseInputPropsType {
   maxRows?: number;
   minRows?: number;
   placeholder?: string;
+  children?: ReactNode | ReactNode[];
+  isSelect?: boolean;
 }
 
 const textFieldSX = {
@@ -62,7 +64,9 @@ const BaseInput: React.FC<BaseInputPropsType> = ({
   maxRows,
   multiline,
   minRows,
-  placeholder
+  placeholder,
+  children,
+  isSelect
 }) => {
   const {t} = useTranslation('validations');
   const inputProps = {
@@ -103,6 +107,8 @@ const BaseInput: React.FC<BaseInputPropsType> = ({
       InputProps={inputProps}
       placeholder={placeholder}
       className={className}
+      select={isSelect}
+      children={children}
     />
   );
 }

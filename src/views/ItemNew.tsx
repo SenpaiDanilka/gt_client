@@ -1,11 +1,15 @@
-import {useState} from "react";
+import React, {useEffect} from "react";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
-import {Item as ItemClass} from "../models/ItemsModels";
+import {ItemType} from "../models/ItemsModels";
 import BaseInput from "../components/BaseComponents/BaseInput";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
 import {gql, useMutation} from "@apollo/client";
+import {useLoading} from "../contexts/LoadingContext";
+import {MenuItem} from "@mui/material";
+import useForm from "../hooks/useForm";
+import {isRequired, minLength} from "../utils/validate";
 
 const CreateItem = gql`
   mutation CreateItem($name: String!, $description: String!, $type: ItemType!, $owner: String! ) {
@@ -18,68 +22,140 @@ const CreateItem = gql`
   }
 `;
 
+const initialState = {
+  name: {
+    value: '',
+    errors: []
+  },
+  type: {
+    value: '',
+    errors: []
+  },
+  description: {
+    value: '',
+    errors: []
+  },
+};
+
+const formFieldsRules = {
+  name: [
+    (v: string) => isRequired(v),
+    (v: string) => minLength(v, 3)
+  ],
+  type: [
+    (v: string) => isRequired(v)
+  ]
+};
+
 export default function ItemNew() {
-  const [createItemFunc, {data, loading, error}] = useMutation(CreateItem);
+  const [createItemFunc, {loading}] = useMutation(CreateItem);
   const {t} = useTranslation('common');
-  const [item, setItem] = useState(new ItemClass());
+  const { setLoading, setAlertData } = useLoading();
+  const {
+    handleKeyPress,
+    formData,
+    isNotValidData,
+    handleBlur,
+    handleChange,
+    validateAll
+  } = useForm({
+    initialState,
+    onSubmit: handleSave,
+    rules: formFieldsRules
+  });
 
-  const handleChange = (val: string, key: string) => {
-    setItem({
-      ...item,
-      [key]: val
-    });
-  };
+  useEffect(() => {
+    setLoading(loading);
+  }, [loading]);
 
-  const handleSave = () => {
-    createItemFunc({
+  function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    !validateAll() && createItemFunc({
       variables: {
-        name: item.name,
-        description: item.description,
-        type: item.type,
+        name: formData.name.value,
+        description: formData.description.value,
+        type: formData.type.value,
         owner: localStorage.getItem("userId")
       }
-    })
-    console.log(item, 'saved');
-  };
+    }).then(() => {
+      setAlertData({
+        isOpen: true,
+        text: 'Item has been created',
+        type: 'success'
+      });
+    }).catch(() => {
+      setAlertData({
+        isOpen: true,
+        text: 'Smth went wrong',
+        type: 'error'
+      });
+    });
+  }
+
+  const typeOptions = Object.keys(ItemType).filter((v) => isNaN(Number(v)));
 
   return (
     <div className="p-4">
-      <p className="text-3xl font-bold mb-4">{ `Item ${item.id}` }</p>
-      <BaseContainer className="p-4 flex flex-col items-center">
-        <div className="flex justify-between items-center w-full">
-          <BaseAvatar
-            alt={item.name}
-            size={40}
-            variant="square"
-            className="mr-2"
-          />
-          <div className="flex flex-col flex-1 space-y-4">
-            <BaseInput
-              label={t('name')}
-              value={item.name}
-              onChange={(val) => handleChange(val, "name")}
-            />
-            <BaseInput
-              label="type"
-              value={item.type}
-              onChange={(val) => handleChange(val, "type")}
-            />
-          </div>
-        </div>
-        <BaseInput
-          label="description"
-          value={item.description}
-          rows={4}
-          multiline
-          onChange={(val) => handleChange(val, "description")}
-          className="my-4"
-        />
-        <BaseButton
-          variant="contained"
-          onClick={handleSave}
+      <BaseContainer className="p-4">
+        <form
+          noValidate
+          className="flex flex-col items-center"
+          onKeyDown={handleKeyPress}
+          onSubmit={handleSave}
         >
-          {t('save')}
-        </BaseButton>
+          <div className="flex justify-between items-center w-full">
+            <BaseAvatar
+              alt={formData.name.value}
+              size={40}
+              variant="square"
+              className="mr-2"
+            />
+            <div className="flex flex-col flex-1 space-y-4">
+              <BaseInput
+                id="name"
+                errors={formData.name.errors}
+                label={t('name')}
+                value={formData.name.value}
+                onChange={(val) => handleChange(val, "name")}
+                onBlur={(e) => handleBlur(e, formFieldsRules.name)}
+              />
+              <BaseInput
+                id="type"
+                isSelect
+                errors={formData.type.errors}
+                label={t('type')}
+                value={formData.type.value}
+                onChange={(val) => handleChange(val, "type")}
+              >
+                {
+                  typeOptions.map(option => (
+                    <MenuItem
+                      value={option}
+                      key={option}
+                    >
+                      {option}
+                    </MenuItem>
+                  ))
+                }
+              </BaseInput>
+            </div>
+          </div>
+          <BaseInput
+            label="description"
+            value={formData.description.value}
+            rows={4}
+            multiline
+            onChange={(val) => handleChange(val, "description")}
+            className="my-4"
+          />
+          <BaseButton
+            type="submit"
+            variant="contained"
+            disabled={isNotValidData}
+          >
+            {t('save')}
+          </BaseButton>
+        </form>
       </BaseContainer>
     </div>
   );

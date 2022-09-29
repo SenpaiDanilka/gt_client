@@ -1,11 +1,9 @@
 import {useEffect, useState} from "react";
 import EditableListWithSearch from "../components/EditableListWithSearch";
-import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {gql, NetworkStatus, useMutation, useQuery} from '@apollo/client';
-import {BaseLoader} from "../components/BaseComponents/BaseLoader";
 import {useLoading} from "../contexts/LoadingContext";
 
 const FindUserByID = gql`
@@ -45,7 +43,6 @@ const Items = () => {
   }, [data]);
 
   const [deleteItem, { loading: deleteLoading }] = useMutation(DeleteItem)
-  const {t} = useTranslation('common');
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const { setLoading, setAlertData } = useLoading();

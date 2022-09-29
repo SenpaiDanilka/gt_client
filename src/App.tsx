@@ -14,7 +14,7 @@ import SignedOutLayout from "./components/layouts/SignedOutLayout";
 import Settings from "./views/Settings";
 import ItemNew from "./views/ItemNew";
 import React from "react";
-import {LoadingProvider, useLoading} from "./contexts/LoadingContext";
+import {useLoading} from "./contexts/LoadingContext";
 import {BaseLoader} from "./components/BaseComponents/BaseLoader";
 import {Alert, Snackbar} from "@mui/material";
 

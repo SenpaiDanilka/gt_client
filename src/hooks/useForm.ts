@@ -12,21 +12,25 @@ const useForm = ({initialState, onSubmit, rules}: Props) => {
   const [formData, setFormData] = useState(initialState);
   const isNotValidData = Object.values(formData).some(field => !!field.errors.length);
 
+  const validateAll = () => {
+    let isError = false;
+    Object.keys(formData).forEach((key) => {
+      const res = Array.from(validator(formData[key].value, rules?.[key]));
+      if (!isError) {
+        isError = !!res.length;
+      }
+      setFormData(formData => ({
+        ...formData,
+        [key]: {...formData[key], errors: res}
+      }));
+    });
+    return isError;
+  }
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      let isError = false;
-      Object.keys(formData).forEach((key) => {
-        const res = Array.from(validator(formData[key].value, rules?.[key]));
-        if (!isError) {
-          isError = !!res.length;
-        }
-        setFormData(formData => ({
-          ...formData,
-          [key]: {...formData[key], errors: res}
-        }));
-      });
-      !isError && onSubmit(e);
+      !validateAll() && onSubmit(e);
     }
   };
 
@@ -40,7 +44,7 @@ const useForm = ({initialState, onSubmit, rules}: Props) => {
     setFormData({...formData, [key]: {value: val, errors: []}});
   };
 
-  return { formData, isNotValidData, handleKeyPress, handleBlur, handleChange };
+  return { formData, isNotValidData, handleKeyPress, handleBlur, handleChange, validateAll };
 }
 
 export default useForm;
