@@ -6,6 +6,7 @@ import BaseMenu from "../components/BaseComponents/BaseMenu";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {gql, NetworkStatus, useMutation, useQuery} from '@apollo/client';
 import {BaseLoader} from "../components/BaseComponents/BaseLoader";
+import {useLoading} from "../contexts/LoadingContext";
 
 const FindUserByID = gql`
   query FindUserByID($id: ID!) {
@@ -47,6 +48,11 @@ const Items = () => {
   const {t} = useTranslation('common');
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
+  const { setLoading, setAlertData } = useLoading();
+
+  useEffect(() => {
+    setLoading(networkStatus === NetworkStatus.refetch || itemsLoading || deleteLoading)
+  }, [networkStatus, itemsLoading, deleteLoading]);
 
   const menuOptions = (id: string) => ([
     {
@@ -61,7 +67,18 @@ const Items = () => {
           setItems((current) =>
             current.filter((item: any) => item._id !== id)
           );
-        })
+          setAlertData({
+            isOpen: true,
+            text: 'Item has been deleted',
+            type: 'success'
+          });
+        }).catch(() => {
+          setAlertData({
+            isOpen: true,
+            text: 'Smth went wrong',
+            type: 'error'
+          });
+        });
       }
     },
     {
@@ -103,9 +120,6 @@ const Items = () => {
         onAddClick={() => navigate('/items/new')}
         list={List}
       />
-      {
-        networkStatus === NetworkStatus.refetch || itemsLoading || deleteLoading && <BaseLoader />
-      }
     </div>
   )
 }
