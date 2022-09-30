@@ -1,7 +1,7 @@
 {
   "name": "gt_frontend",
   "version": "0.1.0",
-  "homepage": "https://senpaidanilka.github.io/gt_client",
+  "homepage": ".",
   "private": false,
   "dependencies": {
     "@apollo/client": "^3.6.9",
