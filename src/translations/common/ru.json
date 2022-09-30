@@ -1,0 +1,17 @@
+{
+  "password": "Пароль",
+  "email": "Email",
+  "name": "Имя",
+  "haveAccount": "Уже есть аккаунт?",
+  "haveNoAccount": "Ещё нет аккаунта?",
+  "signIn": "Войти",
+  "signUp": "Зарегистрироваться",
+  "signOut": "Выйти",
+  "items": "Предметы",
+  "users": "Пользователи",
+  "spaces": "Группы",
+  "contacts": "Контакты",
+  "settings": "Настройки",
+  "save": "Сохранить",
+  "delete": "Удалить"
+}
