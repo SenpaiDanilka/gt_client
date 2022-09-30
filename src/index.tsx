@@ -7,7 +7,8 @@ import { ApolloProvider } from '@apollo/client';
 import client from './apollo-client'
 import {I18nextProvider} from "react-i18next";
 import i18n from './i18n';
-import {HashRouter} from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -17,9 +18,9 @@ root.render(
   <ApolloProvider client={client}>
     <React.StrictMode>
       <I18nextProvider i18n={i18n}>
-        <HashRouter>
+        <BrowserRouter basename='/'>
           <App />
-        </HashRouter>
+        </BrowserRouter>
       </I18nextProvider>
     </React.StrictMode>
   </ApolloProvider>,
