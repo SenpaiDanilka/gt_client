@@ -2,7 +2,7 @@
   "name": "gt_frontend",
   "version": "0.1.0",
   "homepage": ".",
-  "private": false,
+  "private": true,
   "dependencies": {
     "@apollo/client": "^3.6.9",
     "@emotion/react": "^11.10.4",
