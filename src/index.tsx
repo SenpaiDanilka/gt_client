@@ -7,7 +7,7 @@ import { ApolloProvider } from '@apollo/client';
 import client from './apollo-client'
 import {I18nextProvider} from "react-i18next";
 import i18n from './i18n';
-import {BrowserRouter} from "react-router-dom";
+import {HashRouter} from "react-router-dom";
 import {LoadingProvider} from "./contexts/LoadingContext";
 
 const root = ReactDOM.createRoot(
@@ -18,11 +18,11 @@ root.render(
   <ApolloProvider client={client}>
     <React.StrictMode>
       <I18nextProvider i18n={i18n}>
-        <BrowserRouter>
+        <HashRouter basename='/'>
           <LoadingProvider>
             <App />
           </LoadingProvider>
-        </BrowserRouter>
+        </HashRouter>
       </I18nextProvider>
     </React.StrictMode>
   </ApolloProvider>,

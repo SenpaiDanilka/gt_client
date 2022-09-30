@@ -3,35 +3,13 @@ import EditableListWithSearch from "../components/EditableListWithSearch";
 import {useNavigate} from "react-router-dom";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
-import {gql, NetworkStatus, useMutation, useQuery} from '@apollo/client';
+import { NetworkStatus, useMutation, useQuery } from '@apollo/client';
+import { DeleteItem, GetUserItems } from "../services/ItemsService";
 import {useLoading} from "../contexts/LoadingContext";
-
-const FindUserByID = gql`
-  query FindUserByID($id: ID!) {
-    findUserByID(id: $id) {
-      items {
-        data {
-          _id
-          description
-          name
-          type
-        }
-      }
-    }
-  }
-`;
-
-const DeleteItem = gql`
-  mutation DeleteItem($id: ID!) {
-    deleteItem(id: $id) {
-      _id
-    }
-  }
-`;
 
 const Items = () => {
   const userId = localStorage.getItem("userId")
-  const {data, loading: itemsLoading, networkStatus} = useQuery(FindUserByID, {
+  const {data, loading: itemsLoading, networkStatus} = useQuery(GetUserItems, {
     variables: {
       id: userId
     }
