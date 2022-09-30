@@ -17,7 +17,7 @@ root.render(
   <ApolloProvider client={client}>
     <React.StrictMode>
       <I18nextProvider i18n={i18n}>
-        <HashRouter>
+        <HashRouter basename='/'>
           <App />
         </HashRouter>
       </I18nextProvider>
