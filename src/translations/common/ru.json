@@ -2,6 +2,8 @@
   "password": "Пароль",
   "email": "Email",
   "name": "Имя",
+  "type": "Тип",
+  "description": "Описание",
   "haveAccount": "Уже есть аккаунт?",
   "haveNoAccount": "Ещё нет аккаунта?",
   "signIn": "Войти",

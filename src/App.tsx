@@ -7,6 +7,7 @@ import Spaces from "./views/Spaces";
 import Contacts from "./views/Contacts";
 import Item from "./views/Item";
 import Space from "./views/Space";
+import SpaceNew from "./views/SpaceNew";
 import Cookie from "js-cookie";
 import Contact from "./views/Contact";
 import SignedInLayout from "./components/layouts/SignedInLayout";
@@ -55,7 +56,7 @@ export default function App() {
           children: [
             {index: true, element: <Spaces/>},
             {path: ":id", element: <Space/>},
-            {path: "new", element: <Space/>}
+            {path: "new", element: <SpaceNew/>}
           ]
         },
         {

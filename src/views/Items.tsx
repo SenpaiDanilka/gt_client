@@ -13,7 +13,7 @@ const Items = () => {
     variables: {
       id: userId
     }
-  })
+  });
   const [items, setItems] = useState<any[]>([]);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Items = () => {
     setLoading(networkStatus === NetworkStatus.refetch || itemsLoading || deleteLoading)
   }, [networkStatus, itemsLoading, deleteLoading]);
 
-  const menuOptions = (id: string) => ([
+  const menuOptions = (id: number) => ([
     {
       children: 'Delete',
       id: 'delete',
@@ -82,7 +82,7 @@ const Items = () => {
             </div>
             <div className="text-right w-28 place-self-center">{`${item.type}`}</div>
           </div>
-          <BaseMenu options={menuOptions(String(item._id))}/>
+          <BaseMenu options={menuOptions(item._id)}/>
         </div>
       ))
   );

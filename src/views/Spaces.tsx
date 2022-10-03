@@ -44,7 +44,7 @@ const Spaces = () => {
       <EditableListWithSearch
         searchValue={searchValue}
         setSearchValue={setSearchValue}
-        onAddClick={() => {}}
+        onAddClick={() => navigate('/spaces/new')}
         list={List}
       />
     </div>

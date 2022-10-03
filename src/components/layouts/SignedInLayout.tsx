@@ -16,7 +16,7 @@ const SignedInLayout = () => {
   }
 
   return (
-    <div className="w-screen h-screen bg-gray-100">
+    <div className="w-screen h-screen bg-gray-100 overflow-x-hidden">
       <div className="bg-blue-600 h-[70px] w-screen flex items-center justify-between">
         <NavBar />
         <BaseMenu

@@ -1,33 +1,26 @@
-import React, {useEffect} from "react";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
-import {ItemType} from "../models/ItemsModels";
 import BaseInput from "../components/BaseComponents/BaseInput";
+import React, {useEffect} from "react";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
-import {gql, useMutation} from "@apollo/client";
-import {useLoading} from "../contexts/LoadingContext";
-import {MenuItem} from "@mui/material";
-import useForm from "../hooks/useForm";
 import {isRequired, minLength} from "../utils/validate";
+import {useLoading} from "../contexts/LoadingContext";
+import useForm from "../hooks/useForm";
+import {gql, useMutation} from "@apollo/client";
 import {useNavigate} from "react-router-dom";
 
-const CreateItem = gql`
-  mutation CreateItem($name: String!, $description: String!, $type: ItemType!, $owner: String! ) {
-    createItem(name: $name, description: $description, type: $type, owner: $owner) {
+const CreateSpace = gql`
+  mutation CreateSpace($name: String!, $description: String!, $owner: String! ) {
+    createSpace(name: $name, description: $description, owner: $owner) {
       _id
       name
       description
-      type
     }
   }
 `;
 
 const initialState = {
   name: {
-    value: '',
-    errors: []
-  },
-  type: {
     value: '',
     errors: []
   },
@@ -41,16 +34,13 @@ const formFieldsRules = {
   name: [
     (v: string) => isRequired(v),
     (v: string) => minLength(v, 3)
-  ],
-  type: [
-    (v: string) => isRequired(v)
   ]
 };
 
-export default function ItemNew() {
-  const navigate = useNavigate();
-  const [createItemFunc, {loading}] = useMutation(CreateItem);
+const SpaceNew = () => {
+  //const [createSpaceFunc, {loading}] = useMutation(CreateItem);
   const {t} = useTranslation('common');
+  const navigate = useNavigate();
   const {setLoading, setAlertData} = useLoading();
   const {
     handleKeyPress,
@@ -65,14 +55,15 @@ export default function ItemNew() {
     rules: formFieldsRules
   });
 
-  useEffect(() => {
+/*  useEffect(() => {
     setLoading(loading);
     return () => setLoading(false);
-  }, [loading]);
+  }, [loading]);*/
 
   function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    !validateAll() && createItemFunc({
+    validateAll(); /*TODO replace with code below*/
+/*    !validateAll() && createSpaceFunc({
       variables: {
         name: formData.name.value,
         description: formData.description.value,
@@ -82,39 +73,28 @@ export default function ItemNew() {
     }).then((res) => {
       setAlertData({
         isOpen: true,
-        text: 'Item has been created',
+        text: 'Space has been created',
         type: 'success'
       });
-      const itemId = res.data.createItem._id;
-      navigate(`/items/${itemId}`);
+      const spaceId = res.data.createItem._id;
+      navigate(`/createSpace/${spaceId}`);
     }).catch(() => {
       setAlertData({
         isOpen: true,
         text: 'Smth went wrong',
         type: 'error'
       });
-    });
+    });*/
   }
 
-  const typeOptions = Object.keys(ItemType).filter((v) => isNaN(Number(v)));
-
   return (
-
-    <BaseContainer className="p-4 my-4 mx-auto max-w-[700px] h-[400px]">
+    <BaseContainer className="p-4 my-4 mx-4">
       <form
         noValidate
         className="flex flex-col items-center space-y-4 p-4"
         onKeyDown={handleKeyPress}
         onSubmit={handleSave}
       >
-{/*        <BaseInput
-          type="file"
-          id="photo"
-          errors={formData.name.errors}
-          value={formData.name.value}
-          onChange={(val) => handleChange(val, "name")}
-          onBlur={(e) => handleBlur(e, formFieldsRules.name)}
-        />*/}
         <BaseInput
           id="name"
           errors={formData.name.errors}
@@ -123,25 +103,6 @@ export default function ItemNew() {
           onChange={(val) => handleChange(val, "name")}
           onBlur={(e) => handleBlur(e, formFieldsRules.name)}
         />
-        <BaseInput
-          id="type"
-          isSelect
-          errors={formData.type.errors}
-          label={t('type')}
-          value={formData.type.value}
-          onChange={(val) => handleChange(val, "type")}
-        >
-          {
-            typeOptions.map(option => (
-              <MenuItem
-                value={option}
-                key={option}
-              >
-                {option}
-              </MenuItem>
-            ))
-          }
-        </BaseInput>
         <BaseInput
           label="description"
           value={formData.description.value}
@@ -161,3 +122,5 @@ export default function ItemNew() {
     </BaseContainer>
   );
 }
+
+export default SpaceNew;

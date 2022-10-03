@@ -1,29 +1,30 @@
 import {ClickAwayListener, Popper, styled, TextField} from "@mui/material";
 import Autocomplete, {autocompleteClasses, AutocompleteCloseReason} from "@mui/material/Autocomplete";
-import React, {useEffect} from "react";
+import React from "react";
 import BaseAvatar from "./BaseComponents/BaseAvatar";
 
 export interface OptionsDataType {
   name: string;
+  description?: string;
+  type?: string;
+  id: number;
 }
 
 interface Props {
   options: OptionsDataType[]
   anchorEl?: any,
   handleClose: () => void;
+  handleSelect: (val: OptionsDataType | null) => void;
 }
 
 const PopperWithAutocomplete = ({
   anchorEl,
   handleClose,
-  options
+  options,
+  handleSelect
 }: Props) => {
   const open = Boolean(anchorEl);
-  const [selected, setSelected] = React.useState<OptionsDataType | null>(null);
-
-  useEffect(() => {
-    console.log(selected)
-  }, [selected]);
+  const [selected, setSelected] = React.useState(null);
 
   return (
     <StyledPopper
@@ -32,7 +33,6 @@ const PopperWithAutocomplete = ({
       placement="bottom-start"
     >
       <ClickAwayListener onClickAway={() => {
-        console.log('clicked')
         handleClose()
       }}>
         <Autocomplete
@@ -58,11 +58,12 @@ const PopperWithAutocomplete = ({
             ) {
               return;
             }
-            setSelected(newValue);
+            handleSelect(newValue);
+            setSelected(null);
           }}
           PopperComponent={PopperComponent}
           noOptionsText="Nothing found"
-          renderOption={(props, option, {selected}) => (
+          renderOption={(props, option) => (
             <li {...props}>
               <BaseAvatar
                 alt={`Mocked User ${option.name}`}
