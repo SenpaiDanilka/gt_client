@@ -9,6 +9,7 @@ import {isRequired, isValidEmail, minLength} from "../utils/validate";
 import Cookie from "js-cookie";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
 import {Link, useNavigate} from "react-router-dom";
+import {useLoading} from "../contexts/LoadingContext";
 
 const LOGIN = gql`
   mutation UserLogin($email: String!, $password: String! ) {
@@ -45,53 +46,57 @@ const formFieldsRules = {
 
 const SignIn = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const [loginFunc, {data, loading, error}] = useMutation(LOGIN);
+  const [loginFunc, {data, loading}] = useMutation(LOGIN);
   const {t} = useTranslation('common');
   const navigate = useNavigate()
-  
+  const {setLoading, setAlertData} = useLoading();
+
   useEffect(() => {
-    if(data) {
+    if (data) {
       Cookie.set(
-        'fauna-session', 
+        'fauna-session',
         JSON.stringify(data.login.secret),
-        { expires: data.ttl }
-        )
-        localStorage.setItem("userId", data.login.userId)
-        navigate('/')
+        {expires: data.ttl}
+      )
+      localStorage.setItem("userId", data.login.userId)
+      navigate('/')
+    }
+  }, [data]);
+
+  useEffect(() => {
+    setLoading(loading);
+    return () => setLoading(false);
+  }, [loading]);
+
+  const doLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    Cookie.remove('fauna-session')
+    !isNotValidData && loginFunc({
+      variables: {
+        email: formData.email.value,
+        password: formData.password.value
       }
-    }, [data])
-    
-    const doLogin = (e: React.FormEvent) => {
-      e.preventDefault();
-      Cookie.remove('fauna-session')
-      !isNotValidData && loginFunc({
-        variables: {
-          email: formData.email.value,
-          password: formData.password.value
-        }
-      }).catch(e => console.log(e))   
-    }
-    
-    const {
-      formData,
-      isNotValidData,
-      handleBlur,
-      handleChange,
-      handleKeyPress
-    } = useForm({
-      initialState,
-      onSubmit: doLogin,
-      rules: formFieldsRules
+    }).catch(e => {
+      console.log(e);
+      setAlertData({
+        isOpen: true,
+        text: 'Smth went wrong',
+        type: 'error'
+      });
     });
-    
-    if (loading) {
-      return <div>Loading...</div>;
-    }
-    
-    if (error) {
-      return null;
   }
 
+  const {
+    formData,
+    isNotValidData,
+    handleBlur,
+    handleChange,
+    handleKeyPress
+  } = useForm({
+    initialState,
+    onSubmit: doLogin,
+    rules: formFieldsRules
+  });
 
   const formFieldsData = [
     {
