@@ -8,6 +8,9 @@ import {DELETE_ITEM, GET_USER_ITEMS} from "../services/ItemsService";
 import {useLoading} from "../contexts/LoadingContext";
 
 const Items = () => {
+  const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState('');
+  const {setLoading, setAlertData} = useLoading();
   const userId = localStorage.getItem("userId")
   const {data, loading: itemsLoading, networkStatus} = useQuery(GET_USER_ITEMS, {
     variables: {
@@ -55,13 +58,6 @@ const Items = () => {
       });
     }
   })
-  const navigate = useNavigate();
-  const [searchValue, setSearchValue] = useState('');
-  const {setLoading, setAlertData} = useLoading();
-
-  useEffect(() => {
-    console.log(data)
-  }, [data])
 
   useEffect(() => {
     setLoading(networkStatus === NetworkStatus.refetch || itemsLoading || deleteLoading)
