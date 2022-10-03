@@ -12,7 +12,8 @@ const Items = () => {
   const {data, loading: itemsLoading, networkStatus} = useQuery(GetUserItems, {
     variables: {
       id: userId
-    }
+    },
+    fetchPolicy: 'cache-and-network'
   });
   const [items, setItems] = useState<any[]>([]);
 

@@ -1,57 +1,123 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {useQuery, useMutation} from '@apollo/client';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import { DeleteItem, FindItemByID } from "../services/ItemsService";
+import {DeleteItem, FindItemByID} from "../services/ItemsService";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
+import React, {useEffect} from "react";
+import {useLoading} from "../contexts/LoadingContext";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Tooltip from '@mui/material/Tooltip';
 
 export default function Item() {
-  const {t} = useTranslation('common');
-  const { id } = useParams();
-  const {data, loading} = useQuery(FindItemByID, {
+  const {id} = useParams();
+  const navigate = useNavigate();
+  const {data, loading: itemLoading, error: itemsError} = useQuery(FindItemByID, {
     variables: {
       id: id
     }
-  })
-  const [deleteItem] = useMutation(DeleteItem, {
-    variables: {
-      id: id
-    }
-  })
+  });
+  const [deleteItem, {loading: deleteLoading, error: deleteError}] = useMutation(DeleteItem);
+  const {setLoading, setAlertData} = useLoading();
+
+  useEffect(() => {
+    setLoading(itemLoading || deleteLoading);
+    return () => setLoading(false);
+  }, [itemLoading, deleteLoading]);
+
+  useEffect(() => {
+    (itemsError || deleteError) && setAlertData({
+      isOpen: true,
+      text: 'Smth went wrong',
+      type: 'error'
+    });
+  }, [itemsError, deleteError]);
+
+  const handleDeleteItem = () => {
+    deleteItem({
+      variables: {
+        id: id
+      }
+    }).then(() => {
+      setAlertData({
+        isOpen: true,
+        text: 'Item has been deleted',
+        type: 'success'
+      });
+      navigate(-1);
+    })
+  };
+
+  const handleEditItem = () => {
+
+  };
 
   return (
-    <div className="p-4">
-      {loading ? <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </Box> :
-      <BaseContainer className="p-4">
-        <div className="flex justify-between items-center w-full">
-          <BaseAvatar
-            alt={data.findItemByID.name}
-            size={40}
-            variant="square"
-            className="mr-2"
-          />
-          <div className="flex flex-col flex-1">
-            <span>{data.findItemByID.name}</span>
-            <span>{data.findItemByID.type}</span>
+    <BaseContainer className="p-4 mx-auto my-4 max-w-[700px] min-h-[400px] relative">
+      {
+        data && data.findItemByID &&
+        <>
+          <div className="flex justify-between items-center w-full">
+            <BaseAvatar
+              alt={data.findItemByID.name}
+              size={60}
+              variant="square"
+              className="mr-4"
+            />
+            <div className="flex flex-col flex-1 space-y-4">
+              <span>{data.findItemByID.name}</span>
+              <span>{data.findItemByID.type}</span>
+            </div>
           </div>
-        </div>
-        <p className="my-4">{data.findItemByID.description}</p>
-
-        <BaseButton
-          type="submit"
-          variant="contained"
-          size="medium"
-          onClick={() => deleteItem()}
-        >
-          {t('delete')}
-        </BaseButton>
-      </BaseContainer>
+          {
+            data.findItemByID.description &&
+            <p className="my-4">{data.findItemByID.description}</p>
+          }
+          <Controls
+            onDelete={handleDeleteItem}
+            onEdit={handleEditItem}
+          />
+        </>
       }
-    </div>
+    </BaseContainer>
   );
 }
+
+interface ControlsProps {
+  onDelete: () => void;
+  onEdit: () => void;
+}
+
+const Controls = ({
+  onDelete,
+  onEdit
+}: ControlsProps) => {
+  const {t} = useTranslation('common');
+
+  return (
+    <div className="absolute top-5 right-5">
+      <Tooltip title={t('edit')}>
+        <BaseButton
+          buttonType="icon"
+          variant="contained"
+          size="medium"
+          onClick={onEdit}
+        >
+          <EditIcon />
+        </BaseButton>
+      </Tooltip>
+      <Tooltip title={t('delete')}>
+        <BaseButton
+          buttonType="icon"
+          variant="contained"
+          size="medium"
+          onClick={onDelete}
+        >
+          <DeleteIcon />
+        </BaseButton>
+      </Tooltip>
+    </div>
+  );
+};

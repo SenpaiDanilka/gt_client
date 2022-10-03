@@ -99,7 +99,6 @@ export default function ItemNew() {
   const typeOptions = Object.keys(ItemType).filter((v) => isNaN(Number(v)));
 
   return (
-
     <BaseContainer className="p-4 my-4 mx-auto max-w-[700px] h-[400px]">
       <form
         noValidate
@@ -143,7 +142,7 @@ export default function ItemNew() {
           }
         </BaseInput>
         <BaseInput
-          label="description"
+          label={t('description')}
           value={formData.description.value}
           rows={4}
           multiline

@@ -14,33 +14,38 @@ interface Props {
   buttonType?: "loading" | "icon"; /*TODO loading btn isn't ready for the core mui lib */
 }
 
-const BaseButton: React.FC<Props> = ({
-  children,
-  type,
-  className,
-  variant,
-  size,
-  onClick,
-  disabled,
-  buttonType,
-  edge,
-  href
-}) => {
+const BaseButton = React.forwardRef<HTMLButtonElement, Props>((
+  {
+    children,
+    type,
+    className,
+    variant,
+    size,
+    onClick,
+    disabled,
+    buttonType,
+    edge,
+    href,
+    ...props
+  }, ref) => {
   if (buttonType === "icon") {
     return (
       <IconButton
+        ref={ref}
         size={size}
         edge={edge}
         onClick={onClick}
         className={className}
+        {...props}
       >
-        { children }
+        {children}
       </IconButton>
     );
   }
 
   return (
     <Button
+      ref={ref}
       href={href}
       type={type}
       variant={variant}
@@ -48,10 +53,11 @@ const BaseButton: React.FC<Props> = ({
       className={'normal-case ' + className}
       onClick={onClick}
       disabled={disabled}
+      {...props}
     >
-      { children }
+      {children}
     </Button>
   );
-}
+});
 
 export default BaseButton;
