@@ -2,7 +2,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {useQuery, useMutation} from '@apollo/client';
-import {DeleteItem, FindItemByID} from "../services/ItemsService";
+import {DELETE_ITEM, FIND_ITEM_BY_ID} from "../services/ItemsService";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
 import React, {useEffect} from "react";
@@ -14,12 +14,12 @@ import Tooltip from '@mui/material/Tooltip';
 export default function Item() {
   const {id} = useParams();
   const navigate = useNavigate();
-  const {data, loading: itemLoading, error: itemsError} = useQuery(FindItemByID, {
+  const {data, loading: itemLoading, error: itemsError} = useQuery(FIND_ITEM_BY_ID, {
     variables: {
       id: id
     }
   });
-  const [deleteItem, {loading: deleteLoading, error: deleteError}] = useMutation(DeleteItem);
+  const [deleteItem, {loading: deleteLoading, error: deleteError}] = useMutation(DELETE_ITEM);
   const {setLoading, setAlertData} = useLoading();
 
   useEffect(() => {

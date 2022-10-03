@@ -4,27 +4,68 @@ import {useNavigate} from "react-router-dom";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import { NetworkStatus, useMutation, useQuery } from '@apollo/client';
-import { DeleteItem, GetUserItems } from "../services/ItemsService";
+import { DELETE_ITEM, GET_USER_ITEMS } from "../services/ItemsService";
 import {useLoading} from "../contexts/LoadingContext";
 
 const Items = () => {
   const userId = localStorage.getItem("userId")
-  const {data, loading: itemsLoading, networkStatus} = useQuery(GetUserItems, {
+  const {data, loading: itemsLoading, networkStatus} = useQuery(GET_USER_ITEMS, {
     variables: {
       id: userId
     },
     fetchPolicy: 'cache-and-network'
   });
-  const [items, setItems] = useState<any[]>([]);
 
-  useEffect(() => {
-    setItems(data?.findUserByID?.items.data || []);
-  }, [data]);
-
-  const [deleteItem, { loading: deleteLoading }] = useMutation(DeleteItem)
+  const [deleteItem, { loading: deleteLoading }] = useMutation(DELETE_ITEM, {
+    update(cache, { data: {deleteItem} }) {
+      try {
+        const { findUserByID } = cache.readQuery<any>({
+          query: GET_USER_ITEMS,
+          variables: {
+            id: userId
+          }
+        });
+        cache.writeQuery({
+          query: GET_USER_ITEMS,
+          variables: {
+            id: userId
+          },
+          data: {
+            findUserByID: {
+              ...findUserByID,
+              items: {
+                ...findUserByID.items,
+                data: findUserByID.items.data.filter((item: any) => item._id !== deleteItem._id)
+              }
+            }
+          }
+        })
+      } catch (e) {
+        throw e;
+      }
+    },
+    onQueryUpdated: () => {
+      setAlertData({
+        isOpen: true,
+        text: 'Item has been deleted',
+        type: 'success'
+      });
+    },
+    onError: () => {
+      setAlertData({
+        isOpen: true,
+        text: 'Smth went wrong',
+        type: 'error'
+      });
+    }
+  })
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const { setLoading, setAlertData } = useLoading();
+
+  useEffect(() => {
+    console.log(data)
+  }, [data])
 
   useEffect(() => {
     setLoading(networkStatus === NetworkStatus.refetch || itemsLoading || deleteLoading)
@@ -35,26 +76,7 @@ const Items = () => {
       children: 'Delete',
       id: 'delete',
       onClick: () => {
-        deleteItem({
-          variables: {
-            id: id
-          }
-        }).then(() => {
-          setItems((current) =>
-            current.filter((item: any) => item._id !== id)
-          );
-          setAlertData({
-            isOpen: true,
-            text: 'Item has been deleted',
-            type: 'success'
-          });
-        }).catch(() => {
-          setAlertData({
-            isOpen: true,
-            text: 'Smth went wrong',
-            type: 'error'
-          });
-        });
+        deleteItem({variables: {id}})
       }
     },
     {
@@ -65,7 +87,7 @@ const Items = () => {
   ]);
 
   const List = (
-    items.map((item: any) => (
+    data?.findUserByID?.items.data.map((item: any) => (
         <div
           className="flex justify-between items-center"
           key={item._id}
