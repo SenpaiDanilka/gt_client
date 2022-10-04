@@ -22,6 +22,7 @@ export const GET_USER_ITEMS = gql`
     }
   }
 `;
+
 export const FIND_ITEM_BY_ID = gql`
   query FindItemByID($id: ID!) {
     findItemByID(id: $id) {

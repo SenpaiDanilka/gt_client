@@ -49,6 +49,7 @@ const Spaces = () => {
       >
         <div className="flex justify-between p-4 w-full">
           <span>{`${space.name}`}</span>
+          {space.description && <span>{`${space.description}`}</span>}
           {/* <span className="font-bold">{ `IC: ${value * 2} / UC: ${value * 3}` }</span> */}
         </div>
         <BaseMenu options={menuOptions(String(space._id))}/>
@@ -60,9 +61,6 @@ const Spaces = () => {
 
   return (
     <div className="p-4">
-      <p className="text-3xl font-bold">
-        {t('spaces')}
-      </p>
       <EditableListWithSearch
         searchValue={searchValue}
         setSearchValue={setSearchValue}

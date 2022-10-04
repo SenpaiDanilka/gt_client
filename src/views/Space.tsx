@@ -10,6 +10,8 @@ import BaseMenu from "../components/BaseComponents/BaseMenu";
 import PopperWithAutocomplete, {OptionsDataType} from "../components/PopperWithAutocomplete";
 import AddButton from "../components/AddButton";
 import {useLoading} from "../contexts/LoadingContext";
+import {DELETE_SPACE, FIND_SPACE_BY_ID} from "../services/SpacesService";
+import {useQuery, useMutation} from '@apollo/client';
 
 const mockedSpaceItems = [
   {
@@ -49,7 +51,14 @@ const mockedSpaceUsers = [
 
 export default function Space() {
   const {id} = useParams();
+  const navigate = useNavigate();
   const {t} = useTranslation('common');
+  const {data, loading: spaceLoading, error: getSpaceError} = useQuery(FIND_SPACE_BY_ID, {
+    variables: {
+      id: id
+    }
+  });
+  const [deleteSpace, {loading: deleteLoading, error: deleteSpaceError}] = useMutation(DELETE_SPACE);
   const [space, setSpace] = useState(new SpaceClass());
   const [tab, setTab] = useState(0);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -58,9 +67,36 @@ export default function Space() {
   const { setLoading, setAlertData } = useLoading();
 
   useEffect(() => {
-    SpacesService.getItem(id!)
-      .then((res) => setSpace(res));
-  }, [id]);
+    setLoading(spaceLoading || deleteLoading);
+    return () => setLoading(false);
+  }, [spaceLoading, deleteLoading]);
+
+  useEffect(() => {
+    (getSpaceError || deleteSpaceError) && setAlertData({
+      isOpen: true,
+      text: 'Smth went wrong',
+      type: 'error'
+    });
+  }, [getSpaceError, deleteSpaceError]);
+
+  const handleDeleteSpace = () => {
+    deleteSpace({
+      variables: {
+        id: id
+      }
+    }).then(() => {
+      setAlertData({
+        isOpen: true,
+        text: 'Item has been deleted',
+        type: 'success'
+      });
+      navigate(-1);
+    })
+  };
+
+  const handleSpaceEdit = () => {
+
+  };
 
   const handleSetTab = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
@@ -115,54 +151,59 @@ export default function Space() {
   return (
     <div className="p-4">
       <BaseContainer className="p-4">
-        <div className="flex flex-col space-y-4">
-          <span>{space.name}</span>
-          <span>{space.description}</span>
-        </div>
-        <div className="flex justify-center items-center">
-          {
-            tab === 0 && (
-              <>
-                <AddButton
-                  onClick={handleAddClick}
-                  className="mr-2 w-7 h-7"
-                />
-                <PopperWithAutocomplete
-                  options={memoizedAvailableItems}
-                  anchorEl={anchorEl}
-                  handleClose={handleClose}
-                  handleSelect={(val) => handleSelect(val, 'items')}
-                />
-              </>
-            )
-          }
-          <Tabs
-            value={tab}
-            onChange={handleSetTab}
-            centered
-            className="max-w-[300px]"
-          >
-            <Tab label={t('items')} className="normal-case text-xl"/>
-            <Tab label={t('users')} className="normal-case text-xl"/>
-          </Tabs>
-          {
-            tab === 1 && (
-              <>
-                <AddButton
-                  onClick={handleAddClick}
-                  className="ml-2 w-7 h-7"
-                />
-                <PopperWithAutocomplete
-                  options={memoizedAvailableUsers}
-                  anchorEl={anchorEl}
-                  handleClose={handleClose}
-                  handleSelect={(val) => handleSelect(val, 'users')}
-                />
-              </>
-            )
-          }
-        </div>
-        { TabPanels(tab, spaceItems, spaceUsers, deleteFromSpace) }
+        {
+          data && data.findSpaceByID &&
+          <>
+            <div className="flex flex-col space-y-4">
+              <span>{data.findSpaceByID.name}</span>
+              <span>{data.findSpaceByID.description}</span>
+            </div>
+            <div className="flex justify-center items-center">
+              {
+                tab === 0 && (
+                  <>
+                    <AddButton
+                      onClick={handleAddClick}
+                      className="mr-2 w-7 h-7"
+                    />
+                    <PopperWithAutocomplete
+                      options={memoizedAvailableItems}
+                      anchorEl={anchorEl}
+                      handleClose={handleClose}
+                      handleSelect={(val) => handleSelect(val, 'items')}
+                    />
+                  </>
+                )
+              }
+              <Tabs
+                value={tab}
+                onChange={handleSetTab}
+                centered
+                className="max-w-[300px]"
+              >
+                <Tab label={t('items')} className="normal-case text-xl"/>
+                <Tab label={t('users')} className="normal-case text-xl"/>
+              </Tabs>
+              {
+                tab === 1 && (
+                  <>
+                    <AddButton
+                      onClick={handleAddClick}
+                      className="ml-2 w-7 h-7"
+                    />
+                    <PopperWithAutocomplete
+                      options={memoizedAvailableUsers}
+                      anchorEl={anchorEl}
+                      handleClose={handleClose}
+                      handleSelect={(val) => handleSelect(val, 'users')}
+                    />
+                  </>
+                )
+              }
+            </div>
+            { TabPanels(tab, spaceItems, spaceUsers, deleteFromSpace, navigate) }
+          </>
+        }
       </BaseContainer>
     </div>
   );
@@ -172,9 +213,9 @@ const TabPanels = (
   tab: number,
   spaceItems: OptionsDataType[],
   spaceUsers: OptionsDataType[],
-  handleDelete: (id: number) => void
+  handleDelete: (id: number) => void,
+  navigate: Function
 ): ReactNode => {
-  const navigate = useNavigate();
 
   const menuOptions = (id: number) => ([
     {

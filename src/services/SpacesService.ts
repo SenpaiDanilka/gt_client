@@ -33,6 +33,16 @@ export const CREATE_SPACE = gql`
   }
 `;
 
+export const FIND_SPACE_BY_ID = gql`
+  query FindSpaceByID($id: ID!) {
+    findSpaceByID(id: $id) {
+      _id
+      name
+      description
+    }
+  }
+`;
+
 const SpacesService = {
   getItem(id: string) {
     return new Promise<Space>((resolve, reject) => {

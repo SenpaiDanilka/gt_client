@@ -5,7 +5,7 @@ import {useQuery, useMutation} from '@apollo/client';
 import {DELETE_ITEM, FIND_ITEM_BY_ID} from "../services/ItemsService";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
-import React, {useEffect} from "react";
+import {useEffect} from "react";
 import {useLoading} from "../contexts/LoadingContext";
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
