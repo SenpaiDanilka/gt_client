@@ -3,16 +3,30 @@ import React, {useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
+import { DeleteSpace, GetUserSpaces } from "../services/SpacesService";
+import {useMutation, useQuery} from '@apollo/client';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 const Spaces = () => {
+  const userId = localStorage.getItem("userId")
   const {t} = useTranslation('common');
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
+  const [deleteSpace] = useMutation(DeleteSpace)
   const menuOptions = (id: string) => ([
     {
       children: 'Delete',
       id: 'delete',
-      onClick: () => {console.log(`delete space ${id}`)}
+      onClick: () => {
+        deleteSpace({
+          variables: {
+            id: id
+          }
+        }).then(res => {
+          console.log(`delete space ${res}`)
+        })
+      }
     },
     {
       children: 'View space',
@@ -20,20 +34,28 @@ const Spaces = () => {
       onClick: () => { navigate(`/spaces/${id}`) }
     }
   ]);
+  const {data} = useQuery(GetUserSpaces, {
+    variables: {
+      id: userId
+    }
+  })
+  const spaces = data?.findUserByID?.spaces.data
 
   const List = (
-    [1,2,3].map((value) => (
+    spaces ? spaces.map((space: any) => (
       <div
         className="flex justify-between items-center"
-        key={value}
+        key={space._id}
       >
         <div className="flex justify-between p-4 w-full">
-          <span>{`Space name ${value}`}</span>
-          <span className="font-bold">{ `IC: ${value * 2} / UC: ${value * 3}` }</span>
+          <span>{`${space.name}`}</span>
+          {/* <span className="font-bold">{ `IC: ${value * 2} / UC: ${value * 3}` }</span> */}
         </div>
-        <BaseMenu options={menuOptions(String(value))}/>
+        <BaseMenu options={menuOptions(String(space._id))}/>
       </div>
-    ))
+    )) : <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+    <CircularProgress />
+  </Box>
   );
 
   return (

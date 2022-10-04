@@ -9,6 +9,7 @@ type User {
 
 type Space {
   name: String!
+  description: String
   owner: User!
 }
 

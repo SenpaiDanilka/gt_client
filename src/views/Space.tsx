@@ -7,8 +7,6 @@ import {useTranslation} from "react-i18next";
 import SpacesService from "../services/SpacesService";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
-import BaseButton from "../components/BaseComponents/BaseButton";
-import AddIcon from "@mui/icons-material/Add";
 import PopperWithAutocomplete from "../components/PopperWithAutocomplete";
 import AddButton from "../components/AddButton";
 
