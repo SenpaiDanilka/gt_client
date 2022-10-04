@@ -1,8 +1,8 @@
 import UserProfile from "../components/UserProfile";
 import {gql, useQuery} from '@apollo/client';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 import { NetworkStatus } from '@apollo/client';
+import {useLoading} from "../contexts/LoadingContext";
+import {useEffect} from "react";
 
 const GetUserByID = gql`
   query GetUserById($id: String!) {
@@ -21,21 +21,20 @@ const Home = () => {
     variables: {
       id: userId
     }
-  })
+  });
+  const { setLoading } = useLoading();
 
-  if (networkStatus === NetworkStatus.refetch || loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </Box>
-    )
-  } else {
-    return (
-      <div className="p-4">
-        <UserProfile user={data?.getUserById}/>
-      </div>
-    );
-  }
+  useEffect(() => {
+    setLoading(networkStatus === NetworkStatus.refetch || loading)
+  }, [networkStatus, loading]);
+
+  return (
+    <div className="p-4">
+      {
+        data && <UserProfile user={data?.getUserById}/>
+      }
+    </div>
+  );
 }
 
 export default Home

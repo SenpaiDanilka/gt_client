@@ -1,6 +1,6 @@
 import {gql} from '@apollo/client';
 
-export const DeleteItem = gql`
+export const DELETE_ITEM = gql`
   mutation DeleteItem($id: ID!) {
     deleteItem(id: $id) {
       _id
@@ -8,7 +8,7 @@ export const DeleteItem = gql`
   }
 `;
 
-export const GetUserItems = gql`
+export const GET_USER_ITEMS = gql`
   query FindUserByID($id: ID!) {
     findUserByID(id: $id) {
       items {
@@ -22,9 +22,20 @@ export const GetUserItems = gql`
     }
   }
 `;
-export const FindItemByID = gql`
+export const FIND_ITEM_BY_ID = gql`
   query FindItemByID($id: ID!) {
     findItemByID(id: $id) {
+      _id
+      name
+      description
+      type
+    }
+  }
+`;
+
+export const CREATE_ITEM = gql`
+  mutation CreateItem($name: String!, $description: String!, $type: ItemType!, $owner: String! ) {
+    createItem(name: $name, description: $description, type: $type, owner: $owner) {
       _id
       name
       description

@@ -1,23 +1,17 @@
-import React, {useEffect} from "react";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
-import {ItemType} from "../models/ItemsModels";
 import BaseInput from "../components/BaseComponents/BaseInput";
+import React, { useEffect } from "react";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
-import {useMutation} from "@apollo/client";
-import {useLoading} from "../contexts/LoadingContext";
-import {MenuItem} from "@mui/material";
-import useForm from "../hooks/useForm";
 import {isRequired, minLength} from "../utils/validate";
+import {useLoading} from "../contexts/LoadingContext";
+import useForm from "../hooks/useForm";
+import {useMutation} from "@apollo/client";
 import {useNavigate} from "react-router-dom";
-import {CREATE_ITEM} from '../services/ItemsService'
+import {CREATE_SPACE} from '../services/SpacesService'
 
 const initialState = {
   name: {
-    value: '',
-    errors: []
-  },
-  type: {
     value: '',
     errors: []
   },
@@ -31,16 +25,13 @@ const formFieldsRules = {
   name: [
     (v: string) => isRequired(v),
     (v: string) => minLength(v, 3)
-  ],
-  type: [
-    (v: string) => isRequired(v)
   ]
 };
 
-export default function ItemNew() {
-  const navigate = useNavigate();
-  const [createItemFunc, {loading}] = useMutation(CREATE_ITEM);
+const SpaceNew = () => {
+  const [createSpaceFunc, {loading}] = useMutation(CREATE_SPACE);
   const {t} = useTranslation('common');
+  const navigate = useNavigate();
   const {setLoading, setAlertData} = useLoading();
   const {
     handleKeyPress,
@@ -62,21 +53,20 @@ export default function ItemNew() {
 
   function handleSave(e: React.FormEvent) {
     e.preventDefault();
-    !validateAll() && createItemFunc({
+    !validateAll() && createSpaceFunc({
       variables: {
         name: formData.name.value,
         description: formData.description.value,
-        type: formData.type.value,
         owner: localStorage.getItem("userId")
       }
     }).then((res) => {
       setAlertData({
         isOpen: true,
-        text: 'Item has been created',
+        text: 'Space has been created',
         type: 'success'
       });
-      const itemId = res.data.createItem._id;
-      navigate(`/items/${itemId}`);
+      const spaceId = res.data.createSpace._id;
+      navigate(`/spaces/${spaceId}`);
     }).catch(() => {
       setAlertData({
         isOpen: true,
@@ -86,24 +76,14 @@ export default function ItemNew() {
     });
   }
 
-  const typeOptions = Object.keys(ItemType).filter((v) => isNaN(Number(v)));
-
   return (
-    <BaseContainer className="p-4 my-4 mx-auto max-w-[700px] h-[400px]">
+    <BaseContainer className="p-4 my-4 mx-4">
       <form
         noValidate
         className="flex flex-col items-center space-y-4 p-4"
         onKeyDown={handleKeyPress}
         onSubmit={handleSave}
       >
-{/*        <BaseInput
-          type="file"
-          id="photo"
-          errors={formData.name.errors}
-          value={formData.name.value}
-          onChange={(val) => handleChange(val, "name")}
-          onBlur={(e) => handleBlur(e, formFieldsRules.name)}
-        />*/}
         <BaseInput
           id="name"
           errors={formData.name.errors}
@@ -113,26 +93,7 @@ export default function ItemNew() {
           onBlur={(e) => handleBlur(e, formFieldsRules.name)}
         />
         <BaseInput
-          id="type"
-          isSelect
-          errors={formData.type.errors}
-          label={t('type')}
-          value={formData.type.value}
-          onChange={(val) => handleChange(val, "type")}
-        >
-          {
-            typeOptions.map(option => (
-              <MenuItem
-                value={option}
-                key={option}
-              >
-                {option}
-              </MenuItem>
-            ))
-          }
-        </BaseInput>
-        <BaseInput
-          label={t('description')}
+          label="description"
           value={formData.description.value}
           rows={4}
           multiline
@@ -150,3 +111,5 @@ export default function ItemNew() {
     </BaseContainer>
   );
 }
+
+export default SpaceNew;

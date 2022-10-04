@@ -1,8 +1,6 @@
 import React, {ReactNode} from "react";
 import BaseInput from "./BaseComponents/BaseInput";
 import SearchIcon from "@mui/icons-material/Search";
-import BaseButton from "./BaseComponents/BaseButton";
-import AddIcon from "@mui/icons-material/Add";
 import BaseContainer from "./BaseComponents/BaseContainer";
 import AddButton from "./AddButton";
 
@@ -21,7 +19,6 @@ const EditableListWithSearch: React.FC<Props> = ({
 }) => {
   const handleAddClick = () => {
     onAddClick();
-    console.log('add item clicked')
   };
 
   return (

@@ -1,4 +1,10 @@
-export type ItemType = 'VEHICLE' | 'REAL_ESTATE' | 'ELECTRONICS' | 'OTHER'
+export enum ItemType {
+  VEHICLE,
+  REAL_ESTATE,
+  ELECTRONICS,
+  OTHER,
+}
+
 export class Item {
   name
   photo

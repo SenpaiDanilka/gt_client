@@ -2,6 +2,8 @@
   "password": "Пароль",
   "email": "Email",
   "name": "Имя",
+  "type": "Тип",
+  "description": "Описание",
   "haveAccount": "Уже есть аккаунт?",
   "haveNoAccount": "Ещё нет аккаунта?",
   "signIn": "Войти",
@@ -13,5 +15,6 @@
   "contacts": "Контакты",
   "settings": "Настройки",
   "save": "Сохранить",
-  "delete": "Удалить"
+  "delete": "Удалить",
+  "edit": "Редактировать"
 }

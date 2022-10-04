@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useNavigate} from "react-router-dom";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
-import { DeleteSpace, GetUserSpaces } from "../services/SpacesService";
+import { DELETE_SPACE, GET_USER_SPACES } from "../services/SpacesService";
 import {useMutation, useQuery} from '@apollo/client';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -13,7 +13,7 @@ const Spaces = () => {
   const {t} = useTranslation('common');
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
-  const [deleteSpace] = useMutation(DeleteSpace)
+  const [deleteSpace] = useMutation(DELETE_SPACE)
   const menuOptions = (id: string) => ([
     {
       children: 'Delete',
@@ -34,7 +34,7 @@ const Spaces = () => {
       onClick: () => { navigate(`/spaces/${id}`) }
     }
   ]);
-  const {data} = useQuery(GetUserSpaces, {
+  const {data} = useQuery(GET_USER_SPACES, {
     variables: {
       id: userId
     }
@@ -66,7 +66,7 @@ const Spaces = () => {
       <EditableListWithSearch
         searchValue={searchValue}
         setSearchValue={setSearchValue}
-        onAddClick={() => {}}
+        onAddClick={() => navigate('/spaces/new')}
         list={List}
       />
     </div>

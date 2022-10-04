@@ -65,12 +65,13 @@ type Mutation {
 
   createSpace(
     name: String!,
+    description: String,
     owner: String!
   ): Space @resolver(name: "CreateSpace")
 
   createItem(
     name: String!,
-    description: String!,
+    description: String,
     type: ItemType!,
     owner: String!
   ): Item @resolver(name: "CreateItem")
