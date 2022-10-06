@@ -11,6 +11,7 @@ const GetUserByID = gql`
       email
       spaces_count
       items_count
+      contacts_count
     }
   }
 `;

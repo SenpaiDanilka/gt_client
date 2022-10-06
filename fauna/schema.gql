@@ -5,6 +5,12 @@ type User {
   phone: String
   spaces: [Space]! @relation
   items: [Item]! @relation
+  contacts: [Contact]! @relation(name: "user_contacts")
+}
+
+type Contact {
+  owner: User! @relation(name: "user_contacts")
+  user: User!
 }
 
 type Space {
@@ -82,6 +88,7 @@ type ShortUser @embedded {
   email: String!
   spaces_count: Int!
   items_count: Int!
+  contacts_count: Int!
 }
 
 type Query {
