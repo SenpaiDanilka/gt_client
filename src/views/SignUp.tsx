@@ -19,18 +19,9 @@ const SIGNUP = gql`
 `;
 
 const initialState = {
-  name: {
-    value: '',
-    errors: []
-  },
-  email: {
-    value: '',
-    errors: []
-  },
-  password: {
-    value: '',
-    errors: []
-  }
+  name: '',
+  email: '',
+  password: ''
 }
 
 const formFieldsRules = {

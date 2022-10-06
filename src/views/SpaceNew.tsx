@@ -1,59 +1,24 @@
 import BaseContainer from "../components/BaseComponents/BaseContainer";
-import BaseInput from "../components/BaseComponents/BaseInput";
 import React, { useEffect } from "react";
-import BaseButton from "../components/BaseComponents/BaseButton";
-import {useTranslation} from "react-i18next";
-import {isRequired, minLength} from "../utils/validate";
 import {useLoading} from "../contexts/LoadingContext";
-import useForm from "../hooks/useForm";
 import {useMutation} from "@apollo/client";
 import {useNavigate} from "react-router-dom";
 import {CREATE_SPACE} from '../services/SpacesService'
-
-const initialState = {
-  name: {
-    value: '',
-    errors: []
-  },
-  description: {
-    value: '',
-    errors: []
-  }
-};
-
-const formFieldsRules = {
-  name: [
-    (v: string) => isRequired(v),
-    (v: string) => minLength(v, 3)
-  ]
-};
+import EditSpaceForm from "../components/spaces/EditSpaceForm";
+import {FormDataType} from "../models/CommonModels";
 
 const SpaceNew = () => {
   const [createSpaceFunc, {loading}] = useMutation(CREATE_SPACE);
-  const {t} = useTranslation('common');
   const navigate = useNavigate();
   const {setLoading, setAlertData} = useLoading();
-  const {
-    handleKeyPress,
-    formData,
-    isNotValidData,
-    handleBlur,
-    handleChange,
-    validateAll
-  } = useForm({
-    initialState,
-    onSubmit: handleSave,
-    rules: formFieldsRules
-  });
 
   useEffect(() => {
     setLoading(loading);
     return () => setLoading(false);
   }, [loading]);
 
-  function handleSave(e: React.FormEvent) {
-    e.preventDefault();
-    !validateAll() && createSpaceFunc({
+  function handleSave(formData: FormDataType) {
+    createSpaceFunc({
       variables: {
         name: formData.name.value,
         description: formData.description.value,
@@ -78,36 +43,9 @@ const SpaceNew = () => {
 
   return (
     <BaseContainer className="p-4 my-4 mx-4">
-      <form
-        noValidate
-        className="flex flex-col items-center space-y-4 p-4"
-        onKeyDown={handleKeyPress}
+      <EditSpaceForm
         onSubmit={handleSave}
-      >
-        <BaseInput
-          id="name"
-          errors={formData.name.errors}
-          label={t('name')}
-          value={formData.name.value}
-          onChange={(val) => handleChange(val, "name")}
-          onBlur={(e) => handleBlur(e, formFieldsRules.name)}
-        />
-        <BaseInput
-          label="description"
-          value={formData.description.value}
-          rows={4}
-          multiline
-          onChange={(val) => handleChange(val, "description")}
-          className="my-4"
-        />
-        <BaseButton
-          type="submit"
-          variant="contained"
-          disabled={isNotValidData}
-        >
-          {t('save')}
-        </BaseButton>
-      </form>
+      />
     </BaseContainer>
   );
 }

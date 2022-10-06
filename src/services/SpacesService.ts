@@ -1,4 +1,3 @@
-import {Space} from "../models/SpacesModels";
 import {gql} from '@apollo/client';
 
 export const GET_USER_SPACES = gql`
@@ -43,16 +42,12 @@ export const FIND_SPACE_BY_ID = gql`
   }
 `;
 
-const SpacesService = {
-  getItem(id: string) {
-    return new Promise<Space>((resolve, reject) => {
-      resolve({
-        name: 'Service Item',
-        description: 'Some very important description',
-        id: id
-      })
-    });
+export const UPDATE_SPACE = gql`
+  mutation UpdateSpace($id: ID!, $data: SpaceInput!) {
+    updateSpace(id: $id, data: $data) {
+      _id
+      name
+      description
+    }
   }
-}
-
-export default SpacesService;
+`;

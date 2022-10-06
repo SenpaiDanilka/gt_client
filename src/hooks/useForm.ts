@@ -3,13 +3,18 @@ import React, {useState} from "react";
 import {validator} from "../utils/validate";
 
 interface Props {
-  initialState: FormDataType;
+  initialState: {[K: string]: string};
   onSubmit: (e: any) => void;
   rules?: {[K: string]: ValidationFunction[]};
 }
 
+const mapFormFields = (obj: {[K: string]: string}): FormDataType =>
+  Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [key, { value, errors: [] }])
+  );
+
 const useForm = ({initialState, onSubmit, rules}: Props) => {
-  const [formData, setFormData] = useState(initialState);
+  const [formData, setFormData] = useState(mapFormFields(initialState));
   const isNotValidData = Object.values(formData).some(field => !!field.errors.length);
 
   const validateAll = () => {
@@ -29,7 +34,6 @@ const useForm = ({initialState, onSubmit, rules}: Props) => {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      e.preventDefault();
       !validateAll() && onSubmit(e);
     }
   };

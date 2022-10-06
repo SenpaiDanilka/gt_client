@@ -35,11 +35,22 @@ export const FIND_ITEM_BY_ID = gql`
 `;
 
 export const CREATE_ITEM = gql`
-  mutation CreateItem($name: String!, $description: String!, $type: ItemType!, $owner: String! ) {
+  mutation CreateItem($name: String!, $description: String!, $type: ItemType!, $owner: String!) {
     createItem(name: $name, description: $description, type: $type, owner: $owner) {
       _id
       name
       description
+      type
+    }
+  }
+`;
+
+export const UPDATE_ITEM = gql`
+  mutation UpdateItem($id: ID!, $data: ItemInput!) {
+    updateItem(id: $id, data: $data) {
+      _id
+      name
+      description,
       type
     }
   }

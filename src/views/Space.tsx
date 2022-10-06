@@ -1,17 +1,18 @@
 import React, {ReactNode, useEffect, useMemo, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
-import {Space as SpaceClass} from "../models/SpacesModels";
 import {Tab, Tabs} from "@mui/material";
 import {useTranslation} from "react-i18next";
-import SpacesService from "../services/SpacesService";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
 import PopperWithAutocomplete, {OptionsDataType} from "../components/PopperWithAutocomplete";
 import AddButton from "../components/AddButton";
 import {useLoading} from "../contexts/LoadingContext";
-import {DELETE_SPACE, FIND_SPACE_BY_ID} from "../services/SpacesService";
+import {DELETE_SPACE, FIND_SPACE_BY_ID, UPDATE_SPACE} from "../services/SpacesService";
 import {useQuery, useMutation} from '@apollo/client';
+import EntityActions from "../components/EntityActions";
+import EditSpaceForm from "../components/spaces/EditSpaceForm";
+import {FormDataType} from "../models/CommonModels";
 
 const mockedSpaceItems = [
   {
@@ -53,31 +54,46 @@ export default function Space() {
   const {id} = useParams();
   const navigate = useNavigate();
   const {t} = useTranslation('common');
+  const [tab, setTab] = useState(0);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+  const [spaceItems, setSpaceItems] = useState<OptionsDataType[]>(mockedSpaceItems);
+  const [spaceUsers, setSpaceUsers] = useState<OptionsDataType[]>(mockedSpaceUsers);
+  const {setLoading, setAlertData} = useLoading();
+  const [isEdit, setIsEdit] = useState(false);
+
   const {data, loading: spaceLoading, error: getSpaceError} = useQuery(FIND_SPACE_BY_ID, {
     variables: {
       id: id
     }
   });
   const [deleteSpace, {loading: deleteLoading, error: deleteSpaceError}] = useMutation(DELETE_SPACE);
-  const [space, setSpace] = useState(new SpaceClass());
-  const [tab, setTab] = useState(0);
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  const [spaceItems, setSpaceItems] = useState<OptionsDataType[]>(mockedSpaceItems);
-  const [spaceUsers, setSpaceUsers] = useState<OptionsDataType[]>(mockedSpaceUsers);
-  const { setLoading, setAlertData } = useLoading();
+  const [updateSpace, {loading: editLoading, error: editError}] = useMutation(UPDATE_SPACE, {
+    onQueryUpdated: () => {
+      setAlertData({
+        isOpen: true,
+        text: 'Space has been updated',
+        type: 'success'
+      });
+      toggleEditSpace();
+    }
+  });
 
   useEffect(() => {
-    setLoading(spaceLoading || deleteLoading);
+    setLoading(spaceLoading || deleteLoading || editLoading);
     return () => setLoading(false);
-  }, [spaceLoading, deleteLoading]);
+  }, [spaceLoading, deleteLoading, editLoading]);
 
   useEffect(() => {
-    (getSpaceError || deleteSpaceError) && setAlertData({
+    (getSpaceError || deleteSpaceError || editError) && setAlertData({
       isOpen: true,
       text: 'Smth went wrong',
       type: 'error'
     });
-  }, [getSpaceError, deleteSpaceError]);
+  }, [getSpaceError, deleteSpaceError, editError]);
+
+  const toggleEditSpace = () => {
+    setIsEdit(!isEdit);
+  };
 
   const handleDeleteSpace = () => {
     deleteSpace({
@@ -90,12 +106,20 @@ export default function Space() {
         text: 'Item has been deleted',
         type: 'success'
       });
-      navigate(-1);
+      navigate('/spaces');
     })
   };
 
-  const handleSpaceEdit = () => {
-
+  const handleEditSpace = async (formData: FormDataType) => {
+    await updateSpace({
+      variables: {
+        id: id,
+        data: {
+          name: formData.name.value,
+          description: formData.description.value
+        }
+      }
+    });
   };
 
   const handleSetTab = (event: React.SyntheticEvent, newValue: number) => {
@@ -138,9 +162,9 @@ export default function Space() {
   const deleteFromSpace = (id: number) => {
     tab === 0
       ? setSpaceItems((current) =>
-          current.filter((item) => item.id !== id))
+        current.filter((item) => item.id !== id))
       : setSpaceUsers((current) =>
-          current.filter((item) => item.id !== id))
+        current.filter((item) => item.id !== id))
     setAlertData({
       isOpen: true,
       text: 'Has been deleted',
@@ -150,59 +174,80 @@ export default function Space() {
 
   return (
     <div className="p-4">
-      <BaseContainer className="p-4">
+      <BaseContainer className="p-4 relative">
         {
-          data && data.findSpaceByID &&
-          <>
-            <div className="flex flex-col space-y-4">
-              <span>{data.findSpaceByID.name}</span>
-              <span>{data.findSpaceByID.description}</span>
-            </div>
-            <div className="flex justify-center items-center">
-              {
-                tab === 0 && (
+          isEdit
+            ? (
+              <EditSpaceForm
+                onSubmit={handleEditSpace}
+                onCancel={toggleEditSpace}
+                editData={{
+                  name: data.findSpaceByID.name,
+                  description: data.findSpaceByID.description
+                }}
+              />
+            ) : (
+              <>
+                {
+                  data && data.findSpaceByID &&
                   <>
-                    <AddButton
-                      onClick={handleAddClick}
-                      className="mr-2 w-7 h-7"
-                    />
-                    <PopperWithAutocomplete
-                      options={memoizedAvailableItems}
-                      anchorEl={anchorEl}
-                      handleClose={handleClose}
-                      handleSelect={(val) => handleSelect(val, 'items')}
-                    />
+                    <div className="flex flex-col space-y-4 mb-2">
+                      <span>{data.findSpaceByID.name}</span>
+                      <span>{data.findSpaceByID.description}</span>
+                    </div>
+                    <div className="flex justify-center items-center">
+                      {
+                        tab === 0 && (
+                          <>
+                            <AddButton
+                              onClick={handleAddClick}
+                              className="mr-2 w-7 h-7"
+                            />
+                            <PopperWithAutocomplete
+                              options={memoizedAvailableItems}
+                              anchorEl={anchorEl}
+                              handleClose={handleClose}
+                              handleSelect={(val) => handleSelect(val, 'items')}
+                            />
+                          </>
+                        )
+                      }
+                      <Tabs
+                        value={tab}
+                        onChange={handleSetTab}
+                        centered
+                        className="max-w-[300px]"
+                      >
+                        <Tab label={t('items')} className="normal-case text-xl"/>
+                        <Tab label={t('users')} className="normal-case text-xl"/>
+                      </Tabs>
+                      {
+                        tab === 1 && (
+                          <>
+                            <AddButton
+                              onClick={handleAddClick}
+                              className="ml-2 w-7 h-7"
+                            />
+                            <PopperWithAutocomplete
+                              options={memoizedAvailableUsers}
+                              anchorEl={anchorEl}
+                              handleClose={handleClose}
+                              handleSelect={(val) => handleSelect(val, 'users')}
+                            />
+                          </>
+                        )
+                      }
+                    </div>
+                    {TabPanels(tab, spaceItems, spaceUsers, deleteFromSpace, navigate)}
                   </>
-                )
-              }
-              <Tabs
-                value={tab}
-                onChange={handleSetTab}
-                centered
-                className="max-w-[300px]"
-              >
-                <Tab label={t('items')} className="normal-case text-xl"/>
-                <Tab label={t('users')} className="normal-case text-xl"/>
-              </Tabs>
-              {
-                tab === 1 && (
-                  <>
-                    <AddButton
-                      onClick={handleAddClick}
-                      className="ml-2 w-7 h-7"
-                    />
-                    <PopperWithAutocomplete
-                      options={memoizedAvailableUsers}
-                      anchorEl={anchorEl}
-                      handleClose={handleClose}
-                      handleSelect={(val) => handleSelect(val, 'users')}
-                    />
-                  </>
-                )
-              }
-            </div>
-            { TabPanels(tab, spaceItems, spaceUsers, deleteFromSpace, navigate) }
-          </>
+                }
+                <EntityActions
+                  onDelete={handleDeleteSpace}
+                  onEdit={toggleEditSpace}
+                  className="absolute top-5 right-5"
+                />
+              </>
+            )
         }
       </BaseContainer>
     </div>
