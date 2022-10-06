@@ -81,6 +81,11 @@ type Mutation {
     type: ItemType!,
     owner: String!
   ): Item @resolver(name: "CreateItem")
+
+  createContact(
+    owner: String!
+    user: String!
+  ): Contact @resolver(name: "CreateContact")
 }
 
 type ShortUser @embedded {

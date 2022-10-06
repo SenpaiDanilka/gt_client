@@ -2,8 +2,10 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import useDebounce from '../hooks/useDebounce';
 import { useEffect, useState } from 'react';
-import {FIND_USER_BY_EMAIL} from '../services/UsersService'
-import { useLazyQuery } from '@apollo/client';
+import {FIND_USER_BY_EMAIL, CREATE_CONTACT} from '../services/UsersService'
+import { useLazyQuery, useMutation } from '@apollo/client';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Box } from '@mui/system';
 
 const AddContactModal = () => {
   const [searchValue, setSearchValue] = useState('');
@@ -34,36 +36,49 @@ const AddContactModal = () => {
         setResults([]);
       }
     },
-    // Это массив зависимостей useEffect
-    // Хук useEffect сработает только если отложенное значение изменится ...
-    // ... и спасибо нашему хуку, что оно изменится только тогда ...
-    // когда значение searchTerm не менялось на протяжении 500ms.
     [debouncedSearchTerm]
   );
+  const addContact = (option: any) => {
+    createContact({
+      variables: {
+        owner: localStorage.getItem("userId"),
+        user: option._id
+      }
+    })
+  }
 
   const [findUserByEmail] = useLazyQuery(FIND_USER_BY_EMAIL)
 
+  const [createContact] = useMutation(CREATE_CONTACT)
+
   return (
-    <>
-      <div>Input ur contact`s email</div>
+    <Box sx={{width: '600px'}}>
       <Autocomplete
+        id="free-solo-demo"
+        filterOptions={(x) => x}
         freeSolo
-        id="free-solo-2-demo"
-        disableClearable
-        options={results.map((option) => option.name)}
+        loading={isSearching}
+        options={results}
+        getOptionLabel={(option) => option.name}
         onInputChange={((e: any) => setSearchValue(e.target.value))}
-        renderInput={(params) => (
+        onChange={(e: any, option: string) => addContact(option)}
+        renderInput={(params) =>
           <TextField
             {...params}
             label="User email"
             InputProps={{
               ...params.InputProps,
-              type: 'search',
+              endAdornment: (
+                <>
+                  {isSearching ? <CircularProgress color="inherit" size={20} /> : null}
+                  {params.InputProps.endAdornment}
+                </>
+              ),
             }}
           />
-        )}
+        }
       />
-    </>
+    </Box>
   )
 }
 

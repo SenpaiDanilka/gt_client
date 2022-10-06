@@ -69,9 +69,7 @@ const Items = () => {
     {
       children: 'Delete',
       id: 'delete',
-      onClick: () => {
-        deleteItem({variables: {id}})
-      }
+      onClick: () => deleteItem({variables: {id}})
     },
     {
       children: 'View item',
