@@ -5,10 +5,17 @@ type User {
   phone: String
   spaces: [Space]! @relation
   items: [Item]! @relation
+  contacts: [Contact]! @relation(name: "user_contacts")
+}
+
+type Contact {
+  owner: User! @relation(name: "user_contacts")
+  user: User!
 }
 
 type Space {
   name: String!
+  description: String
   owner: User!
 }
 
@@ -64,15 +71,21 @@ type Mutation {
 
   createSpace(
     name: String!,
+    description: String,
     owner: String!
   ): Space @resolver(name: "CreateSpace")
 
   createItem(
     name: String!,
-    description: String!,
+    description: String,
     type: ItemType!,
     owner: String!
   ): Item @resolver(name: "CreateItem")
+
+  createContact(
+    owner: String!
+    user: String!
+  ): Contact @resolver(name: "CreateContact")
 }
 
 type ShortUser @embedded {
@@ -80,6 +93,7 @@ type ShortUser @embedded {
   email: String!
   spaces_count: Int!
   items_count: Int!
+  contacts_count: Int!
 }
 
 type Query {

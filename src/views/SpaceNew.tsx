@@ -1,15 +1,15 @@
-import React, {useEffect} from "react";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
-import {useMutation} from "@apollo/client";
+import React, { useEffect } from "react";
 import {useLoading} from "../contexts/LoadingContext";
+import {useMutation} from "@apollo/client";
 import {useNavigate} from "react-router-dom";
-import {CREATE_ITEM} from '../services/ItemsService'
-import EditItemForm from "../components/items/EditItemForm";
+import {CREATE_SPACE} from '../services/SpacesService'
+import EditSpaceForm from "../components/spaces/EditSpaceForm";
 import {FormDataType} from "../models/CommonModels";
 
-export default function ItemNew() {
+const SpaceNew = () => {
+  const [createSpaceFunc, {loading}] = useMutation(CREATE_SPACE);
   const navigate = useNavigate();
-  const [createItemFunc, {loading}] = useMutation(CREATE_ITEM);
   const {setLoading, setAlertData} = useLoading();
 
   useEffect(() => {
@@ -18,21 +18,20 @@ export default function ItemNew() {
   }, [loading]);
 
   function handleSave(formData: FormDataType) {
-    createItemFunc({
+    createSpaceFunc({
       variables: {
         name: formData.name.value,
         description: formData.description.value,
-        type: formData.type.value,
         owner: localStorage.getItem("userId")
       }
     }).then((res) => {
       setAlertData({
         isOpen: true,
-        text: 'Item has been created',
+        text: 'Space has been created',
         type: 'success'
       });
-      const itemId = res.data.createItem._id;
-      navigate(`/items/${itemId}`);
+      const spaceId = res.data.createSpace._id;
+      navigate(`/spaces/${spaceId}`);
     }).catch(() => {
       setAlertData({
         isOpen: true,
@@ -43,10 +42,12 @@ export default function ItemNew() {
   }
 
   return (
-    <BaseContainer className="p-4 my-4 mx-auto max-w-[700px] h-[400px]">
-      <EditItemForm
+    <BaseContainer className="p-4 my-4 mx-4">
+      <EditSpaceForm
         onSubmit={handleSave}
       />
     </BaseContainer>
   );
 }
+
+export default SpaceNew;

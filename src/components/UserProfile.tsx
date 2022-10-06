@@ -1,4 +1,4 @@
-import {UserType} from "../models/AuthModels";
+import {UserModel} from "../models/AuthModels";
 import React from "react";
 import BaseAvatar from "./BaseComponents/BaseAvatar";
 import {ButtonGroup, Divider} from "@mui/material";
@@ -8,7 +8,7 @@ import BaseContainer from "./BaseComponents/BaseContainer";
 import {useNavigate} from "react-router-dom";
 
 interface Props {
-  user: UserType
+  user: UserModel
 }
 
 const UserProfile: React.FC<Props> = ({
@@ -19,7 +19,7 @@ const UserProfile: React.FC<Props> = ({
   /*TODO needs refactor with nested url*/
   const buttonGroupButtons = ['items', 'spaces', 'contacts']
     .map((key) => {
-      const counterKey = `${key}_count` as keyof UserType;
+      const counterKey = `${key}_count` as keyof UserModel;
       return (
         <BaseButton
           variant="outlined"

@@ -1,57 +1,122 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {useQuery, useMutation} from '@apollo/client';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import { DeleteItem, FindItemByID } from "../services/ItemsService";
-import BaseButton from "../components/BaseComponents/BaseButton";
-import {useTranslation} from "react-i18next";
+import {DELETE_ITEM, FIND_ITEM_BY_ID, UPDATE_ITEM} from "../services/ItemsService";
+import {useEffect, useState} from "react";
+import {useLoading} from "../contexts/LoadingContext";
+import EntityActions from "../components/EntityActions";
+import EditItemForm from "../components/items/EditItemForm";
+import {FormDataType} from "../models/CommonModels";
 
 export default function Item() {
-  const {t} = useTranslation('common');
-  const { id } = useParams();
-  const {data, loading} = useQuery(FindItemByID, {
-    variables: {
-      id: id
+  const {id} = useParams();
+  const navigate = useNavigate();
+  const {data, loading: fetchLoading, error: fetchError} = useQuery(FIND_ITEM_BY_ID, {
+    variables: {id}
+  });
+  const [deleteItem, {loading: deleteLoading, error: deleteError}] = useMutation(DELETE_ITEM, {
+    variables: {id},
+    onCompleted: () => {
+      setAlertData({
+        isOpen: true,
+        text: 'Item has been deleted',
+        type: 'success'
+      });
+      navigate('/items');
     }
-  })
-  const [deleteItem] = useMutation(DeleteItem, {
-    variables: {
-      id: id
+  });
+  const [updateItem, {loading: editLoading, error: editError}] = useMutation(UPDATE_ITEM, {
+    onQueryUpdated: () => {
+      setAlertData({
+        isOpen: true,
+        text: 'Item has been updated',
+        type: 'success'
+      });
+      toggleEditItem();
     }
-  })
+  });
+  const {setLoading, setAlertData} = useLoading();
+  const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    setLoading(fetchLoading || deleteLoading || editLoading);
+    return () => setLoading(false);
+  }, [fetchLoading, deleteLoading, editLoading]);
+
+  useEffect(() => {
+    (fetchError || deleteError || editError) && setAlertData({
+      isOpen: true,
+      text: 'Smth went wrong',
+      type: 'error'
+    });
+  }, [fetchError, deleteError, editError]);
+
+  const handleDeleteItem = async () => {
+    await deleteItem();
+  };
+
+  const toggleEditItem = () => {
+    setIsEdit(!isEdit);
+  };
+
+  const handleEditItem = async (formData: FormDataType) => {
+    await updateItem({
+      variables: {
+        id: id,
+        data: {
+          name: formData.name.value,
+          type: formData.type.value,
+          description: formData.description.value
+        }
+      }
+    });
+  };
 
   return (
-    <div className="p-4">
-      {loading ? <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-        <CircularProgress />
-      </Box> :
-      <BaseContainer className="p-4">
-        <div className="flex justify-between items-center w-full">
-          <BaseAvatar
-            alt={data.findItemByID.name}
-            size={40}
-            variant="square"
-            className="mr-2"
+    <BaseContainer className="p-4 mx-auto my-4 max-w-[700px] min-h-[400px] relative">
+      {
+        isEdit
+          ? <EditItemForm
+            onSubmit={handleEditItem}
+            onCancel={toggleEditItem}
+            editData={{
+              name: data.findItemByID.name,
+              type: data.findItemByID.type,
+              description: data.findItemByID.description
+            }}
           />
-          <div className="flex flex-col flex-1">
-            <span>{data.findItemByID.name}</span>
-            <span>{data.findItemByID.type}</span>
-          </div>
-        </div>
-        <p className="my-4">{data.findItemByID.description}</p>
-
-        <BaseButton
-          type="submit"
-          variant="contained"
-          size="medium"
-          onClick={() => deleteItem()}
-        >
-          {t('delete')}
-        </BaseButton>
-      </BaseContainer>
+          : (
+            <>
+              {
+                data && data.findItemByID &&
+                <>
+                  <div className="flex justify-between items-center w-full">
+                    <BaseAvatar
+                      alt={data.findItemByID.name}
+                      size={60}
+                      variant="square"
+                      className="mr-4"
+                    />
+                    <div className="flex flex-col flex-1 space-y-4">
+                      <span>{data.findItemByID.name}</span>
+                      <span>{data.findItemByID.type}</span>
+                    </div>
+                  </div>
+                  {
+                    data.findItemByID.description &&
+                    <p className="my-4">{data.findItemByID.description}</p>
+                  }
+                  <EntityActions
+                    onDelete={handleDeleteItem}
+                    onEdit={toggleEditItem}
+                    className="absolute top-5 right-5"
+                  />
+                </>
+              }
+            </>
+          )
       }
-    </div>
+    </BaseContainer>
   );
-}
+};

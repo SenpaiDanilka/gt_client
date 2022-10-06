@@ -7,10 +7,7 @@ import useForm from "../hooks/useForm";
 import BaseForm from "../components/BaseComponents/BaseForm";
 
 const initialState = {
-  name: {
-    value: 'Mocked user name',
-    errors: []
-  }
+  name: 'Mocked user name'
 }
 
 const formFieldsRules = {

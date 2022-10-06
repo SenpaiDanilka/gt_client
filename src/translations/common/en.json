@@ -2,6 +2,8 @@
   "password": "Password",
   "email": "Email",
   "name": "Name",
+  "type": "Type",
+  "description": "Description",
   "haveAccount": "Already have an account?",
   "haveNoAccount": "Don't have an account yet?",
   "signIn": "Sign In",
@@ -13,5 +15,7 @@
   "contacts": "Contacts",
   "settings": "Settings",
   "save": "Save",
-  "delete": "Delete"
+  "delete": "Delete",
+  "edit": "Edit",
+  "cancel": "Cancel"
 }
