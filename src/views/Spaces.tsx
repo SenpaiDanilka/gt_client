@@ -1,19 +1,69 @@
 import EditableListWithSearch from "../components/EditableListWithSearch";
-import React, {useState} from "react";
-import {useTranslation} from "react-i18next";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
 import { DELETE_SPACE, GET_USER_SPACES } from "../services/SpacesService";
-import {useMutation, useQuery} from '@apollo/client';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import {NetworkStatus, useMutation, useQuery} from '@apollo/client';
+import {useLoading} from "../contexts/LoadingContext";
 
 const Spaces = () => {
   const userId = localStorage.getItem("userId")
-  const {t} = useTranslation('common');
   const navigate = useNavigate();
+  const {setLoading, setAlertData} = useLoading();
   const [searchValue, setSearchValue] = useState('');
-  const [deleteSpace] = useMutation(DELETE_SPACE)
+
+  const {data, networkStatus} = useQuery(GET_USER_SPACES, {
+    variables: {
+      id: userId
+    },
+    fetchPolicy: 'cache-and-network'
+  });
+  const spaces = data?.findUserByID?.spaces.data;
+
+  const [deleteSpace] = useMutation(DELETE_SPACE, {
+    update(cache, {data: {deleteSpace}}) {
+      const {findUserByID} = cache.readQuery<any>({
+        query: GET_USER_SPACES,
+        variables: {
+          id: userId
+        }
+      });
+      cache.writeQuery({
+        query: GET_USER_SPACES,
+        variables: {
+          id: userId
+        },
+        data: {
+          findUserByID: {
+            ...findUserByID,
+            spaces: {
+              ...findUserByID.spaces,
+              data: findUserByID.spaces.data.filter((space: any) => space._id !== deleteSpace._id)
+            }
+          }
+        }
+      });
+    },
+    onQueryUpdated: () => {
+      setAlertData({
+        isOpen: true,
+        text: 'Item has been deleted',
+        type: 'success'
+      });
+    },
+    onError: () => {
+      setAlertData({
+        isOpen: true,
+        text: 'Smth went wrong',
+        type: 'error'
+      });
+    }
+  });
+
+  useEffect(() => {
+    setLoading(networkStatus === NetworkStatus.loading)
+  }, [networkStatus]);
+
   const menuOptions = (id: string) => ([
     {
       children: 'Delete',
@@ -34,15 +84,9 @@ const Spaces = () => {
       onClick: () => { navigate(`/spaces/${id}`) }
     }
   ]);
-  const {data} = useQuery(GET_USER_SPACES, {
-    variables: {
-      id: userId
-    }
-  })
-  const spaces = data?.findUserByID?.spaces.data
 
   const List = (
-    spaces ? spaces.map((space: any) => (
+    spaces && spaces.map((space: any) => (
       <div
         className="flex justify-between items-center"
         key={space._id}
@@ -54,9 +98,7 @@ const Spaces = () => {
         </div>
         <BaseMenu options={menuOptions(String(space._id))}/>
       </div>
-    )) : <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-    <CircularProgress />
-  </Box>
+    ))
   );
 
   return (

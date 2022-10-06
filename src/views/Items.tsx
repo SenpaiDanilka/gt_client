@@ -19,6 +19,8 @@ const Items = () => {
     fetchPolicy: 'cache-and-network'
   });
 
+  const items = data?.findUserByID?.items.data;
+
   const [deleteItem, {loading: deleteLoading}] = useMutation(DELETE_ITEM, {
     update(cache, {data: {deleteItem}}) {
       const {findUserByID} = cache.readQuery<any>({
@@ -41,7 +43,7 @@ const Items = () => {
             }
           }
         }
-      })
+      });
     },
     onQueryUpdated: () => {
       setAlertData({
@@ -81,7 +83,7 @@ const Items = () => {
   ]);
 
   const List = (
-    data?.findUserByID?.items.data.map((item: any) => (
+    items && items.map((item: any) => (
       <div
         className="flex justify-between items-center"
         key={item._id}

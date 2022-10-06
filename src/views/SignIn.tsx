@@ -23,14 +23,8 @@ const LOGIN = gql`
 `;
 
 const initialState = {
-  email: {
-    value: '',
-    errors: []
-  },
-  password: {
-    value: '',
-    errors: []
-  }
+  email: '',
+  password: ''
 };
 
 const formFieldsRules = {
