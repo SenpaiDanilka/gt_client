@@ -6,6 +6,7 @@ import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {NetworkStatus, useMutation, useQuery} from '@apollo/client';
 import {DELETE_ITEM, GET_USER_ITEMS} from "../services/ItemsService";
 import {useLoading} from "../contexts/LoadingContext";
+import SubmitActionModal from "../components/SubmitActionModal";
 
 const Items = () => {
   const navigate = useNavigate();
@@ -18,10 +19,21 @@ const Items = () => {
     },
     fetchPolicy: 'cache-and-network'
   });
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState('');
+
+  const handleOnDeleteClick = (id: string) => {
+    setDeleteItemId(id);
+    setIsApproveModalOpen(true);
+  };
+  const handleCancelDeleteClick = () => {
+    setIsApproveModalOpen(false);
+  };
 
   const items = data?.findUserByID?.items.data;
 
   const [deleteItem, {loading: deleteLoading}] = useMutation(DELETE_ITEM, {
+    variables: {id: deleteItemId},
     update(cache, {data: {deleteItem}}) {
       const {findUserByID} = cache.readQuery<any>({
         query: GET_USER_ITEMS,
@@ -51,6 +63,7 @@ const Items = () => {
         text: 'Item has been deleted',
         type: 'success'
       });
+      setIsApproveModalOpen(false);
     },
     onError: () => {
       setAlertData({
@@ -59,17 +72,17 @@ const Items = () => {
         type: 'error'
       });
     }
-  })
+  });
 
   useEffect(() => {
     setLoading(networkStatus === NetworkStatus.refetch || itemsLoading || deleteLoading)
   }, [networkStatus, itemsLoading, deleteLoading]);
 
-  const menuOptions = (id: number) => ([
+  const menuOptions = (id: string) => ([
     {
       children: 'Delete',
       id: 'delete',
-      onClick: () => deleteItem({variables: {id}})
+      onClick: () => handleOnDeleteClick(id)
     },
     {
       children: 'View item',
@@ -112,6 +125,15 @@ const Items = () => {
         onAddClick={() => navigate('/items/new')}
         list={List}
       />
+      <SubmitActionModal
+        open={isApproveModalOpen}
+        onSubmit={deleteItem}
+        onCancel={handleCancelDeleteClick}
+      >
+        <p className="mb-4">Delete item ID: {
+          <span className="font-bold">{deleteItemId}</span>
+        }?</p>
+      </SubmitActionModal>
     </div>
   )
 }

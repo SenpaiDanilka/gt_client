@@ -17,5 +17,6 @@
   "save": "Save",
   "delete": "Delete",
   "edit": "Edit",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "submit": "Submit"
 }

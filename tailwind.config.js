@@ -4,9 +4,13 @@ module.exports = {
   content: [
     "./src/**/*.{js,ts,jsx,tsx}"
   ],
-  important: '#root',
+  important: true,
   theme: {
-    extend: {}
+    extend: {
+      zIndex: {
+        '9999': '9999',
+      }
+    }
   },
   corePlugins: {
     //preflight: false

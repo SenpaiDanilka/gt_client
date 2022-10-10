@@ -8,16 +8,19 @@ import {useLoading} from "../contexts/LoadingContext";
 import EntityActions from "../components/EntityActions";
 import EditItemForm from "../components/items/EditItemForm";
 import {FormDataType} from "../models/CommonModels";
+import SubmitActionModal from "../components/SubmitActionModal";
 
 export default function Item() {
   const {id} = useParams();
   const navigate = useNavigate();
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const {data, loading: fetchLoading, error: fetchError} = useQuery(FIND_ITEM_BY_ID, {
     variables: {id}
   });
   const [deleteItem, {loading: deleteLoading, error: deleteError}] = useMutation(DELETE_ITEM, {
     variables: {id},
     onCompleted: () => {
+      setIsApproveModalOpen(false);
       setAlertData({
         isOpen: true,
         text: 'Item has been deleted',
@@ -52,8 +55,8 @@ export default function Item() {
     });
   }, [fetchError, deleteError, editError]);
 
-  const handleDeleteItem = async () => {
-    await deleteItem();
+  const handleDeleteItem = () => {
+    setIsApproveModalOpen(true);
   };
 
   const toggleEditItem = () => {
@@ -117,6 +120,15 @@ export default function Item() {
             </>
           )
       }
+      <SubmitActionModal
+        open={isApproveModalOpen}
+        onSubmit={deleteItem}
+        onCancel={() => setIsApproveModalOpen(false)}
+      >
+        <p className="mb-4">Delete item ID: {
+          <span className="font-bold">{id}</span>
+        }?</p>
+      </SubmitActionModal>
     </BaseContainer>
   );
 };

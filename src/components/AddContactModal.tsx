@@ -1,20 +1,28 @@
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import useDebounce from '../hooks/useDebounce';
-import { useEffect, useState } from 'react';
-import {FIND_USER_BY_EMAIL, CREATE_CONTACT} from '../services/UsersService'
-import { useLazyQuery, useMutation } from '@apollo/client';
+import {FC, useEffect, useState} from 'react';
+import {FIND_USER_BY_EMAIL, CREATE_CONTACT, GET_USER_CONTACTS} from '../services/UsersService'
+import {useLazyQuery, useMutation} from '@apollo/client';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Box } from '@mui/system';
+import {useLoading} from "../contexts/LoadingContext";
 
-const AddContactModal = () => {
+interface Props {
+  handleClose: () => void;
+}
+
+const AddContactModal: FC<Props> = ({
+  handleClose
+}) => {
+  const {setLoading, setAlertData} = useLoading();
   const [searchValue, setSearchValue] = useState('');
-
   const [results, setResults] = useState<any[]>([]);
-
   const [isSearching, setIsSearching] = useState(false);
-
   const debouncedSearchTerm = useDebounce(searchValue, 500);
+  const userId = localStorage.getItem("userId");
+  const [findUserByEmail] = useLazyQuery(FIND_USER_BY_EMAIL);
+  const [createContact, {loading}] = useMutation(CREATE_CONTACT);
 
   useEffect(
     () => {
@@ -38,23 +46,65 @@ const AddContactModal = () => {
     },
     [debouncedSearchTerm]
   );
-  const addContact = (option: any) => {
-    createContact({
+
+  useEffect(() => {
+    setLoading(loading);
+    return () => setLoading(false);
+  }, [loading]);
+
+  const addContact = async (option: any) => {
+    await createContact({
       variables: {
-        owner: localStorage.getItem("userId"),
+        owner: userId,
         user: option._id
+      },
+      update(cache, {data: {createContact}}) {
+        const {findUserByID} = cache.readQuery<any>({
+          query: GET_USER_CONTACTS,
+          variables: {
+            id: userId
+          }
+        });
+        cache.writeQuery({
+          query: GET_USER_CONTACTS,
+          variables: {
+            id: userId
+          },
+          data: {
+            findUserByID: {
+              ...findUserByID,
+              contacts: {
+                ...findUserByID.contacts,
+                data: [
+                  ...findUserByID.contacts.data,
+                  createContact.user
+                ]
+              }
+            }
+          }
+        });
+      },
+      onQueryUpdated: () => {
+        handleClose();
+        setAlertData({
+          isOpen: true,
+          text: 'Contact has been added',
+          type: 'success'
+        });
+      },
+      onError: () => {
+        setAlertData({
+          isOpen: true,
+          text: 'Smth went wrong',
+          type: 'error'
+        });
       }
     })
   }
 
-  const [findUserByEmail] = useLazyQuery(FIND_USER_BY_EMAIL)
-
-  const [createContact] = useMutation(CREATE_CONTACT)
-
   return (
     <Box sx={{width: '600px'}}>
       <Autocomplete
-        id="free-solo-demo"
         filterOptions={(x) => x}
         freeSolo
         loading={isSearching}

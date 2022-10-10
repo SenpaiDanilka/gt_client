@@ -13,6 +13,7 @@ import {useQuery, useMutation} from '@apollo/client';
 import EntityActions from "../components/EntityActions";
 import EditSpaceForm from "../components/spaces/EditSpaceForm";
 import {FormDataType} from "../models/CommonModels";
+import SubmitActionModal from "../components/SubmitActionModal";
 
 const mockedSpaceItems = [
   {
@@ -55,6 +56,7 @@ export default function Space() {
   const navigate = useNavigate();
   const {t} = useTranslation('common');
   const [tab, setTab] = useState(0);
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   const [spaceItems, setSpaceItems] = useState<OptionsDataType[]>(mockedSpaceItems);
   const [spaceUsers, setSpaceUsers] = useState<OptionsDataType[]>(mockedSpaceUsers);
@@ -101,6 +103,7 @@ export default function Space() {
         id: id
       }
     }).then(() => {
+      setIsApproveModalOpen(false);
       setAlertData({
         isOpen: true,
         text: 'Item has been deleted',
@@ -249,6 +252,15 @@ export default function Space() {
               </>
             )
         }
+        <SubmitActionModal
+          open={isApproveModalOpen}
+          onSubmit={deleteSpace}
+          onCancel={() => setIsApproveModalOpen(false)}
+        >
+          <p className="mb-4">Delete space ID: {
+            <span className="font-bold">{id}</span>
+          }?</p>
+        </SubmitActionModal>
       </BaseContainer>
     </div>
   );

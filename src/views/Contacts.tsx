@@ -8,6 +8,7 @@ import {NetworkStatus, useMutation, useQuery} from '@apollo/client';
 import BaseModal from '../components/BaseComponents/BaseModal'
 import AddContactModal from "../components/AddContactModal";
 import { useLoading } from "../contexts/LoadingContext";
+import SubmitActionModal from "../components/SubmitActionModal";
 
 const Contacts = () => {
   const userId = localStorage.getItem("userId")
@@ -15,6 +16,16 @@ const Contacts = () => {
   const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [contacts, setContacts] = useState([]);
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [deleteContactId, setDeleteContactId] = useState('');
+
+  const handleOnDeleteClick = (id: string) => {
+    setDeleteContactId(id);
+    setIsApproveModalOpen(true);
+  };
+  const handleCancelDeleteClick = () => {
+    setIsApproveModalOpen(false);
+  };
 
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
@@ -31,6 +42,8 @@ const Contacts = () => {
     fetchPolicy: 'cache-and-network'
   });
 
+  const [deleteItem, {loading: deleteLoading}] = useMutation(DELETE_CONTACT);
+
   useEffect(()=> {
     if (data?.findUserByID.contacts.data.length) {
       setContacts(data.findUserByID.contacts.data.map((contact: any) => ({
@@ -39,13 +52,59 @@ const Contacts = () => {
         userId: contact.user._id
       })))
     }
-  }, [data])
+  }, [data]);
+
+  const handleDelete = async () => {
+    await deleteItem(
+      {
+        variables: {id: deleteContactId},
+        update(cache, {data: {deleteContact}}) {
+          const {findUserByID} = cache.readQuery<any>({
+            query: GET_USER_CONTACTS,
+            variables: {
+              id: userId
+            }
+          });
+          cache.writeQuery({
+            query: GET_USER_CONTACTS,
+            variables: {
+              id: userId
+            },
+            data: {
+              findUserByID: {
+                ...findUserByID,
+                contacts: {
+                  ...findUserByID.contacts,
+                  data: findUserByID.contacts.data
+                    .filter((contact: any) => contact._id !== deleteContact._id)
+                }
+              }
+            }
+          });
+        },
+        onQueryUpdated: () => {
+          setAlertData({
+            isOpen: true,
+            text: 'Contact has been deleted',
+            type: 'success'
+          });
+          setIsApproveModalOpen(false);
+        },
+        onError: () => {
+          setAlertData({
+            isOpen: true,
+            text: 'Smth went wrong',
+            type: 'error'
+          });
+        },
+      })
+  };
 
   const menuOptions = (id: string) => ([
     {
       children: 'Delete',
       id: 'delete',
-      onClick: () => deleteItem({variables: {id}})
+      onClick: () => handleOnDeleteClick(id)
     },
     {
       children: 'View profile',
@@ -53,46 +112,6 @@ const Contacts = () => {
       onClick: () => { navigate(`/contacts/${id}`) }
     }
   ]);
-
-  const [deleteItem, {loading: deleteLoading}] = useMutation(DELETE_CONTACT, {
-    update(cache, {data: {deleteItem}}) {
-      const {findUserByID} = cache.readQuery<any>({
-        query: GET_USER_CONTACTS,
-        variables: {
-          id: userId
-        }
-      });
-      cache.writeQuery({
-        query: GET_USER_CONTACTS,
-        variables: {
-          id: userId
-        },
-        data: {
-          findUserByID: {
-            ...findUserByID,
-            contacts: {
-              ...findUserByID.contacts,
-              data: findUserByID.contacts.data.filter((contact: any) => contact.user._id !== deleteItem._id)
-            }
-          }
-        }
-      });
-    },
-    onQueryUpdated: () => {
-      setAlertData({
-        isOpen: true,
-        text: 'Item has been deleted',
-        type: 'success'
-      });
-    },
-    onError: () => {
-      setAlertData({
-        isOpen: true,
-        text: 'Smth went wrong',
-        type: 'error'
-      });
-    }
-  })
 
   useEffect(() => {
     setLoading(networkStatus === NetworkStatus.refetch || contactsLoading || deleteLoading)
@@ -129,8 +148,17 @@ const Contacts = () => {
         open={open}
         onClose={handleClose}
       >
-        <AddContactModal/>
+        <AddContactModal handleClose={handleClose} />
       </BaseModal>
+      <SubmitActionModal
+        open={isApproveModalOpen}
+        onSubmit={handleDelete}
+        onCancel={handleCancelDeleteClick}
+      >
+        <p className="mb-4">Delete contact ID: {
+          <span className="font-bold">{deleteContactId}</span>
+        }?</p>
+      </SubmitActionModal>
     </div>
   )
 }
