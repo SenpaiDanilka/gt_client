@@ -9,33 +9,12 @@ import PopperWithAutocomplete, {OptionsDataType} from "../components/PopperWithA
 import AddButton from "../components/AddButton";
 import {useLoading} from "../contexts/LoadingContext";
 import {DELETE_SPACE, FIND_SPACE_BY_ID, UPDATE_SPACE} from "../services/SpacesService";
-import {CREATE_AVAILABLE_ITEM, GET_USER_ITEMS} from "../services/ItemsService";
+import {CREATE_AVAILABLE_ITEM, GET_USER_ITEMS, GET_SPACE_ITEMS, DELETE_ITEM_FROM_SPACE} from "../services/ItemsService";
 import {useQuery, useMutation, NetworkStatus} from '@apollo/client';
 import EntityActions from "../components/EntityActions";
 import EditSpaceForm from "../components/spaces/EditSpaceForm";
 import {FormDataType} from "../models/CommonModels";
 import { AvailabilityModel } from "../models/ItemsModels";
-
-const mockedSpaceItems = [
-  {
-    name: 'Item name 1',
-    description: 'Item description 1',
-    type: 'OTHERS',
-    _id: '1'
-  },
-  {
-    name: 'Item name 2',
-    description: 'Item description 2',
-    type: 'ELECTRONICS',
-    _id: '2'
-  },
-  {
-    name: 'Item name 3',
-    description: 'Item description 3',
-    type: 'VEHICLE',
-    _id: '3'
-  }
-];
 
 const mockedSpaceUsers = [
   {
@@ -60,7 +39,7 @@ export default function Space() {
   const [tab, setTab] = useState(0);
   const [availableItems, setAvailableItems] = useState<OptionsDataType[]>([]);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  const [spaceItems, setSpaceItems] = useState<OptionsDataType[]>(mockedSpaceItems);
+  const [spaceItems, setSpaceItems] = useState<OptionsDataType[]>([]);
   const [spaceUsers, setSpaceUsers] = useState<OptionsDataType[]>(mockedSpaceUsers);
   const {setLoading, setAlertData} = useLoading();
   const [isEdit, setIsEdit] = useState(false);
@@ -83,11 +62,24 @@ export default function Space() {
     }
   }, [userItemsData])
 
-  // useEffect(() => {
-  //   if (spaceItemsData?.findUserByID.items.data.length) {
-  //     setAvailableItems(userItemsData.findUserByID.items.data)
-  //   }
-  // }, [spaceItemsData])
+  const {data: spaceItemsData, loading: getSpaceItemsLoading, networkStatus: getSpaceItemsNetworkStatus} = useQuery(GET_SPACE_ITEMS, {
+    variables: {
+      model: AvailabilityModel.SPACE,
+      model_id: id
+    },
+    notifyOnNetworkStatusChange: true
+  })
+
+  useEffect(() => {
+    if (spaceItemsData?.getModelItems.length) {
+      setSpaceItems(spaceItemsData?.getModelItems.map((availableItem: any) => ({
+        _id: availableItem._id,
+        name: availableItem.item.name,
+        description: availableItem.item.description,
+        type: availableItem.item.type
+      })))
+    }
+  }, [spaceItemsData])
 
   const [deleteSpace, {loading: deleteLoading, error: deleteSpaceError}] = useMutation(DELETE_SPACE);
   const [updateSpace, {loading: editLoading, error: editError}] = useMutation(UPDATE_SPACE, {

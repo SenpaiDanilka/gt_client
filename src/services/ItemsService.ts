@@ -23,6 +23,29 @@ export const GET_USER_ITEMS = gql`
   }
 `;
 
+export const GET_SPACE_ITEMS = gql`
+  query GetModelItems($model: AvailabilityModel!, $model_id: String!) {
+    getModelItems(model: $model, model_id: $model_id) {
+      _id
+      model
+      model_id
+      item {
+        _id
+        name
+        description
+      }
+    }
+  }
+`;
+
+export const DELETE_ITEM_FROM_SPACE = gql`
+  query DeleteAvailableItem($id: ID!) {
+    deleteAvailableItem(id: $id) {
+      _id
+    }
+  }
+`;
+
 export const FIND_ITEM_BY_ID = gql`
   query FindItemByID($id: ID!) {
     findItemByID(id: $id) {

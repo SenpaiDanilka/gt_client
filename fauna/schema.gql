@@ -107,5 +107,5 @@ type Query {
   getUserByEmail(email: String): ShortUser @resolver(name: "GetUserByEmail")
   getUserById(id: String): ShortUser @resolver(name: "GetUserById")
   listUsers: [User]
-  getSpaceItems(space_id: String): [Item!] @resolver(name: "GetSpaceItems")
+  getModelItems(model: AvailabilityModel!, model_id: String!): [AvailableItem!] @resolver(name: "GetModelItems")
 }
