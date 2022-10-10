@@ -7,7 +7,7 @@ export interface OptionsDataType {
   name: string;
   description?: string;
   type?: string;
-  id: number;
+  _id: string;
 }
 
 interface Props {

@@ -45,6 +45,22 @@ export const CREATE_ITEM = gql`
   }
 `;
 
+export const CREATE_AVAILABLE_ITEM = gql`
+  mutation CreateAvailableItem($model: AvailabilityModel!, $model_id: String!, $item_id: String!) {
+    createAvailableItem(model: $model, model_id: $model_id, item_id: $item_id) {
+      _id
+      model
+      model_id
+      item {
+        _id
+        type
+        name
+        description
+      }
+    }
+  }
+`;
+
 export const UPDATE_ITEM = gql`
   mutation UpdateItem($id: ID!, $data: ItemInput!) {
     updateItem(id: $id, data: $data) {

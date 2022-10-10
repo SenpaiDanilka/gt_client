@@ -5,6 +5,11 @@ export enum ItemType {
   OTHER,
 }
 
+export enum AvailabilityModel {
+  SPACE = 'SPACE',
+  USER = 'USER'
+}
+
 export class Item {
   name
   photo

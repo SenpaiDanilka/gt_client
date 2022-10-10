@@ -27,7 +27,7 @@ type Item {
 }
 
 type AvailableItem {
-  model: AvailvabilityModel!
+  model: AvailabilityModel!
   model_id: String!
   item: Item!
 }
@@ -37,7 +37,7 @@ type SpaceUser {
   user: User!
 }
 
-enum AvailvabilityModel {
+enum AvailabilityModel {
   SPACE
   USER
 }
@@ -86,6 +86,12 @@ type Mutation {
     owner: String!
     user: String!
   ): Contact @resolver(name: "CreateContact")
+
+  createAvailableItem(
+    model: AvailabilityModel!
+    model_id: String!
+    item_id: String!
+  ): AvailableItem @resolver(name: "CreateAvailableItem")
 }
 
 type ShortUser @embedded {
@@ -101,4 +107,5 @@ type Query {
   getUserByEmail(email: String): ShortUser @resolver(name: "GetUserByEmail")
   getUserById(id: String): ShortUser @resolver(name: "GetUserById")
   listUsers: [User]
+  getSpaceItems(space_id: String): [Item!] @resolver(name: "GetSpaceItems")
 }
