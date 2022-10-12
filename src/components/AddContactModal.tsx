@@ -2,11 +2,17 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import useDebounce from '../hooks/useDebounce';
 import {FC, useEffect, useState} from 'react';
-import {FIND_USER_BY_EMAIL, CREATE_CONTACT, GET_USER_CONTACTS} from '../services/UsersService'
-import {useLazyQuery, useMutation} from '@apollo/client';
+import {GET_USER_CONTACTS} from '../services/UsersService'
 import CircularProgress from '@mui/material/CircularProgress';
-import { Box } from '@mui/system';
 import {useLoading} from "../contexts/LoadingContext";
+import {useCreateContactMutation, useFindUserByEmailLazyQuery} from "../generated/apollo-functions";
+import {FindUserContactsByIdQuery} from "../generated/operations";
+
+type ResultsType = {
+  __typename?: "User";
+  _id: string;
+  name: string;
+}
 
 interface Props {
   handleClose: () => void;
@@ -17,12 +23,12 @@ const AddContactModal: FC<Props> = ({
 }) => {
   const {setLoading, setAlertData} = useLoading();
   const [searchValue, setSearchValue] = useState('');
-  const [results, setResults] = useState<any[]>([]);
+  const [results, setResults] = useState<ResultsType[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const debouncedSearchTerm = useDebounce(searchValue, 500);
   const userId = localStorage.getItem("userId");
-  const [findUserByEmail] = useLazyQuery(FIND_USER_BY_EMAIL);
-  const [createContact, {loading}] = useMutation(CREATE_CONTACT);
+  const [findUserByEmail] = useFindUserByEmailLazyQuery();
+  const [createContact, {loading}] = useCreateContactMutation();
 
   useEffect(
     () => {
@@ -33,11 +39,11 @@ const AddContactModal: FC<Props> = ({
         // Сделать запрос к АПИ
         findUserByEmail({variables: {
           email: debouncedSearchTerm
-        }}).then((results: any) => {
+        }}).then((results) => {
           // Выставить состояние в false, так-как запрос завершен
           setIsSearching(false);
           // Выставит состояние с результатом
-          const array = results.data.findUserByEmail ? [results.data.findUserByEmail] : []
+          const array = results?.data?.findUserByEmail ? [results.data.findUserByEmail] : [];
           setResults(array);
         });
       } else {
@@ -52,19 +58,19 @@ const AddContactModal: FC<Props> = ({
     return () => setLoading(false);
   }, [loading]);
 
-  const addContact = async (option: any) => {
+  const addContact = async (option: ResultsType) => {
     await createContact({
       variables: {
-        owner: userId,
+        owner: userId!,
         user: option._id
       },
-      update(cache, {data: {createContact}}) {
-        const {findUserByID} = cache.readQuery<any>({
+      update(cache, {data}) {
+        const {findUserByID} = cache.readQuery<FindUserContactsByIdQuery>({
           query: GET_USER_CONTACTS,
           variables: {
             id: userId
           }
-        });
+        }) || ({} as Partial<FindUserContactsByIdQuery>);
         cache.writeQuery({
           query: GET_USER_CONTACTS,
           variables: {
@@ -74,10 +80,10 @@ const AddContactModal: FC<Props> = ({
             findUserByID: {
               ...findUserByID,
               contacts: {
-                ...findUserByID.contacts,
+                ...findUserByID?.contacts,
                 data: [
-                  ...findUserByID.contacts.data,
-                  createContact.user
+                  ...findUserByID!.contacts!.data,
+                  data!.createContact
                 ]
               }
             }
@@ -103,15 +109,18 @@ const AddContactModal: FC<Props> = ({
   }
 
   return (
-    <Box sx={{width: '600px'}}>
+    <div className="w-[600px]">
       <Autocomplete
         filterOptions={(x) => x}
         freeSolo
         loading={isSearching}
         options={results}
-        getOptionLabel={(option) => option.name}
-        onInputChange={((e: any) => setSearchValue(e.target.value))}
-        onChange={(e: any, option: string) => addContact(option)}
+        getOptionLabel={(option) => typeof option === 'object' ? option.name : ''}
+        onInputChange={((e) => {
+          const target = e.target as HTMLInputElement;
+          return setSearchValue(target.value)
+        })}
+        onChange={(e, option: ResultsType | null | string) => addContact(option as ResultsType)}
         renderInput={(params) =>
           <TextField
             {...params}
@@ -128,7 +137,7 @@ const AddContactModal: FC<Props> = ({
           />
         }
       />
-    </Box>
+    </div>
   )
 }
 

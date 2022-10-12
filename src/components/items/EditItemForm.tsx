@@ -2,12 +2,11 @@ import React, {FC, FormEvent} from "react";
 import BaseInput from "../BaseComponents/BaseInput";
 import {MenuItem} from "@mui/material";
 import BaseButton from "../BaseComponents/BaseButton";
-import {ItemType} from "../../models/ItemsModels";
 import useForm from "../../hooks/useForm";
 import {FormDataType} from "../../models/CommonModels";
 import {isRequired, minLength} from "../../utils/validate";
 import {useTranslation} from "react-i18next";
-import {enumToKeysArray} from "../../utils/helpers";
+import {ItemType} from "../../generated/types";
 
 const defaultFieldsState = {
   name: '',
@@ -49,7 +48,7 @@ const EditItemForm: FC<Props> = ({
     onSubmit: () => onSubmit(formData),
     rules: formFieldsRules
   });
-  const typeOptions = enumToKeysArray(ItemType);
+  const typeOptions = Object.values(ItemType);
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     !validateAll() && onSubmit(formData);
@@ -92,7 +91,7 @@ const EditItemForm: FC<Props> = ({
               value={option}
               key={option}
             >
-              {option}
+              { t(`itemTypes.${option}`)}
             </MenuItem>
           ))
         }

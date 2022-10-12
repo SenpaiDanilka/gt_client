@@ -1,24 +1,28 @@
 import {useNavigate, useParams} from "react-router-dom";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
-import {useQuery, useMutation} from '@apollo/client';
-import {DELETE_ITEM, FIND_ITEM_BY_ID, UPDATE_ITEM} from "../services/ItemsService";
 import {useEffect, useState} from "react";
 import {useLoading} from "../contexts/LoadingContext";
 import EntityActions from "../components/EntityActions";
 import EditItemForm from "../components/items/EditItemForm";
 import {FormDataType} from "../models/CommonModels";
 import SubmitActionModal from "../components/SubmitActionModal";
+import {
+  useDeleteItemMutation,
+  useFindItemByIdQuery,
+  useUpdateItemMutation
+} from "../generated/apollo-functions";
+import {ItemType} from "../generated/types";
 
 export default function Item() {
   const {id} = useParams();
   const navigate = useNavigate();
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
-  const {data, loading: fetchLoading, error: fetchError} = useQuery(FIND_ITEM_BY_ID, {
-    variables: {id}
+  const {data, loading: fetchLoading, error: fetchError} = useFindItemByIdQuery({
+    variables: {id: id!}
   });
-  const [deleteItem, {loading: deleteLoading, error: deleteError}] = useMutation(DELETE_ITEM, {
-    variables: {id},
+  const [deleteItem, {loading: deleteLoading, error: deleteError}] = useDeleteItemMutation({
+    variables: {id: id!},
     onCompleted: () => {
       setIsApproveModalOpen(false);
       setAlertData({
@@ -29,7 +33,7 @@ export default function Item() {
       navigate('/items');
     }
   });
-  const [updateItem, {loading: editLoading, error: editError}] = useMutation(UPDATE_ITEM, {
+  const [updateItem, {loading: editLoading, error: editError}] = useUpdateItemMutation({
     onQueryUpdated: () => {
       setAlertData({
         isOpen: true,
@@ -41,6 +45,8 @@ export default function Item() {
   });
   const {setLoading, setAlertData} = useLoading();
   const [isEdit, setIsEdit] = useState(false);
+
+  const item = data?.findItemByID;
 
   useEffect(() => {
     setLoading(fetchLoading || deleteLoading || editLoading);
@@ -66,10 +72,10 @@ export default function Item() {
   const handleEditItem = async (formData: FormDataType) => {
     await updateItem({
       variables: {
-        id: id,
+        id: id!,
         data: {
           name: formData.name.value,
-          type: formData.type.value,
+          type: formData.type.value as ItemType,
           description: formData.description.value
         }
       }
@@ -84,31 +90,31 @@ export default function Item() {
             onSubmit={handleEditItem}
             onCancel={toggleEditItem}
             editData={{
-              name: data.findItemByID.name,
-              type: data.findItemByID.type,
-              description: data.findItemByID.description
+              name: item!.name,
+              type: item!.type,
+              description: item!.description || ''
             }}
           />
           : (
             <>
               {
-                data && data.findItemByID &&
+                item &&
                 <>
                   <div className="flex justify-between items-center w-full">
                     <BaseAvatar
-                      alt={data.findItemByID.name}
+                      alt={item.name}
                       size={60}
                       variant="square"
                       className="mr-4"
                     />
                     <div className="flex flex-col flex-1 space-y-4">
-                      <span>{data.findItemByID.name}</span>
-                      <span>{data.findItemByID.type}</span>
+                      <span>{item.name}</span>
+                      <span>{item.type}</span>
                     </div>
                   </div>
                   {
-                    data.findItemByID.description &&
-                    <p className="my-4">{data.findItemByID.description}</p>
+                    item.description &&
+                    <p className="my-4">{item.description}</p>
                   }
                   <EntityActions
                     onDelete={handleDeleteItem}

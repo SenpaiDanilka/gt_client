@@ -1,4 +1,3 @@
-import {UserModel} from "../models/AuthModels";
 import React from "react";
 import BaseAvatar from "./BaseComponents/BaseAvatar";
 import {ButtonGroup, Divider} from "@mui/material";
@@ -6,9 +5,10 @@ import BaseButton from "./BaseComponents/BaseButton";
 import {useTranslation} from "react-i18next";
 import BaseContainer from "./BaseComponents/BaseContainer";
 import {useNavigate} from "react-router-dom";
+import {ShortUser} from "../generated/types";
 
 interface Props {
-  user: UserModel
+  user: ShortUser | null
 }
 
 const UserProfile: React.FC<Props> = ({
@@ -19,14 +19,14 @@ const UserProfile: React.FC<Props> = ({
   /*TODO needs refactor with nested url*/
   const buttonGroupButtons = ['items', 'spaces', 'contacts']
     .map((key) => {
-      const counterKey = `${key}_count` as keyof UserModel;
+      const counterKey = `${key}_count` as keyof ShortUser;
       return (
         <BaseButton
           variant="outlined"
           key={key}
           onClick={() => navigate(`/${key}`)}
         >
-          {t(key) + ': ' + user[counterKey]}
+          {t(key) + ': ' + user?.[counterKey]}
         </BaseButton>
       );
     });
@@ -35,12 +35,11 @@ const UserProfile: React.FC<Props> = ({
     <BaseContainer className="max-w-[700px]">
       <div className="flex items-center p-4">
         <BaseAvatar
-          image={user.photo}
-          alt={user.name}
+          alt={user?.name}
           size={40}
           className="mr-2"
         />
-        {user.name}
+        {user?.name}
       </div>
       <Divider variant="middle" />
       <div className="flex justify-center">

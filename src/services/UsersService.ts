@@ -11,6 +11,7 @@ export const DELETE_CONTACT = gql`
 export const CREATE_CONTACT = gql`
   mutation CreateContact($owner: String!, $user: String!) {
     createContact(owner: $owner, user: $user) {
+      _id,
       owner {
         _id
         name
@@ -24,7 +25,7 @@ export const CREATE_CONTACT = gql`
 `;
 
 export const GET_USER_CONTACTS = gql`
-  query FindUserByID($id: ID!) {
+  query FindUserContactsByID($id: ID!) {
     findUserByID(id: $id) {
       contacts {
         data {
@@ -44,6 +45,18 @@ export const FIND_USER_BY_EMAIL = gql`
     findUserByEmail(email: $email) {
       _id
       name
+    }
+  }
+`;
+
+export const GET_USER_BY_ID = gql`
+  query GetUserById($id: String!) {
+    getUserById(id: $id) {
+      name
+      email
+      spaces_count
+      items_count
+      contacts_count
     }
   }
 `;

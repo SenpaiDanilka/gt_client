@@ -1,15 +1,15 @@
 import React, {useEffect} from "react";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
-import {useMutation} from "@apollo/client";
 import {useLoading} from "../contexts/LoadingContext";
 import {useNavigate} from "react-router-dom";
-import {CREATE_ITEM} from '../services/ItemsService'
 import EditItemForm from "../components/items/EditItemForm";
 import {FormDataType} from "../models/CommonModels";
+import {useCreateItemMutation} from "../generated/apollo-functions";
+import {ItemType} from "../generated/types";
 
 export default function ItemNew() {
   const navigate = useNavigate();
-  const [createItemFunc, {loading}] = useMutation(CREATE_ITEM);
+  const [createItemFunc, {loading}] = useCreateItemMutation();
   const {setLoading, setAlertData} = useLoading();
 
   useEffect(() => {
@@ -22,8 +22,8 @@ export default function ItemNew() {
       variables: {
         name: formData.name.value,
         description: formData.description.value,
-        type: formData.type.value,
-        owner: localStorage.getItem("userId")
+        type: formData.type.value as ItemType,
+        owner: localStorage.getItem("userId")!
       }
     }).then((res) => {
       setAlertData({
@@ -31,7 +31,7 @@ export default function ItemNew() {
         text: 'Item has been created',
         type: 'success'
       });
-      const itemId = res.data.createItem._id;
+      const itemId = res.data!.createItem!._id;
       navigate(`/items/${itemId}`);
     }).catch(() => {
       setAlertData({

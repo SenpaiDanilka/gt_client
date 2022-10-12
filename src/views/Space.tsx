@@ -8,12 +8,11 @@ import BaseMenu from "../components/BaseComponents/BaseMenu";
 import PopperWithAutocomplete, {OptionsDataType} from "../components/PopperWithAutocomplete";
 import AddButton from "../components/AddButton";
 import {useLoading} from "../contexts/LoadingContext";
-import {DELETE_SPACE, FIND_SPACE_BY_ID, UPDATE_SPACE} from "../services/SpacesService";
-import {useQuery, useMutation} from '@apollo/client';
 import EntityActions from "../components/EntityActions";
 import EditSpaceForm from "../components/spaces/EditSpaceForm";
 import {FormDataType} from "../models/CommonModels";
 import SubmitActionModal from "../components/SubmitActionModal";
+import {useDeleteSpaceMutation, useFindSpaceByIdQuery, useUpdateSpaceMutation} from "../generated/apollo-functions";
 
 const mockedSpaceItems = [
   {
@@ -63,13 +62,13 @@ export default function Space() {
   const {setLoading, setAlertData} = useLoading();
   const [isEdit, setIsEdit] = useState(false);
 
-  const {data, loading: spaceLoading, error: getSpaceError} = useQuery(FIND_SPACE_BY_ID, {
+  const {data, loading: spaceLoading, error: getSpaceError} = useFindSpaceByIdQuery({
     variables: {
-      id: id
+      id: id!
     }
   });
-  const [deleteSpace, {loading: deleteLoading, error: deleteSpaceError}] = useMutation(DELETE_SPACE);
-  const [updateSpace, {loading: editLoading, error: editError}] = useMutation(UPDATE_SPACE, {
+  const [deleteSpace, {loading: deleteLoading, error: deleteSpaceError}] = useDeleteSpaceMutation();
+  const [updateSpace, {loading: editLoading, error: editError}] = useUpdateSpaceMutation({
     onQueryUpdated: () => {
       setAlertData({
         isOpen: true,
@@ -100,7 +99,7 @@ export default function Space() {
   const handleDeleteSpace = () => {
     deleteSpace({
       variables: {
-        id: id
+        id: id!
       }
     }).then(() => {
       setIsApproveModalOpen(false);
@@ -116,7 +115,7 @@ export default function Space() {
   const handleEditSpace = async (formData: FormDataType) => {
     await updateSpace({
       variables: {
-        id: id,
+        id: id!,
         data: {
           name: formData.name.value,
           description: formData.description.value
@@ -185,8 +184,8 @@ export default function Space() {
                 onSubmit={handleEditSpace}
                 onCancel={toggleEditSpace}
                 editData={{
-                  name: data.findSpaceByID.name,
-                  description: data.findSpaceByID.description
+                  name: data!.findSpaceByID!.name,
+                  description: data!.findSpaceByID!.description || ''
                 }}
               />
             ) : (
