@@ -4,10 +4,11 @@ import React from "react";
 import BaseAvatar from "./BaseComponents/BaseAvatar";
 
 export interface OptionsDataType {
+  optionId: string;
   name: string;
   description?: string;
   type?: string;
-  id: number;
+  _id: string;
 }
 
 interface Props {

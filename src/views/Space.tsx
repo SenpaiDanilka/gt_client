@@ -8,64 +8,92 @@ import BaseMenu from "../components/BaseComponents/BaseMenu";
 import PopperWithAutocomplete, {OptionsDataType} from "../components/PopperWithAutocomplete";
 import AddButton from "../components/AddButton";
 import {useLoading} from "../contexts/LoadingContext";
-import {DELETE_SPACE, FIND_SPACE_BY_ID, UPDATE_SPACE} from "../services/SpacesService";
+import {DELETE_SPACE, FIND_SPACE_BY_ID, UPDATE_SPACE, CREATE_SPACE_CONTACT_LINK, DELETE_SPACE_CONTACT_LINK} from "../services/SpacesService";
+import {CREATE_AVAILABLE_ITEM, GET_USER_ITEMS, GET_SPACE_ITEMS, DELETE_ITEM_FROM_SPACE} from "../services/ItemsService";
+import {GET_USER_CONTACTS} from '../services/UsersService'
 import {useQuery, useMutation} from '@apollo/client';
 import EntityActions from "../components/EntityActions";
 import EditSpaceForm from "../components/spaces/EditSpaceForm";
 import {FormDataType} from "../models/CommonModels";
-
-const mockedSpaceItems = [
-  {
-    name: 'Item name 1',
-    description: 'Item description 1',
-    type: 'OTHERS',
-    id: 1
-  },
-  {
-    name: 'Item name 2',
-    description: 'Item description 2',
-    type: 'ELECTRONICS',
-    id: 2
-  },
-  {
-    name: 'Item name 3',
-    description: 'Item description 3',
-    type: 'VEHICLE',
-    id: 3
-  }
-];
-
-const mockedSpaceUsers = [
-  {
-    name: 'User name 1',
-    id: 1
-  },
-  {
-    name: 'User name 2',
-    id: 2
-  },
-  {
-    name: 'User name 3',
-    id: 3
-  }
-];
+import { AvailabilityModel } from "../models/ItemsModels";
 
 export default function Space() {
   const {id} = useParams();
+  const userId = localStorage.getItem('userId')
   const navigate = useNavigate();
   const {t} = useTranslation('common');
   const [tab, setTab] = useState(0);
+  const [availableItems, setAvailableItems] = useState<OptionsDataType[]>([]);
+  const [availableUsers, setAvailableUsers] = useState<OptionsDataType[]>([]);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  const [spaceItems, setSpaceItems] = useState<OptionsDataType[]>(mockedSpaceItems);
-  const [spaceUsers, setSpaceUsers] = useState<OptionsDataType[]>(mockedSpaceUsers);
+  const [spaceItems, setSpaceItems] = useState<OptionsDataType[]>([]);
+  const [spaceUsers, setSpaceUsers] = useState<OptionsDataType[]>([]);
   const {setLoading, setAlertData} = useLoading();
   const [isEdit, setIsEdit] = useState(false);
 
-  const {data, loading: spaceLoading, error: getSpaceError} = useQuery(FIND_SPACE_BY_ID, {
+  const {data: findSpaceByIdData, loading: spaceLoading, error: getSpaceError} = useQuery(FIND_SPACE_BY_ID, {
     variables: {
       id: id
     }
   });
+
+  useEffect(() => {
+    if (findSpaceByIdData?.findSpaceByID.contacts.data.length) {
+      setSpaceUsers(findSpaceByIdData?.findSpaceByID.contacts.data.map((contactLink: any) => ({
+        _id: contactLink._id,
+        name: contactLink.contact.user.name,
+        optionId: contactLink.contact.user._id
+      })))
+    }
+  }, [findSpaceByIdData])
+
+  const {data: userContactsData, loading: userContactsLoading} = useQuery(GET_USER_CONTACTS, {
+    variables: {
+      id: userId
+    }
+  });
+
+  useEffect(() => {
+    if (userContactsData?.findUserByID.contacts.data.length) {
+      setAvailableUsers(userContactsData?.findUserByID.contacts.data.map((contact: any) => ({
+        _id: contact._id,
+        name: contact.user.name,
+        optionId: contact.user._id
+      })))
+    }
+  }, [userContactsData])
+
+  const {data: userItemsData, loading: getUserItemsLoading} = useQuery(GET_USER_ITEMS, {
+    variables: {
+      id: userId
+    }
+  })
+
+  useEffect(() => {
+    if (userItemsData?.findUserByID.items.data.length) {
+      setAvailableItems(userItemsData.findUserByID.items.data)
+    }
+  }, [userItemsData])
+
+  const {data: spaceItemsData, loading: getSpaceItemsLoading} = useQuery(GET_SPACE_ITEMS, {
+    variables: {
+      model: AvailabilityModel.SPACE,
+      model_id: id
+    }
+  })
+
+  useEffect(() => {
+    if (spaceItemsData?.getModelItems.length) {
+      setSpaceItems(spaceItemsData?.getModelItems.map((availableItem: any) => ({
+        _id: availableItem._id,
+        name: availableItem.item.name,
+        description: availableItem.item.description,
+        type: availableItem.item.type,
+        optionId: availableItem.item._id
+      })))
+    }
+  }, [spaceItemsData])
+
   const [deleteSpace, {loading: deleteLoading, error: deleteSpaceError}] = useMutation(DELETE_SPACE);
   const [updateSpace, {loading: editLoading, error: editError}] = useMutation(UPDATE_SPACE, {
     onQueryUpdated: () => {
@@ -79,9 +107,23 @@ export default function Space() {
   });
 
   useEffect(() => {
-    setLoading(spaceLoading || deleteLoading || editLoading);
+    setLoading(
+      deleteLoading ||
+      editLoading ||
+      spaceLoading ||
+      getSpaceItemsLoading ||
+      getUserItemsLoading ||
+      userContactsLoading
+    );
     return () => setLoading(false);
-  }, [spaceLoading, deleteLoading, editLoading]);
+  }, [
+    deleteLoading,
+    editLoading,
+    spaceLoading,
+    getUserItemsLoading,
+    getSpaceItemsLoading,
+    userContactsLoading
+  ]);
 
   useEffect(() => {
     (getSpaceError || deleteSpaceError || editError) && setAlertData({
@@ -137,40 +179,91 @@ export default function Space() {
   const memoizedAvailableItems = useMemo(() => {
     return availableItems
       .filter(item => spaceItems
-        .findIndex(spaceItem => spaceItem.id === item.id) === -1);
-  }, [spaceItems]);
+        .findIndex(spaceItem => spaceItem.optionId === item._id) === -1);
+  }, [spaceItems, availableItems]);
 
   const memoizedAvailableUsers = useMemo(() => {
     return availableUsers
       .filter(item => spaceUsers
-        .findIndex(spaceUser => spaceUser.id === item.id) === -1);
-  }, [spaceUsers]);
+        .findIndex(spaceUser => spaceUser.optionId === item.optionId) === -1);
+  }, [spaceUsers, availableUsers]);
 
   const handleSelect = (val: OptionsDataType | null, key: string) => {
     if (key === 'items') {
-      setSpaceItems(current => {
-        return [...current, val!];
-      });
+      createAvailableItem({
+        variables: {
+          model: AvailabilityModel.SPACE,
+          model_id: id,
+          item_id: val!._id
+        }
+      }).then((res: any) => {
+        setSpaceItems(current => {
+          return [...current, {
+            _id: res.data.createAvailableItem._id,
+            name: res.data.createAvailableItem.item.name,
+            description: res.data.createAvailableItem.item.description,
+            type: res.data.createAvailableItem.item.type,
+            optionId: res.data.createAvailableItem.item._id
+          }];
+        });
+      })
     }
     if (key === 'users') {
-      setSpaceUsers(current => {
-        return [...current, val!];
-      });
+      createSpaceContactLink({
+        variables: {
+          data: {
+            space: {
+              connect: id
+            },
+            contact: {
+              connect: val!._id
+            }
+          }
+        }
+      }).then((res: any) => {
+        setSpaceUsers(current => {
+          return [...current, {
+            _id: res.data.createSpaceContactLink._id,
+            name: res.data.createSpaceContactLink.contact.user.name,
+            optionId: res.data.createSpaceContactLink.contact.user._id
+          }];
+        });
+      })
     }
   }
 
-  const deleteFromSpace = (id: number) => {
+  const deleteFromSpace = (id: string) => {
     tab === 0
-      ? setSpaceItems((current) =>
-        current.filter((item) => item.id !== id))
-      : setSpaceUsers((current) =>
-        current.filter((item) => item.id !== id))
+      ? deleteItemFromSpace({
+        variables: {
+          id: id
+        }
+      }).then(_ => {
+        setSpaceItems((current) =>
+          current.filter((item) => item._id !== id))
+      })
+      : deleteContactFromSpace({
+        variables: {
+          id: id
+        }
+      }).then(_ => {
+        setSpaceUsers((current) =>
+          current.filter((item) => item._id !== id))
+      })
     setAlertData({
       isOpen: true,
       text: 'Has been deleted',
       type: 'success'
     });
   };
+
+  const [createSpaceContactLink] = useMutation(CREATE_SPACE_CONTACT_LINK);
+
+  const [createAvailableItem] = useMutation(CREATE_AVAILABLE_ITEM);
+
+  const [deleteItemFromSpace] = useMutation(DELETE_ITEM_FROM_SPACE);
+
+  const [deleteContactFromSpace] = useMutation(DELETE_SPACE_CONTACT_LINK);
 
   return (
     <div className="p-4">
@@ -182,18 +275,18 @@ export default function Space() {
                 onSubmit={handleEditSpace}
                 onCancel={toggleEditSpace}
                 editData={{
-                  name: data.findSpaceByID.name,
-                  description: data.findSpaceByID.description
+                  name: findSpaceByIdData.findSpaceByID.name,
+                  description: findSpaceByIdData.findSpaceByID.description
                 }}
               />
             ) : (
               <>
                 {
-                  data && data.findSpaceByID &&
+                  findSpaceByIdData && findSpaceByIdData.findSpaceByID &&
                   <>
                     <div className="flex flex-col space-y-4 mb-2">
-                      <span>{data.findSpaceByID.name}</span>
-                      <span>{data.findSpaceByID.description}</span>
+                      <span>{findSpaceByIdData.findSpaceByID.name}</span>
+                      <span>{findSpaceByIdData.findSpaceByID.description}</span>
                     </div>
                     <div className="flex justify-center items-center">
                       {
@@ -258,11 +351,12 @@ const TabPanels = (
   tab: number,
   spaceItems: OptionsDataType[],
   spaceUsers: OptionsDataType[],
-  handleDelete: (id: number) => void,
+  handleDelete: (id: string) => void,
   navigate: Function
 ): ReactNode => {
 
-  const menuOptions = (id: number) => ([
+
+  const menuOptions = (id: string) => ([
     {
       children: 'Delete from space',
       id: 'delete',
@@ -285,7 +379,7 @@ const TabPanels = (
             spaceItems.map((item) => (
               <div
                 className="flex justify-between items-center"
-                key={item.id}
+                key={item._id}
               >
                 <div className="flex justify-between items-center p-4 w-full">
                   <BaseAvatar
@@ -300,7 +394,7 @@ const TabPanels = (
                   </div>
                   <span>{item.type}</span>
                 </div>
-                <BaseMenu options={menuOptions(item.id)}/>
+                <BaseMenu options={menuOptions(item._id)}/>
               </div>
             ))
           )
@@ -308,7 +402,7 @@ const TabPanels = (
             spaceUsers.map((user) => (
               <div
                 className="flex justify-between items-center"
-                key={user.id}
+                key={user._id}
               >
                 <div className="flex items-center p-4">
                   <BaseAvatar
@@ -318,7 +412,7 @@ const TabPanels = (
                   />
                   {user.name}
                 </div>
-                <BaseMenu options={menuOptions(user.id)}/>
+                <BaseMenu options={menuOptions(user._id)}/>
               </div>
             ))
           )
@@ -326,125 +420,3 @@ const TabPanels = (
     </div>
   );
 }
-
-const availableUsers = [
-  {
-    name: 'TestUser1',
-    id: 1
-  },
-  {
-    name: 'TestUser2',
-    id: 2
-  },
-  {
-    name: 'TestUser3',
-    id: 3
-  },
-  {
-    name: 'TestUser4',
-    id: 4
-  },
-  {
-    name: 'TestUser5',
-    id: 5
-  },
-  {
-    name: 'TestUser6',
-    id: 6
-  },
-  {
-    name: 'TestUser7',
-    id: 7
-  },
-  {
-    name: 'TestUser8',
-    id: 8
-  },
-  {
-    name: 'TestUser9',
-    id: 9
-  },
-  {
-    name: 'TestUser10',
-    id: 10
-  },
-  {
-    name: 'TestUser11',
-    id: 11
-  }
-];
-
-const availableItems = [
-  {
-    name: 'TestItem1',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 1
-  },
-  {
-    name: 'TestItem2',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 2
-  },
-  {
-    name: 'TestItem3',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 3
-  },
-  {
-    name: 'TestItem4',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 4
-  },
-  {
-    name: 'TestItem5',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 4
-  },
-  {
-    name: 'TestItem6',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 5
-  },
-  {
-    name: 'TestItem7',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 6
-  },
-  {
-    name: 'TestItem8',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 7
-  },
-  {
-    name: 'TestItem9',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 8
-  },
-  {
-    name: 'TestItem10',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 9
-  },
-  {
-    name: 'TestItem11',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 10
-  },
-  {
-    name: 'TestItem12',
-    description: 'some desc',
-    type: 'OTHERS',
-    id: 11
-  }
-];
