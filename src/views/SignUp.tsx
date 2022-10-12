@@ -1,5 +1,4 @@
-import {gql, useMutation} from "@apollo/client";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import BaseForm from "../components/BaseComponents/BaseForm";
 import useForm from "../hooks/useForm";
 import PasswordVisibilityButton from "../components/PasswordVisibilityButton";
@@ -8,15 +7,8 @@ import BaseButton from "../components/BaseComponents/BaseButton";
 import {isRequired, isValidEmail, maxLength, minLength} from "../utils/validate";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
 import {Link, useNavigate} from "react-router-dom";
-
-const SIGNUP = gql`
-  mutation UserSignUp( $name: String!, $email: String!, $password: String! ) {
-    registerUser(name: $name, email: $email, password: $password) {
-      name
-      email
-    }
-  }
-`;
+import {useUserSignUpMutation} from "../generated/apollo-functions";
+import {useLoading} from "../contexts/LoadingContext";
 
 const initialState = {
   name: '',
@@ -41,6 +33,7 @@ const formFieldsRules = {
 };
 
 const SignUp = () => {
+  const {setLoading, setAlertData} = useLoading();
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const {
     formData,
@@ -53,18 +46,14 @@ const SignUp = () => {
     onSubmit: doRegister,
     rules: formFieldsRules
   });
-  const [signUpFunc, {loading, error}] = useMutation(SIGNUP);
+  const [signUpFunc, {loading}] = useUserSignUpMutation();
   const {t} = useTranslation('common');
   const navigate = useNavigate();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    console.error(error);
-    return null;
-  }
+  useEffect(() => {
+    setLoading(loading);
+    return () => setLoading(false);
+  }, [loading]);
 
   function doRegister(e: React.FormEvent) {
     e.preventDefault();
@@ -76,10 +65,17 @@ const SignUp = () => {
       }
     })
       .then(resp => {
-          console.log('==>', resp);
-          navigate('/sign_in', { replace: true });
+        console.log('==>', resp);
+        navigate('/sign_in', { replace: true });
       })
-      .catch(e => console.log(e));
+      .catch(e => {
+        console.log(e);
+        setAlertData({
+          isOpen: true,
+          text: 'Smth went wrong',
+          type: 'error'
+        });
+      });
   }
 
   const formFieldsData = [
