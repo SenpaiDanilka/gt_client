@@ -13,10 +13,16 @@ type Contact {
   user: User!
 }
 
+type SpaceContactLink {
+  space: Space! @relation(name: "space_users")
+  contact: Contact!
+}
+
 type Space {
   name: String!
   description: String
   owner: User!
+  contacts: [SpaceContactLink!] @relation(name: "space_users")
 }
 
 type Item {
@@ -30,11 +36,6 @@ type AvailableItem {
   model: AvailabilityModel!
   model_id: String!
   item: Item!
-}
-
-type SpaceUser {
-  space: Space!
-  user: User!
 }
 
 enum AvailabilityModel {
@@ -92,6 +93,7 @@ type Mutation {
     model_id: String!
     item_id: String!
   ): AvailableItem @resolver(name: "CreateAvailableItem")
+
 }
 
 type ShortUser @embedded {

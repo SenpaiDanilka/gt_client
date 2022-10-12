@@ -3,6 +3,7 @@ import {gql} from '@apollo/client';
 export const GET_USER_SPACES = gql`
   query FindUserByID($id: ID!) {
     findUserByID(id: $id) {
+      _id
       spaces {
         data {
           _id
@@ -38,6 +39,18 @@ export const FIND_SPACE_BY_ID = gql`
       _id
       name
       description
+      contacts {
+        data {
+          _id
+          contact {
+            _id
+            user {
+              _id
+              name
+            }
+          }
+        }
+      }
     }
   }
 `;
@@ -48,6 +61,29 @@ export const UPDATE_SPACE = gql`
       _id
       name
       description
+    }
+  }
+`;
+
+export const CREATE_SPACE_CONTACT_LINK = gql`
+  mutation CreateSpaceContactLink($data: SpaceContactLinkInput!) {
+    createSpaceContactLink(data: $data) {
+      _id
+      contact {
+        _id
+        user {
+          _id
+          name
+        }
+      }
+    }
+  }
+`;
+
+export const DELETE_SPACE_CONTACT_LINK = gql`
+  mutation DeleteSpaceContactLink($id: ID!) {
+    deleteSpaceContactLink(id: $id) {
+      _id
     }
   }
 `;

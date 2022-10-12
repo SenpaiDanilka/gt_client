@@ -11,6 +11,7 @@ export const DELETE_ITEM = gql`
 export const GET_USER_ITEMS = gql`
   query FindUserByID($id: ID!) {
     findUserByID(id: $id) {
+      _id
       items {
         data {
           _id
@@ -39,7 +40,7 @@ export const GET_SPACE_ITEMS = gql`
 `;
 
 export const DELETE_ITEM_FROM_SPACE = gql`
-  query DeleteAvailableItem($id: ID!) {
+  mutation DeleteAvailableItem($id: ID!) {
     deleteAvailableItem(id: $id) {
       _id
     }
