@@ -143,8 +143,6 @@ export type Mutation = {
   createSpace?: Maybe<Space>;
   /** Create a new document in the collection of 'SpaceContactLink' */
   createSpaceContactLink: SpaceContactLink;
-  /** Create a new document in the collection of 'SpaceUser' */
-  createSpaceUser: SpaceUser;
   /** Create a new document in the collection of 'User' */
   createUser: User;
   /** Delete an existing document in the collection of 'AvailableItem' */
@@ -157,8 +155,6 @@ export type Mutation = {
   deleteSpace?: Maybe<Space>;
   /** Delete an existing document in the collection of 'SpaceContactLink' */
   deleteSpaceContactLink?: Maybe<SpaceContactLink>;
-  /** Delete an existing document in the collection of 'SpaceUser' */
-  deleteSpaceUser?: Maybe<SpaceUser>;
   /** Delete an existing document in the collection of 'User' */
   deleteUser?: Maybe<User>;
   login?: Maybe<Token>;
@@ -172,8 +168,6 @@ export type Mutation = {
   partialUpdateSpace?: Maybe<Space>;
   /** Partially updates an existing document in the collection of 'SpaceContactLink'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'. */
   partialUpdateSpaceContactLink?: Maybe<SpaceContactLink>;
-  /** Partially updates an existing document in the collection of 'SpaceUser'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'. */
-  partialUpdateSpaceUser?: Maybe<SpaceUser>;
   /** Partially updates an existing document in the collection of 'User'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'. */
   partialUpdateUser?: Maybe<User>;
   registerUser?: Maybe<User>;
@@ -187,8 +181,6 @@ export type Mutation = {
   updateSpace?: Maybe<Space>;
   /** Update an existing document in the collection of 'SpaceContactLink' */
   updateSpaceContactLink?: Maybe<SpaceContactLink>;
-  /** Update an existing document in the collection of 'SpaceUser' */
-  updateSpaceUser?: Maybe<SpaceUser>;
   /** Update an existing document in the collection of 'User' */
   updateUser?: Maybe<User>;
 };
@@ -227,11 +219,6 @@ export type MutationCreateSpaceContactLinkArgs = {
 };
 
 
-export type MutationCreateSpaceUserArgs = {
-  data: SpaceUserInput;
-};
-
-
 export type MutationCreateUserArgs = {
   data: UserInput;
 };
@@ -258,11 +245,6 @@ export type MutationDeleteSpaceArgs = {
 
 
 export type MutationDeleteSpaceContactLinkArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationDeleteSpaceUserArgs = {
   id: Scalars['ID'];
 };
 
@@ -308,12 +290,6 @@ export type MutationPartialUpdateSpaceContactLinkArgs = {
 };
 
 
-export type MutationPartialUpdateSpaceUserArgs = {
-  data: PartialUpdateSpaceUserInput;
-  id: Scalars['ID'];
-};
-
-
 export type MutationPartialUpdateUserArgs = {
   data: PartialUpdateUserInput;
   id: Scalars['ID'];
@@ -353,12 +329,6 @@ export type MutationUpdateSpaceArgs = {
 
 export type MutationUpdateSpaceContactLinkArgs = {
   data: SpaceContactLinkInput;
-  id: Scalars['ID'];
-};
-
-
-export type MutationUpdateSpaceUserArgs = {
-  data: SpaceUserInput;
   id: Scalars['ID'];
 };
 
@@ -412,12 +382,6 @@ export type PartialUpdateSpaceInput = {
   owner?: InputMaybe<SpaceOwnerRelation>;
 };
 
-/** 'SpaceUser' input values */
-export type PartialUpdateSpaceUserInput = {
-  space?: InputMaybe<SpaceUserSpaceRelation>;
-  user?: InputMaybe<SpaceUserUserRelation>;
-};
-
 /** 'Token' input values */
 export type PartialUpdateTokenInput = {
   email?: InputMaybe<Scalars['String']>;
@@ -449,11 +413,10 @@ export type Query = {
   findSpaceByID?: Maybe<Space>;
   /** Find a document from the collection of 'SpaceContactLink' by its id. */
   findSpaceContactLinkByID?: Maybe<SpaceContactLink>;
-  /** Find a document from the collection of 'SpaceUser' by its id. */
-  findSpaceUserByID?: Maybe<SpaceUser>;
   findUserByEmail?: Maybe<User>;
   /** Find a document from the collection of 'User' by its id. */
   findUserByID?: Maybe<User>;
+  getItems?: Maybe<Array<Item>>;
   getModelItems?: Maybe<Array<AvailableItem>>;
   getUserByEmail?: Maybe<ShortUser>;
   getUserById?: Maybe<ShortUser>;
@@ -486,11 +449,6 @@ export type QueryFindSpaceContactLinkByIdArgs = {
 };
 
 
-export type QueryFindSpaceUserByIdArgs = {
-  id: Scalars['ID'];
-};
-
-
 export type QueryFindUserByEmailArgs = {
   email?: InputMaybe<Scalars['String']>;
 };
@@ -498,6 +456,11 @@ export type QueryFindUserByEmailArgs = {
 
 export type QueryFindUserByIdArgs = {
   id: Scalars['ID'];
+};
+
+
+export type QueryGetItemsArgs = {
+  user_id?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -636,38 +599,6 @@ export type SpacePage = {
   before?: Maybe<Scalars['String']>;
   /** The elements of type 'Space' in this page. */
   data: Array<Maybe<Space>>;
-};
-
-export type SpaceUser = {
-  __typename?: 'SpaceUser';
-  /** The document's ID. */
-  _id: Scalars['ID'];
-  /** The document's timestamp. */
-  _ts: Scalars['Long'];
-  space: Space;
-  user: User;
-};
-
-/** 'SpaceUser' input values */
-export type SpaceUserInput = {
-  space?: InputMaybe<SpaceUserSpaceRelation>;
-  user?: InputMaybe<SpaceUserUserRelation>;
-};
-
-/** Allow manipulating the relationship between the types 'SpaceUser' and 'Space' using the field 'SpaceUser.space'. */
-export type SpaceUserSpaceRelation = {
-  /** Connect a document of type 'Space' with the current document using its ID. */
-  connect?: InputMaybe<Scalars['ID']>;
-  /** Create a document of type 'Space' and associate it with the current document. */
-  create?: InputMaybe<SpaceInput>;
-};
-
-/** Allow manipulating the relationship between the types 'SpaceUser' and 'User' using the field 'SpaceUser.user'. */
-export type SpaceUserUserRelation = {
-  /** Connect a document of type 'User' with the current document using its ID. */
-  connect?: InputMaybe<Scalars['ID']>;
-  /** Create a document of type 'User' and associate it with the current document. */
-  create?: InputMaybe<UserInput>;
 };
 
 export type Token = {

@@ -11,6 +11,7 @@ export const DELETE_ITEM = gql`
 export const GET_USER_ITEMS = gql`
   query FindUserItemsByID($id: ID!) {
     findUserByID(id: $id) {
+      _id
       items {
         data {
           _id
@@ -19,6 +20,29 @@ export const GET_USER_ITEMS = gql`
           type
         }
       }
+    }
+  }
+`;
+
+export const GET_SPACE_ITEMS = gql`
+  query GetModelItems($model: AvailabilityModel!, $model_id: String!) {
+    getModelItems(model: $model, model_id: $model_id) {
+      _id
+      model
+      model_id
+      item {
+        _id
+        name
+        description
+      }
+    }
+  }
+`;
+
+export const DELETE_ITEM_FROM_SPACE = gql`
+  mutation DeleteAvailableItem($id: ID!) {
+    deleteAvailableItem(id: $id) {
+      _id
     }
   }
 `;
@@ -41,6 +65,22 @@ export const CREATE_ITEM = gql`
       name
       description
       type
+    }
+  }
+`;
+
+export const CREATE_AVAILABLE_ITEM = gql`
+  mutation CreateAvailableItem($model: AvailabilityModel!, $model_id: String!, $item_id: String!) {
+    createAvailableItem(model: $model, model_id: $model_id, item_id: $item_id) {
+      _id
+      model
+      model_id
+      item {
+        _id
+        type
+        name
+        description
+      }
     }
   }
 `;

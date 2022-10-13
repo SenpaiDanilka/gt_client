@@ -1,28 +1,118 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 import {
+  CreateAvailableItemMutation,
+  CreateAvailableItemMutationVariables,
   CreateContactMutation,
   CreateContactMutationVariables,
   CreateItemMutation,
-  CreateItemMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables,
-  DeleteContactMutation, DeleteContactMutationVariables, DeleteItemMutation,
+  CreateItemMutationVariables,
+  CreateSpaceContactLinkMutation,
+  CreateSpaceContactLinkMutationVariables,
+  CreateSpaceMutation, CreateSpaceMutationVariables,
+  DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables,
+  DeleteContactMutation,
+  DeleteContactMutationVariables,
+  DeleteItemMutation,
   DeleteItemMutationVariables,
+  DeleteSpaceContactLinkMutation,
+  DeleteSpaceContactLinkMutationVariables,
   DeleteSpaceMutation,
   DeleteSpaceMutationVariables, FindItemByIdQuery,
   FindItemByIdQueryVariables,
   FindSpaceByIdQuery, FindSpaceByIdQueryVariables, FindUserByEmailQuery,
   FindUserByEmailQueryVariables,
-  FindUserContactsByIdQuery, FindUserContactsByIdQueryVariables,
+  FindUserContactsByIdQuery,
+  FindUserContactsByIdQueryVariables,
   FindUserItemsByIdQuery,
   FindUserItemsByIdQueryVariables, FindUserSpacesByIdQuery,
-  FindUserSpacesByIdQueryVariables, GetUserByIdQuery,
+  FindUserSpacesByIdQueryVariables,
+  GetModelItemsQuery,
+  GetModelItemsQueryVariables, GetUserByIdQuery,
   GetUserByIdQueryVariables,
   UpdateItemMutation, UpdateItemMutationVariables,
-  UpdateSpaceMutation, UpdateSpaceMutationVariables, UserLoginMutation,
-  UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables
+  UpdateSpaceMutation,
+  UpdateSpaceMutationVariables,
+  UserLoginMutation,
+  UserLoginMutationVariables,
+  UserSignUpMutation,
+  UserSignUpMutationVariables
 } from "./operations";
 const defaultOptions = {} as const;
 
+export const UserLoginDocument = gql`
+    mutation UserLogin($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    ttl
+    secret
+    email
+    userId
+  }
+}
+    `;
+export type UserLoginMutationFn = Apollo.MutationFunction<UserLoginMutation, UserLoginMutationVariables>;
+
+/**
+ * __useUserLoginMutation__
+ *
+ * To run a mutation, you first call `useUserLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userLoginMutation, { data, loading, error }] = useUserLoginMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useUserLoginMutation(baseOptions?: Apollo.MutationHookOptions<UserLoginMutation, UserLoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserLoginMutation, UserLoginMutationVariables>(UserLoginDocument, options);
+      }
+export type UserLoginMutationHookResult = ReturnType<typeof useUserLoginMutation>;
+export type UserLoginMutationResult = Apollo.MutationResult<UserLoginMutation>;
+export type UserLoginMutationOptions = Apollo.BaseMutationOptions<UserLoginMutation, UserLoginMutationVariables>;
+export const UserSignUpDocument = gql`
+    mutation UserSignUp($name: String!, $email: String!, $password: String!) {
+  registerUser(name: $name, email: $email, password: $password) {
+    name
+    email
+  }
+}
+    `;
+export type UserSignUpMutationFn = Apollo.MutationFunction<UserSignUpMutation, UserSignUpMutationVariables>;
+
+/**
+ * __useUserSignUpMutation__
+ *
+ * To run a mutation, you first call `useUserSignUpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUserSignUpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [userSignUpMutation, { data, loading, error }] = useUserSignUpMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useUserSignUpMutation(baseOptions?: Apollo.MutationHookOptions<UserSignUpMutation, UserSignUpMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UserSignUpMutation, UserSignUpMutationVariables>(UserSignUpDocument, options);
+      }
+export type UserSignUpMutationHookResult = ReturnType<typeof useUserSignUpMutation>;
+export type UserSignUpMutationResult = Apollo.MutationResult<UserSignUpMutation>;
+export type UserSignUpMutationOptions = Apollo.BaseMutationOptions<UserSignUpMutation, UserSignUpMutationVariables>;
 export const DeleteItemDocument = gql`
     mutation DeleteItem($id: ID!) {
   deleteItem(id: $id) {
@@ -59,6 +149,7 @@ export type DeleteItemMutationOptions = Apollo.BaseMutationOptions<DeleteItemMut
 export const FindUserItemsByIdDocument = gql`
     query FindUserItemsByID($id: ID!) {
   findUserByID(id: $id) {
+    _id
     items {
       data {
         _id
@@ -98,6 +189,82 @@ export function useFindUserItemsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FindUserItemsByIdQueryHookResult = ReturnType<typeof useFindUserItemsByIdQuery>;
 export type FindUserItemsByIdLazyQueryHookResult = ReturnType<typeof useFindUserItemsByIdLazyQuery>;
 export type FindUserItemsByIdQueryResult = Apollo.QueryResult<FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables>;
+export const GetModelItemsDocument = gql`
+    query GetModelItems($model: AvailabilityModel!, $model_id: String!) {
+  getModelItems(model: $model, model_id: $model_id) {
+    _id
+    model
+    model_id
+    item {
+      _id
+      name
+      description
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetModelItemsQuery__
+ *
+ * To run a query within a React component, call `useGetModelItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetModelItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetModelItemsQuery({
+ *   variables: {
+ *      model: // value for 'model'
+ *      model_id: // value for 'model_id'
+ *   },
+ * });
+ */
+export function useGetModelItemsQuery(baseOptions: Apollo.QueryHookOptions<GetModelItemsQuery, GetModelItemsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetModelItemsQuery, GetModelItemsQueryVariables>(GetModelItemsDocument, options);
+      }
+export function useGetModelItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModelItemsQuery, GetModelItemsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetModelItemsQuery, GetModelItemsQueryVariables>(GetModelItemsDocument, options);
+        }
+export type GetModelItemsQueryHookResult = ReturnType<typeof useGetModelItemsQuery>;
+export type GetModelItemsLazyQueryHookResult = ReturnType<typeof useGetModelItemsLazyQuery>;
+export type GetModelItemsQueryResult = Apollo.QueryResult<GetModelItemsQuery, GetModelItemsQueryVariables>;
+export const DeleteAvailableItemDocument = gql`
+    mutation DeleteAvailableItem($id: ID!) {
+  deleteAvailableItem(id: $id) {
+    _id
+  }
+}
+    `;
+export type DeleteAvailableItemMutationFn = Apollo.MutationFunction<DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables>;
+
+/**
+ * __useDeleteAvailableItemMutation__
+ *
+ * To run a mutation, you first call `useDeleteAvailableItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAvailableItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAvailableItemMutation, { data, loading, error }] = useDeleteAvailableItemMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteAvailableItemMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables>(DeleteAvailableItemDocument, options);
+      }
+export type DeleteAvailableItemMutationHookResult = ReturnType<typeof useDeleteAvailableItemMutation>;
+export type DeleteAvailableItemMutationResult = Apollo.MutationResult<DeleteAvailableItemMutation>;
+export type DeleteAvailableItemMutationOptions = Apollo.BaseMutationOptions<DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables>;
 export const FindItemByIdDocument = gql`
     query FindItemByID($id: ID!) {
   findItemByID(id: $id) {
@@ -175,6 +342,49 @@ export function useCreateItemMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateItemMutationHookResult = ReturnType<typeof useCreateItemMutation>;
 export type CreateItemMutationResult = Apollo.MutationResult<CreateItemMutation>;
 export type CreateItemMutationOptions = Apollo.BaseMutationOptions<CreateItemMutation, CreateItemMutationVariables>;
+export const CreateAvailableItemDocument = gql`
+    mutation CreateAvailableItem($model: AvailabilityModel!, $model_id: String!, $item_id: String!) {
+  createAvailableItem(model: $model, model_id: $model_id, item_id: $item_id) {
+    _id
+    model
+    model_id
+    item {
+      _id
+      type
+      name
+      description
+    }
+  }
+}
+    `;
+export type CreateAvailableItemMutationFn = Apollo.MutationFunction<CreateAvailableItemMutation, CreateAvailableItemMutationVariables>;
+
+/**
+ * __useCreateAvailableItemMutation__
+ *
+ * To run a mutation, you first call `useCreateAvailableItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAvailableItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAvailableItemMutation, { data, loading, error }] = useCreateAvailableItemMutation({
+ *   variables: {
+ *      model: // value for 'model'
+ *      model_id: // value for 'model_id'
+ *      item_id: // value for 'item_id'
+ *   },
+ * });
+ */
+export function useCreateAvailableItemMutation(baseOptions?: Apollo.MutationHookOptions<CreateAvailableItemMutation, CreateAvailableItemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAvailableItemMutation, CreateAvailableItemMutationVariables>(CreateAvailableItemDocument, options);
+      }
+export type CreateAvailableItemMutationHookResult = ReturnType<typeof useCreateAvailableItemMutation>;
+export type CreateAvailableItemMutationResult = Apollo.MutationResult<CreateAvailableItemMutation>;
+export type CreateAvailableItemMutationOptions = Apollo.BaseMutationOptions<CreateAvailableItemMutation, CreateAvailableItemMutationVariables>;
 export const UpdateItemDocument = gql`
     mutation UpdateItem($id: ID!, $data: ItemInput!) {
   updateItem(id: $id, data: $data) {
@@ -215,6 +425,7 @@ export type UpdateItemMutationOptions = Apollo.BaseMutationOptions<UpdateItemMut
 export const FindUserSpacesByIdDocument = gql`
     query FindUserSpacesByID($id: ID!) {
   findUserByID(id: $id) {
+    _id
     spaces {
       data {
         _id
@@ -329,6 +540,18 @@ export const FindSpaceByIdDocument = gql`
     _id
     name
     description
+    contacts {
+      data {
+        _id
+        contact {
+          _id
+          user {
+            _id
+            name
+          }
+        }
+      }
+    }
   }
 }
     `;
@@ -396,6 +619,79 @@ export function useUpdateSpaceMutation(baseOptions?: Apollo.MutationHookOptions<
 export type UpdateSpaceMutationHookResult = ReturnType<typeof useUpdateSpaceMutation>;
 export type UpdateSpaceMutationResult = Apollo.MutationResult<UpdateSpaceMutation>;
 export type UpdateSpaceMutationOptions = Apollo.BaseMutationOptions<UpdateSpaceMutation, UpdateSpaceMutationVariables>;
+export const CreateSpaceContactLinkDocument = gql`
+    mutation CreateSpaceContactLink($data: SpaceContactLinkInput!) {
+  createSpaceContactLink(data: $data) {
+    _id
+    contact {
+      _id
+      user {
+        _id
+        name
+      }
+    }
+  }
+}
+    `;
+export type CreateSpaceContactLinkMutationFn = Apollo.MutationFunction<CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables>;
+
+/**
+ * __useCreateSpaceContactLinkMutation__
+ *
+ * To run a mutation, you first call `useCreateSpaceContactLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSpaceContactLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSpaceContactLinkMutation, { data, loading, error }] = useCreateSpaceContactLinkMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateSpaceContactLinkMutation(baseOptions?: Apollo.MutationHookOptions<CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables>(CreateSpaceContactLinkDocument, options);
+      }
+export type CreateSpaceContactLinkMutationHookResult = ReturnType<typeof useCreateSpaceContactLinkMutation>;
+export type CreateSpaceContactLinkMutationResult = Apollo.MutationResult<CreateSpaceContactLinkMutation>;
+export type CreateSpaceContactLinkMutationOptions = Apollo.BaseMutationOptions<CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables>;
+export const DeleteSpaceContactLinkDocument = gql`
+    mutation DeleteSpaceContactLink($id: ID!) {
+  deleteSpaceContactLink(id: $id) {
+    _id
+  }
+}
+    `;
+export type DeleteSpaceContactLinkMutationFn = Apollo.MutationFunction<DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables>;
+
+/**
+ * __useDeleteSpaceContactLinkMutation__
+ *
+ * To run a mutation, you first call `useDeleteSpaceContactLinkMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSpaceContactLinkMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSpaceContactLinkMutation, { data, loading, error }] = useDeleteSpaceContactLinkMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteSpaceContactLinkMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables>(DeleteSpaceContactLinkDocument, options);
+      }
+export type DeleteSpaceContactLinkMutationHookResult = ReturnType<typeof useDeleteSpaceContactLinkMutation>;
+export type DeleteSpaceContactLinkMutationResult = Apollo.MutationResult<DeleteSpaceContactLinkMutation>;
+export type DeleteSpaceContactLinkMutationOptions = Apollo.BaseMutationOptions<DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables>;
 export const DeleteContactDocument = gql`
     mutation DeleteContact($id: ID!) {
   deleteContact(id: $id) {
@@ -474,6 +770,7 @@ export type CreateContactMutationOptions = Apollo.BaseMutationOptions<CreateCont
 export const FindUserContactsByIdDocument = gql`
     query FindUserContactsByID($id: ID!) {
   findUserByID(id: $id) {
+    _id
     contacts {
       data {
         _id
@@ -589,76 +886,3 @@ export function useGetUserByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
 export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
 export type GetUserByIdQueryResult = Apollo.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;
-export const UserLoginDocument = gql`
-    mutation UserLogin($email: String!, $password: String!) {
-  login(email: $email, password: $password) {
-    ttl
-    secret
-    email
-    userId
-  }
-}
-    `;
-export type UserLoginMutationFn = Apollo.MutationFunction<UserLoginMutation, UserLoginMutationVariables>;
-
-/**
- * __useUserLoginMutation__
- *
- * To run a mutation, you first call `useUserLoginMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUserLoginMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [userLoginMutation, { data, loading, error }] = useUserLoginMutation({
- *   variables: {
- *      email: // value for 'email'
- *      password: // value for 'password'
- *   },
- * });
- */
-export function useUserLoginMutation(baseOptions?: Apollo.MutationHookOptions<UserLoginMutation, UserLoginMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UserLoginMutation, UserLoginMutationVariables>(UserLoginDocument, options);
-      }
-export type UserLoginMutationHookResult = ReturnType<typeof useUserLoginMutation>;
-export type UserLoginMutationResult = Apollo.MutationResult<UserLoginMutation>;
-export type UserLoginMutationOptions = Apollo.BaseMutationOptions<UserLoginMutation, UserLoginMutationVariables>;
-export const UserSignUpDocument = gql`
-    mutation UserSignUp($name: String!, $email: String!, $password: String!) {
-  registerUser(name: $name, email: $email, password: $password) {
-    name
-    email
-  }
-}
-    `;
-export type UserSignUpMutationFn = Apollo.MutationFunction<UserSignUpMutation, UserSignUpMutationVariables>;
-
-/**
- * __useUserSignUpMutation__
- *
- * To run a mutation, you first call `useUserSignUpMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUserSignUpMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [userSignUpMutation, { data, loading, error }] = useUserSignUpMutation({
- *   variables: {
- *      name: // value for 'name'
- *      email: // value for 'email'
- *      password: // value for 'password'
- *   },
- * });
- */
-export function useUserSignUpMutation(baseOptions?: Apollo.MutationHookOptions<UserSignUpMutation, UserSignUpMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UserSignUpMutation, UserSignUpMutationVariables>(UserSignUpDocument, options);
-      }
-export type UserSignUpMutationHookResult = ReturnType<typeof useUserSignUpMutation>;
-export type UserSignUpMutationResult = Apollo.MutationResult<UserSignUpMutation>;
-export type UserSignUpMutationOptions = Apollo.BaseMutationOptions<UserSignUpMutation, UserSignUpMutationVariables>;

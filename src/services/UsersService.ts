@@ -27,6 +27,7 @@ export const CREATE_CONTACT = gql`
 export const GET_USER_CONTACTS = gql`
   query FindUserContactsByID($id: ID!) {
     findUserByID(id: $id) {
+      _id
       contacts {
         data {
           _id
