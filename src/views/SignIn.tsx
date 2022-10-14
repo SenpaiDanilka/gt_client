@@ -1,6 +1,5 @@
 import BaseForm from "./../components/BaseComponents/BaseForm";
 import React, {useEffect, useState} from "react";
-import {gql, useMutation} from "@apollo/client";
 import useForm from "../hooks/useForm";
 import PasswordVisibilityButton from "../components/PasswordVisibilityButton";
 import {useTranslation} from "react-i18next";
@@ -10,17 +9,7 @@ import Cookie from "js-cookie";
 import BaseContainer from "../components/BaseComponents/BaseContainer";
 import {Link, useNavigate} from "react-router-dom";
 import {useLoading} from "../contexts/LoadingContext";
-
-const LOGIN = gql`
-  mutation UserLogin($email: String!, $password: String! ) {
-    login(email: $email, password: $password) {
-      ttl
-      secret
-      email
-      userId
-    }
-  }
-`;
+import {useUserLoginMutation} from "../generated/apollo-functions";
 
 const initialState = {
   email: '',
@@ -40,7 +29,7 @@ const formFieldsRules = {
 
 const SignIn = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const [loginFunc, {data, loading}] = useMutation(LOGIN);
+  const [loginFunc, {data, loading}] = useUserLoginMutation();
   const {t} = useTranslation('common');
   const navigate = useNavigate()
   const {setLoading, setAlertData} = useLoading();
@@ -49,10 +38,10 @@ const SignIn = () => {
     if (data) {
       Cookie.set(
         'fauna-session',
-        JSON.stringify(data.login.secret),
-        {expires: data.ttl}
+        JSON.stringify(data.login!.secret),
+        {expires: new Date(data.login!.ttl)}
       )
-      localStorage.setItem("userId", data.login.userId)
+      localStorage.setItem("userId", data.login!.userId)
       navigate('/')
     }
   }, [data]);

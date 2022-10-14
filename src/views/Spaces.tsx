@@ -2,32 +2,46 @@ import EditableListWithSearch from "../components/EditableListWithSearch";
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
-import { DELETE_SPACE, GET_USER_SPACES } from "../services/SpacesService";
-import {NetworkStatus, useMutation, useQuery} from '@apollo/client';
+import { GET_USER_SPACES } from "../services/SpacesService";
+import {NetworkStatus} from '@apollo/client';
 import {useLoading} from "../contexts/LoadingContext";
+import SubmitActionModal from "../components/SubmitActionModal";
+import {useDeleteSpaceMutation, useFindUserSpacesByIdQuery} from "../generated/apollo-functions";
+import {FindUserSpacesByIdQuery} from "../generated/operations";
 
 const Spaces = () => {
   const userId = localStorage.getItem("userId")
   const navigate = useNavigate();
   const {setLoading, setAlertData} = useLoading();
   const [searchValue, setSearchValue] = useState('');
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [deleteSpaceId, setDeleteSpaceId] = useState('');
 
-  const {data, networkStatus} = useQuery(GET_USER_SPACES, {
+  const handleOnDeleteClick = (id: string) => {
+    setDeleteSpaceId(id);
+    setIsApproveModalOpen(true);
+  };
+  const handleCancelDeleteClick = () => {
+    setIsApproveModalOpen(false);
+  };
+
+  const {data, networkStatus} = useFindUserSpacesByIdQuery({
     variables: {
-      id: userId
+      id: userId!
     },
     fetchPolicy: 'cache-and-network'
   });
   const spaces = data?.findUserByID?.spaces.data;
 
-  const [deleteSpace] = useMutation(DELETE_SPACE, {
-    update(cache, {data: {deleteSpace}}) {
-      const {findUserByID} = cache.readQuery<any>({
+  const [deleteSpace] = useDeleteSpaceMutation({
+    variables: {id: deleteSpaceId},
+    update(cache, {data}) {
+      const {findUserByID} = cache.readQuery<FindUserSpacesByIdQuery>({
         query: GET_USER_SPACES,
         variables: {
           id: userId
         }
-      });
+      }) || ({} as Partial<FindUserSpacesByIdQuery>);
       cache.writeQuery({
         query: GET_USER_SPACES,
         variables: {
@@ -37,8 +51,8 @@ const Spaces = () => {
           findUserByID: {
             ...findUserByID,
             spaces: {
-              ...findUserByID.spaces,
-              data: findUserByID.spaces.data.filter((space: any) => space._id !== deleteSpace._id)
+              ...findUserByID?.spaces,
+              data: findUserByID?.spaces.data.filter((space) => space!._id !== data!.deleteSpace!._id)
             }
           }
         }
@@ -50,6 +64,7 @@ const Spaces = () => {
         text: 'Item has been deleted',
         type: 'success'
       });
+      setIsApproveModalOpen(false);
     },
     onError: () => {
       setAlertData({
@@ -68,15 +83,7 @@ const Spaces = () => {
     {
       children: 'Delete',
       id: 'delete',
-      onClick: () => {
-        deleteSpace({
-          variables: {
-            id: id
-          }
-        }).then(res => {
-          console.log(`delete space ${res}`)
-        })
-      }
+      onClick: () => handleOnDeleteClick(id)
     },
     {
       children: 'View space',
@@ -86,17 +93,17 @@ const Spaces = () => {
   ]);
 
   const List = (
-    spaces && spaces.map((space: any) => (
+    spaces && spaces.map((space) => (
       <div
         className="flex justify-between items-center"
-        key={space._id}
+        key={space!._id}
       >
         <div className="flex justify-between p-4 w-full">
-          <span>{`${space.name}`}</span>
-          {space.description && <span>{`${space.description}`}</span>}
+          <span>{`${space!.name}`}</span>
+          {space!.description && <span>{`${space!.description}`}</span>}
           {/* <span className="font-bold">{ `IC: ${value * 2} / UC: ${value * 3}` }</span> */}
         </div>
-        <BaseMenu options={menuOptions(String(space._id))}/>
+        <BaseMenu options={menuOptions(String(space!._id))}/>
       </div>
     ))
   );
@@ -109,6 +116,15 @@ const Spaces = () => {
         onAddClick={() => navigate('/spaces/new')}
         list={List}
       />
+      <SubmitActionModal
+        open={isApproveModalOpen}
+        onSubmit={deleteSpace}
+        onCancel={handleCancelDeleteClick}
+      >
+        <p className="mb-4">Delete space ID: {
+          <span className="font-bold">{deleteSpaceId}</span>
+        }?</p>
+      </SubmitActionModal>
     </div>
   )
 }

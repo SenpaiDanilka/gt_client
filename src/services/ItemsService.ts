@@ -9,7 +9,7 @@ export const DELETE_ITEM = gql`
 `;
 
 export const GET_USER_ITEMS = gql`
-  query FindUserByID($id: ID!) {
+  query FindUserItemsByID($id: ID!) {
     findUserByID(id: $id) {
       _id
       items {
@@ -20,6 +20,17 @@ export const GET_USER_ITEMS = gql`
           type
         }
       }
+    }
+  }
+`;
+
+export const GET_ITEMS = gql`
+  query GetItems($user_id: String!) {
+    getItems(user_id: $user_id) {
+      _id
+      description
+      name
+      type
     }
   }
 `;

@@ -1,14 +1,23 @@
 import React, {ReactNode} from "react";
 import BaseInput from "./BaseInput";
 import {useTranslation} from "react-i18next";
-import {ValidationFunction} from "../../models/CommonModels";
+import {ValidationError, ValidationFunction} from "../../models/CommonModels";
+
+type FormFieldsData = {
+  id: string;
+  autofocus?: boolean;
+  rules: ValidationFunction[];
+  type?: string;
+  iconEnd?: ReactNode;
+  data: { value: string, errors: ValidationError[] };
+}
 
 interface Props {
   onSubmit: (e: React.FormEvent) => void;
   onChange: (val: string, key: string) => void;
   onBlur: (e: React.FocusEvent, rules?: ValidationFunction[]) => void;
   onKeyDown?: (e: React.KeyboardEvent) => void;
-  formFieldsData: any[];
+  formFieldsData: FormFieldsData[];
   controls?: ReactNode;
   className?: string;
 }

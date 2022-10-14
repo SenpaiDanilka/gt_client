@@ -1,15 +1,3 @@
-export enum ItemType {
-  VEHICLE,
-  REAL_ESTATE,
-  ELECTRONICS,
-  OTHER,
-}
-
-export enum AvailabilityModel {
-  SPACE = 'SPACE',
-  USER = 'USER'
-}
-
 export class Item {
   name
   photo

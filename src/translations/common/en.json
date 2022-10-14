@@ -17,5 +17,12 @@
   "save": "Save",
   "delete": "Delete",
   "edit": "Edit",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "submit": "Submit",
+  "itemTypes": {
+    "ELECTRONICS": "Electronics",
+    "OTHER": "Other",
+    "REAL_ESTATE": "Real estate",
+    "VEHICLE": "Vehicle"
+  }
 }
