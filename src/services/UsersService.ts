@@ -41,6 +41,23 @@ export const GET_USER_CONTACTS = gql`
   }
 `;
 
+export const GET_USER_CONTACT_REQUESTS = gql`
+  query FindUserContactRequestsByUserID($id: ID!) {
+    findUserByID(id: $id) {
+      _id
+      contact_requests {
+        data {
+          _id
+          owner {
+            _id
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const FIND_USER_BY_EMAIL = gql`
   query FindUserByEmail($email: String!) {
     findUserByEmail(email: $email) {

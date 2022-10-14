@@ -6,6 +6,12 @@ type User {
   spaces: [Space]! @relation
   items: [Item]! @relation
   contacts: [Contact]! @relation(name: "user_contacts")
+  contact_requests: [ContactRequest]! @relation(name: "user_contact_requests")
+}
+
+type ContactRequest {
+  owner: User!
+  user: User! @relation(name: "user_contact_requests")
 }
 
 type Contact {
@@ -87,6 +93,11 @@ type Mutation {
     owner: String!
     user: String!
   ): Contact @resolver(name: "CreateContact")
+
+  createContactRequest(
+    owner: String!
+    user: String!
+  ): ContactRequest @resolver(name: "CreateContactRequest")
 
   createAvailableItem(
     model: AvailabilityModel!
