@@ -420,7 +420,6 @@ export type Query = {
   getModelItems?: Maybe<Array<AvailableItem>>;
   getUserByEmail?: Maybe<ShortUser>;
   getUserById?: Maybe<ShortUser>;
-  listUsers: UserPage;
 };
 
 
@@ -679,17 +678,6 @@ export type UserItemsRelation = {
   create?: InputMaybe<Array<InputMaybe<ItemInput>>>;
   /** Disconnect the given documents of type 'Item' from the current document using their IDs. */
   disconnect?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-};
-
-/** The pagination object for elements of type 'User'. */
-export type UserPage = {
-  __typename?: 'UserPage';
-  /** A cursor for elements coming after the current page. */
-  after?: Maybe<Scalars['String']>;
-  /** A cursor for elements coming before the current page. */
-  before?: Maybe<Scalars['String']>;
-  /** The elements of type 'User' in this page. */
-  data: Array<Maybe<User>>;
 };
 
 /** Allow manipulating the relationship between the types 'User' and 'Space'. */

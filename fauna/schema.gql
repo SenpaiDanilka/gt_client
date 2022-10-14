@@ -108,7 +108,6 @@ type Query {
   findUserByEmail(email: String): User
   getUserByEmail(email: String): ShortUser @resolver(name: "GetUserByEmail")
   getUserById(id: String): ShortUser @resolver(name: "GetUserById")
-  listUsers: [User]
   getModelItems(model: AvailabilityModel!, model_id: String!): [AvailableItem!] @resolver(name: "GetModelItems")
   getItems(user_id: String): [Item!] @resolver(name: "GetItems")
 }

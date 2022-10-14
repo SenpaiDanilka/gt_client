@@ -2,8 +2,7 @@ import UserProfile from "../components/UserProfile";
 import { NetworkStatus } from '@apollo/client';
 import {useLoading} from "../contexts/LoadingContext";
 import {useEffect} from "react";
-import {useGetUserByIdQuery} from "../generated/apollo-functions";
-import {GET_ITEMS} from "../services/ItemsService";
+import {useGetUserByIdQuery, useGetItemsQuery} from "../generated/apollo-functions";
 
 const Home = () => {
   const userId = localStorage.getItem("userId")
@@ -11,6 +10,12 @@ const Home = () => {
     variables: {
       id: userId!
     }
+  });
+  const {data: getItemsData, loading: getItemsLoading} = useGetItemsQuery({
+    variables: {
+      user_id: userId!
+    },
+    fetchPolicy: 'cache-and-network'
   });
   const { setLoading } = useLoading();
 
