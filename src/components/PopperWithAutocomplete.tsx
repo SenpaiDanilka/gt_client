@@ -13,7 +13,7 @@ export interface OptionsDataType {
 
 interface Props {
   options: OptionsDataType[]
-  anchorEl?: any,
+  anchorEl: HTMLButtonElement | null,
   handleClose: () => void;
   handleSelect: (val: OptionsDataType | null) => void;
 }
@@ -92,7 +92,7 @@ const PopperWithAutocomplete = ({
 export default PopperWithAutocomplete;
 
 interface PopperComponentProps {
-  anchorEl?: any;
+  anchorEl?: Object | null;
   disablePortal?: boolean;
   open: boolean;
 }

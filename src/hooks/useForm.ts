@@ -1,10 +1,10 @@
 import {FormDataType, ValidationFunction} from "../models/CommonModels";
-import React, {useState} from "react";
+import React, {SyntheticEvent, useState} from "react";
 import {validator} from "../utils/validate";
 
 interface Props {
   initialState: {[K: string]: string};
-  onSubmit: (e: any) => void;
+  onSubmit: (e: SyntheticEvent) => void;
   rules?: {[K: string]: ValidationFunction[]};
 }
 

@@ -1,26 +1,14 @@
 import UserProfile from "../components/UserProfile";
-import {gql, useQuery} from '@apollo/client';
 import { NetworkStatus } from '@apollo/client';
 import {useLoading} from "../contexts/LoadingContext";
 import {useEffect} from "react";
-
-const GetUserByID = gql`
-  query GetUserById($id: String!) {
-    getUserById(id: $id) {
-      name
-      email
-      spaces_count
-      items_count
-      contacts_count
-    }
-  }
-`;
+import {useGetUserByIdQuery} from "../generated/apollo-functions";
 
 const Home = () => {
   const userId = localStorage.getItem("userId")
-  const {data, loading, networkStatus} = useQuery(GetUserByID, {
+  const {data, loading, networkStatus} = useGetUserByIdQuery({
     variables: {
-      id: userId
+      id: userId!
     }
   });
   const { setLoading } = useLoading();
@@ -32,7 +20,7 @@ const Home = () => {
   return (
     <div className="p-4">
       {
-        data && <UserProfile user={data?.getUserById}/>
+        data && <UserProfile user={data!.getUserById!}/>
       }
     </div>
   );

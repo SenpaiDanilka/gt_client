@@ -9,7 +9,7 @@ export const DELETE_ITEM = gql`
 `;
 
 export const GET_USER_ITEMS = gql`
-  query FindUserByID($id: ID!) {
+  query FindUserItemsByID($id: ID!) {
     findUserByID(id: $id) {
       _id
       items {

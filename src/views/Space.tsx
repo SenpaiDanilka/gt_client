@@ -8,14 +8,16 @@ import BaseMenu from "../components/BaseComponents/BaseMenu";
 import PopperWithAutocomplete, {OptionsDataType} from "../components/PopperWithAutocomplete";
 import AddButton from "../components/AddButton";
 import {useLoading} from "../contexts/LoadingContext";
-import {DELETE_SPACE, FIND_SPACE_BY_ID, UPDATE_SPACE, CREATE_SPACE_CONTACT_LINK, DELETE_SPACE_CONTACT_LINK} from "../services/SpacesService";
+import {CREATE_SPACE_CONTACT_LINK, DELETE_SPACE_CONTACT_LINK} from "../services/SpacesService";
 import {CREATE_AVAILABLE_ITEM, GET_USER_ITEMS, GET_SPACE_ITEMS, DELETE_ITEM_FROM_SPACE} from "../services/ItemsService";
 import {GET_USER_CONTACTS} from '../services/UsersService'
 import {useQuery, useMutation} from '@apollo/client';
 import EntityActions from "../components/EntityActions";
 import EditSpaceForm from "../components/spaces/EditSpaceForm";
 import {FormDataType} from "../models/CommonModels";
-import { AvailabilityModel } from "../models/ItemsModels";
+import SubmitActionModal from "../components/SubmitActionModal";
+import {useDeleteSpaceMutation, useFindSpaceByIdQuery, useUpdateSpaceMutation} from "../generated/apollo-functions";
+import {AvailabilityModel} from "../generated/types";
 
 export default function Space() {
   const {id} = useParams();
@@ -23,6 +25,7 @@ export default function Space() {
   const navigate = useNavigate();
   const {t} = useTranslation('common');
   const [tab, setTab] = useState(0);
+  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [availableItems, setAvailableItems] = useState<OptionsDataType[]>([]);
   const [availableUsers, setAvailableUsers] = useState<OptionsDataType[]>([]);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -31,14 +34,14 @@ export default function Space() {
   const {setLoading, setAlertData} = useLoading();
   const [isEdit, setIsEdit] = useState(false);
 
-  const {data: findSpaceByIdData, loading: spaceLoading, error: getSpaceError} = useQuery(FIND_SPACE_BY_ID, {
+  const {data: findSpaceByIdData, loading: spaceLoading, error: getSpaceError} = useFindSpaceByIdQuery({
     variables: {
-      id: id
+      id: id!
     }
   });
 
   useEffect(() => {
-    if (findSpaceByIdData?.findSpaceByID.contacts.data.length) {
+    if (findSpaceByIdData?.findSpaceByID?.contacts.data.length) {
       setSpaceUsers(findSpaceByIdData?.findSpaceByID.contacts.data.map((contactLink: any) => ({
         _id: contactLink._id,
         name: contactLink.contact.user.name,
@@ -77,7 +80,7 @@ export default function Space() {
 
   const {data: spaceItemsData, loading: getSpaceItemsLoading} = useQuery(GET_SPACE_ITEMS, {
     variables: {
-      model: AvailabilityModel.SPACE,
+      model: AvailabilityModel.Space,
       model_id: id
     }
   })
@@ -94,8 +97,8 @@ export default function Space() {
     }
   }, [spaceItemsData])
 
-  const [deleteSpace, {loading: deleteLoading, error: deleteSpaceError}] = useMutation(DELETE_SPACE);
-  const [updateSpace, {loading: editLoading, error: editError}] = useMutation(UPDATE_SPACE, {
+  const [deleteSpace, {loading: deleteLoading, error: deleteSpaceError}] = useDeleteSpaceMutation();
+  const [updateSpace, {loading: editLoading, error: editError}] = useUpdateSpaceMutation({
     onQueryUpdated: () => {
       setAlertData({
         isOpen: true,
@@ -140,9 +143,10 @@ export default function Space() {
   const handleDeleteSpace = () => {
     deleteSpace({
       variables: {
-        id: id
+        id: id!
       }
     }).then(() => {
+      setIsApproveModalOpen(false);
       setAlertData({
         isOpen: true,
         text: 'Item has been deleted',
@@ -155,7 +159,7 @@ export default function Space() {
   const handleEditSpace = async (formData: FormDataType) => {
     await updateSpace({
       variables: {
-        id: id,
+        id: id!,
         data: {
           name: formData.name.value,
           description: formData.description.value
@@ -192,7 +196,7 @@ export default function Space() {
     if (key === 'items') {
       createAvailableItem({
         variables: {
-          model: AvailabilityModel.SPACE,
+          model: AvailabilityModel.Space,
           model_id: id,
           item_id: val!._id
         }
@@ -275,8 +279,8 @@ export default function Space() {
                 onSubmit={handleEditSpace}
                 onCancel={toggleEditSpace}
                 editData={{
-                  name: findSpaceByIdData.findSpaceByID.name,
-                  description: findSpaceByIdData.findSpaceByID.description
+                  name: findSpaceByIdData!.findSpaceByID!.name,
+                  description: findSpaceByIdData!.findSpaceByID!.description || ''
                 }}
               />
             ) : (
@@ -342,6 +346,15 @@ export default function Space() {
               </>
             )
         }
+        <SubmitActionModal
+          open={isApproveModalOpen}
+          onSubmit={deleteSpace}
+          onCancel={() => setIsApproveModalOpen(false)}
+        >
+          <p className="mb-4">Delete space ID: {
+            <span className="font-bold">{id}</span>
+          }?</p>
+        </SubmitActionModal>
       </BaseContainer>
     </div>
   );
