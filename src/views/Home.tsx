@@ -3,6 +3,7 @@ import { NetworkStatus } from '@apollo/client';
 import {useLoading} from "../contexts/LoadingContext";
 import {useEffect} from "react";
 import {useGetUserByIdQuery} from "../generated/apollo-functions";
+import {GET_ITEMS} from "../services/ItemsService";
 
 const Home = () => {
   const userId = localStorage.getItem("userId")
