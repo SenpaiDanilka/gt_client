@@ -199,6 +199,7 @@ export const GetModelItemsDocument = gql`
       _id
       name
       description
+      type
     }
   }
 }

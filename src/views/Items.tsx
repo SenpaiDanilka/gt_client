@@ -108,7 +108,7 @@ const Items = () => {
             alt={`Mocked Item ${item!.name}`}
             size={40}
             variant="square"
-            className="mr-6"
+            className="mr-4"
           />
           <div className="flex flex-col flex-1">
             <span className="mb-2 font-semibold leading-4">{item!.name}</span>

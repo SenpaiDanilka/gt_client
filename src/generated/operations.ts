@@ -37,7 +37,7 @@ export type GetModelItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetModelItemsQuery = { __typename?: 'Query', getModelItems?: Array<{ __typename?: 'AvailableItem', _id: string, model: AvailabilityModel, model_id: string, item: { __typename?: 'Item', _id: string, name: string, description?: string | null } }> | null };
+export type GetModelItemsQuery = { __typename?: 'Query', getModelItems?: Array<{ __typename?: 'AvailableItem', _id: string, model: AvailabilityModel, model_id: string, item: { __typename?: 'Item', _id: string, name: string, description?: string | null, type: ItemType } }> | null };
 
 export type DeleteAvailableItemMutationVariables = Exact<{
   id: Scalars['ID'];

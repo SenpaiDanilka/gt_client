@@ -8,16 +8,25 @@ import BaseMenu from "../components/BaseComponents/BaseMenu";
 import PopperWithAutocomplete, {OptionsDataType} from "../components/PopperWithAutocomplete";
 import AddButton from "../components/AddButton";
 import {useLoading} from "../contexts/LoadingContext";
-import {CREATE_SPACE_CONTACT_LINK, DELETE_SPACE_CONTACT_LINK} from "../services/SpacesService";
-import {CREATE_AVAILABLE_ITEM, GET_USER_ITEMS, GET_SPACE_ITEMS, DELETE_ITEM_FROM_SPACE} from "../services/ItemsService";
-import {GET_USER_CONTACTS} from '../services/UsersService'
-import {useQuery, useMutation} from '@apollo/client';
 import EntityActions from "../components/EntityActions";
 import EditSpaceForm from "../components/spaces/EditSpaceForm";
 import {FormDataType} from "../models/CommonModels";
 import SubmitActionModal from "../components/SubmitActionModal";
-import {useDeleteSpaceMutation, useFindSpaceByIdQuery, useUpdateSpaceMutation} from "../generated/apollo-functions";
+import {
+  useCreateAvailableItemMutation,
+  useCreateSpaceContactLinkMutation, useDeleteAvailableItemMutation, useDeleteSpaceContactLinkMutation,
+  useDeleteSpaceMutation,
+  useFindSpaceByIdQuery,
+  useFindUserContactsByIdQuery, useFindUserItemsByIdQuery, useGetModelItemsQuery,
+  useUpdateSpaceMutation
+} from "../generated/apollo-functions";
 import {AvailabilityModel} from "../generated/types";
+
+type ApproveModalDataType = {
+  isOpen: boolean;
+  content: ReactNode;
+  onSubmit: () => void;
+}
 
 export default function Space() {
   const {id} = useParams();
@@ -25,7 +34,7 @@ export default function Space() {
   const navigate = useNavigate();
   const {t} = useTranslation('common');
   const [tab, setTab] = useState(0);
-  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const [approveModalData, setApproveModalData] = useState<ApproveModalDataType | null>(null);
   const [availableItems, setAvailableItems] = useState<OptionsDataType[]>([]);
   const [availableUsers, setAvailableUsers] = useState<OptionsDataType[]>([]);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -42,58 +51,58 @@ export default function Space() {
 
   useEffect(() => {
     if (findSpaceByIdData?.findSpaceByID?.contacts.data.length) {
-      setSpaceUsers(findSpaceByIdData?.findSpaceByID.contacts.data.map((contactLink: any) => ({
-        _id: contactLink._id,
-        name: contactLink.contact.user.name,
-        optionId: contactLink.contact.user._id
+      setSpaceUsers(findSpaceByIdData?.findSpaceByID.contacts.data.map((contactLink) => ({
+        _id: contactLink!._id,
+        name: contactLink!.contact.user.name,
+        optionId: contactLink!.contact.user._id
       })))
     }
   }, [findSpaceByIdData])
 
-  const {data: userContactsData, loading: userContactsLoading} = useQuery(GET_USER_CONTACTS, {
+  const {data: userContactsData, loading: userContactsLoading} = useFindUserContactsByIdQuery({
     variables: {
-      id: userId
+      id: userId!
     }
   });
 
   useEffect(() => {
-    if (userContactsData?.findUserByID.contacts.data.length) {
-      setAvailableUsers(userContactsData?.findUserByID.contacts.data.map((contact: any) => ({
-        _id: contact._id,
-        name: contact.user.name,
-        optionId: contact.user._id
+    if (userContactsData?.findUserByID?.contacts.data.length) {
+      setAvailableUsers(userContactsData?.findUserByID.contacts.data.map((contact) => ({
+        _id: contact!._id,
+        name: contact!.user.name,
+        optionId: contact!.user._id
       })))
     }
   }, [userContactsData])
 
-  const {data: userItemsData, loading: getUserItemsLoading} = useQuery(GET_USER_ITEMS, {
+  const {data: userItemsData, loading: getUserItemsLoading} = useFindUserItemsByIdQuery({
     variables: {
-      id: userId
+      id: userId!
     }
   })
 
   useEffect(() => {
-    if (userItemsData?.findUserByID.items.data.length) {
-      setAvailableItems(userItemsData.findUserByID.items.data)
+    if (userItemsData?.findUserByID?.items.data.length) {
+      setAvailableItems(userItemsData.findUserByID.items.data as OptionsDataType[])
     }
   }, [userItemsData])
 
-  const {data: spaceItemsData, loading: getSpaceItemsLoading} = useQuery(GET_SPACE_ITEMS, {
+  const {data: spaceItemsData, loading: getSpaceItemsLoading} = useGetModelItemsQuery({
     variables: {
       model: AvailabilityModel.Space,
-      model_id: id
+      model_id: id!
     }
   })
 
   useEffect(() => {
-    if (spaceItemsData?.getModelItems.length) {
-      setSpaceItems(spaceItemsData?.getModelItems.map((availableItem: any) => ({
+    if (spaceItemsData?.getModelItems?.length) {
+      setSpaceItems(spaceItemsData?.getModelItems.map((availableItem) => ({
         _id: availableItem._id,
         name: availableItem.item.name,
         description: availableItem.item.description,
         type: availableItem.item.type,
         optionId: availableItem.item._id
-      })))
+      } as OptionsDataType)));
     }
   }, [spaceItemsData])
 
@@ -141,19 +150,29 @@ export default function Space() {
   };
 
   const handleDeleteSpace = () => {
-    deleteSpace({
-      variables: {
-        id: id!
+    setApproveModalData({
+      isOpen: true,
+      content: (
+        <p className="mb-4">Delete space ID: {
+          <span className="font-bold">{id}</span>
+        }?</p>
+      ),
+      onSubmit: () => {
+        deleteSpace({
+          variables: {
+            id: id!
+          }
+        }).then(() => {
+          setApproveModalData(null);
+          setAlertData({
+            isOpen: true,
+            text: 'Item has been deleted',
+            type: 'success'
+          });
+          navigate('/spaces');
+        })
       }
-    }).then(() => {
-      setIsApproveModalOpen(false);
-      setAlertData({
-        isOpen: true,
-        text: 'Item has been deleted',
-        type: 'success'
-      });
-      navigate('/spaces');
-    })
+    });
   };
 
   const handleEditSpace = async (formData: FormDataType) => {
@@ -197,18 +216,19 @@ export default function Space() {
       createAvailableItem({
         variables: {
           model: AvailabilityModel.Space,
-          model_id: id,
+          model_id: id!,
           item_id: val!._id
         }
-      }).then((res: any) => {
-        setSpaceItems(current => {
+      }).then((res) => {
+        const availableItem = res.data?.createAvailableItem;
+        !!availableItem && setSpaceItems(current => {
           return [...current, {
-            _id: res.data.createAvailableItem._id,
-            name: res.data.createAvailableItem.item.name,
-            description: res.data.createAvailableItem.item.description,
-            type: res.data.createAvailableItem.item.type,
-            optionId: res.data.createAvailableItem.item._id
-          }];
+            _id: availableItem._id,
+            name: availableItem.item.name,
+            description: availableItem.item.description,
+            type: availableItem.item.type,
+            optionId: availableItem.item._id
+          } as OptionsDataType];
         });
       })
     }
@@ -224,12 +244,13 @@ export default function Space() {
             }
           }
         }
-      }).then((res: any) => {
-        setSpaceUsers(current => {
+      }).then((res) => {
+        const spaceContactLink = res.data?.createSpaceContactLink;
+        !!spaceContactLink && setSpaceUsers(current => {
           return [...current, {
-            _id: res.data.createSpaceContactLink._id,
-            name: res.data.createSpaceContactLink.contact.user.name,
-            optionId: res.data.createSpaceContactLink.contact.user._id
+            _id: spaceContactLink._id,
+            name: spaceContactLink.contact.user.name,
+            optionId: spaceContactLink.contact.user._id
           }];
         });
       })
@@ -237,37 +258,56 @@ export default function Space() {
   }
 
   const deleteFromSpace = (id: string) => {
-    tab === 0
-      ? deleteItemFromSpace({
-        variables: {
-          id: id
-        }
-      }).then(_ => {
-        setSpaceItems((current) =>
-          current.filter((item) => item._id !== id))
-      })
-      : deleteContactFromSpace({
-        variables: {
-          id: id
-        }
-      }).then(_ => {
-        setSpaceUsers((current) =>
-          current.filter((item) => item._id !== id))
-      })
-    setAlertData({
+    setApproveModalData({
       isOpen: true,
-      text: 'Has been deleted',
-      type: 'success'
+      content: (
+        <p className="mb-4">
+          {
+            `Delete from this space ${tab === 0 ? 'item' : 'user'} ID: `
+          }
+          <span className="font-bold">{id}</span>
+          ?
+        </p>
+      ),
+      onSubmit: () => {
+        tab === 0 ? deleteItemFromSpace({
+          variables: {
+            id: id
+          }
+        }).then(_ => {
+          setSpaceItems((current) =>
+            current.filter((item) => item._id !== id));
+          setApproveModalData(null);
+          setAlertData({
+            isOpen: true,
+            text: 'Has been deleted',
+            type: 'success'
+          });
+        }) : deleteContactFromSpace({
+          variables: {
+            id: id
+          }
+        }).then(_ => {
+          setSpaceUsers((current) =>
+            current.filter((item) => item._id !== id));
+          setApproveModalData(null);
+          setAlertData({
+            isOpen: true,
+            text: 'Has been deleted',
+            type: 'success'
+          });
+        })
+      }
     });
   };
 
-  const [createSpaceContactLink] = useMutation(CREATE_SPACE_CONTACT_LINK);
+  const [createSpaceContactLink] = useCreateSpaceContactLinkMutation();
 
-  const [createAvailableItem] = useMutation(CREATE_AVAILABLE_ITEM);
+  const [createAvailableItem] = useCreateAvailableItemMutation();
 
-  const [deleteItemFromSpace] = useMutation(DELETE_ITEM_FROM_SPACE);
+  const [deleteItemFromSpace] = useDeleteAvailableItemMutation();
 
-  const [deleteContactFromSpace] = useMutation(DELETE_SPACE_CONTACT_LINK);
+  const [deleteContactFromSpace] = useDeleteSpaceContactLinkMutation();
 
   return (
     <div className="p-4">
@@ -346,15 +386,18 @@ export default function Space() {
               </>
             )
         }
-        <SubmitActionModal
-          open={isApproveModalOpen}
-          onSubmit={deleteSpace}
-          onCancel={() => setIsApproveModalOpen(false)}
-        >
-          <p className="mb-4">Delete space ID: {
-            <span className="font-bold">{id}</span>
-          }?</p>
-        </SubmitActionModal>
+        {
+          !!approveModalData && (
+            <SubmitActionModal
+              open={approveModalData.isOpen}
+              onSubmit={approveModalData.onSubmit}
+              onCancel={() => setApproveModalData(null)}
+            >
+              { approveModalData.content }
+            </SubmitActionModal>
+          )
+        }
+
       </BaseContainer>
     </div>
   );
@@ -392,22 +435,21 @@ const TabPanels = (
             spaceItems.map((item) => (
               <div
                 className="flex justify-between items-center"
-                key={item._id}
+                key={item!._id}
               >
-                <div className="flex justify-between items-center p-4 w-full">
+                <div className="flex p-4 w-full">
                   <BaseAvatar
-                    alt={`Mocked Item ${item.name}`}
+                    alt={item!.name}
                     size={40}
                     variant="square"
-                    className="mr-2"
+                    className="mr-4"
                   />
                   <div className="flex flex-col flex-1">
-                    <span>{item.name}</span>
-                    <span>{item.description}</span>
+                    <span className="mb-2 font-semibold leading-4">{item!.name}</span>
+                    <span className="line-clamp-3">{item!.description}</span>
                   </div>
-                  <span>{item.type}</span>
                 </div>
-                <BaseMenu options={menuOptions(item._id)}/>
+                <BaseMenu options={menuOptions(item!._id)}/>
               </div>
             ))
           )

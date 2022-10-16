@@ -33,7 +33,8 @@ export const GET_SPACE_ITEMS = gql`
       item {
         _id
         name
-        description
+        description,
+        type
       }
     }
   }
