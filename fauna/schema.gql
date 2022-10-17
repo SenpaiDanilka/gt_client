@@ -115,5 +115,7 @@ type Query {
   getUserByEmail(email: String): ShortUser @resolver(name: "GetUserByEmail")
   getUserById(id: String): ShortUser @resolver(name: "GetUserById")
   getModelItems(model: AvailabilityModel!, model_id: String!): [AvailableItem!] @resolver(name: "GetModelItems")
+  getIncomingContactRequests(user_id: String!): [Contact!] @resolver(name: "GetIncomingContactRequests")
+  getUserContacts(user_id: String!): [Contact!] @resolver(name: "GetUserContacts")
   getItems(user_id: String): [Item!] @resolver(name: "GetItems")
 }

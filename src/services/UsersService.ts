@@ -26,22 +26,34 @@ export const CREATE_CONTACT = gql`
 `;
 
 export const GET_USER_CONTACTS = gql`
-  query FindUserContactsByID($id: ID!) {
-    findUserByID(id: $id) {
+  query GetUserContacts($user_id: String!) {
+    getUserContacts(user_id: $user_id) {
       _id
-      contacts {
-        data {
-          _id
-          status
-          user_one {
-            _id
-            name
-          }
-          user_two {
-            _id
-            name
-          }
-        }
+      status
+      user_one {
+        _id
+        name
+      }
+      user_two {
+        _id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_INCOMING_CONTACT_REQUESTS = gql`
+  query GetIncomingContactRequests($user_id: String!) {
+    getIncomingContactRequests(user_id: $user_id) {
+      _id
+      status
+      user_one {
+        _id
+        name
+      }
+      user_two {
+        _id
+        name
       }
     }
   }

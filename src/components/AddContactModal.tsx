@@ -4,7 +4,7 @@ import useDebounce from '../hooks/useDebounce';
 import {FC, useEffect, useState} from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useLoading} from "../contexts/LoadingContext";
-import {useCreateContactRequestMutation, useFindUserByEmailLazyQuery} from "../generated/apollo-functions";
+import {useCreateContactMutation, useFindUserByEmailLazyQuery} from "../generated/apollo-functions";
 
 type ResultsType = {
   __typename?: "User";
@@ -26,7 +26,7 @@ const AddContactModal: FC<Props> = ({
   const debouncedSearchTerm = useDebounce(searchValue, 500);
   const userId = localStorage.getItem("userId");
   const [findUserByEmail] = useFindUserByEmailLazyQuery();
-  const [createContactRequest, {loading}] = useCreateContactRequestMutation();
+  const [createContact, {loading}] = useCreateContactMutation();
 
   useEffect(
     () => {
@@ -57,10 +57,10 @@ const AddContactModal: FC<Props> = ({
   }, [loading]);
 
   const addContact = async (option: ResultsType) => {
-    await createContactRequest({
+    await createContact({
       variables: {
-        owner: userId!,
-        user: option._id
+        user_one: userId!,
+        user_two: option._id
       },
       onQueryUpdated: () => {
         handleClose();

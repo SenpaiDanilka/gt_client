@@ -52,80 +52,34 @@ export type Contact = {
   _id: Scalars['ID'];
   /** The document's timestamp. */
   _ts: Scalars['Long'];
-  owner: User;
-  user: User;
+  status: ContactStatus;
+  user_one: User;
+  user_two: User;
 };
 
 /** 'Contact' input values */
 export type ContactInput = {
-  owner?: InputMaybe<ContactOwnerRelation>;
-  user?: InputMaybe<ContactUserRelation>;
+  status: ContactStatus;
+  user_one?: InputMaybe<ContactUser_OneRelation>;
+  user_two?: InputMaybe<ContactUser_TwoRelation>;
 };
 
-/** Allow manipulating the relationship between the types 'Contact' and 'User' using the field 'Contact.owner'. */
-export type ContactOwnerRelation = {
+export enum ContactStatus {
+  Accepted = 'ACCEPTED',
+  Declined = 'DECLINED',
+  Pending = 'PENDING'
+}
+
+/** Allow manipulating the relationship between the types 'Contact' and 'User' using the field 'Contact.user_one'. */
+export type ContactUser_OneRelation = {
   /** Connect a document of type 'User' with the current document using its ID. */
   connect?: InputMaybe<Scalars['ID']>;
   /** Create a document of type 'User' and associate it with the current document. */
   create?: InputMaybe<UserInput>;
 };
 
-/** The pagination object for elements of type 'Contact'. */
-export type ContactPage = {
-  __typename?: 'ContactPage';
-  /** A cursor for elements coming after the current page. */
-  after?: Maybe<Scalars['String']>;
-  /** A cursor for elements coming before the current page. */
-  before?: Maybe<Scalars['String']>;
-  /** The elements of type 'Contact' in this page. */
-  data: Array<Maybe<Contact>>;
-};
-
-export type ContactRequest = {
-  __typename?: 'ContactRequest';
-  /** The document's ID. */
-  _id: Scalars['ID'];
-  /** The document's timestamp. */
-  _ts: Scalars['Long'];
-  owner: User;
-  user: User;
-};
-
-/** 'ContactRequest' input values */
-export type ContactRequestInput = {
-  owner?: InputMaybe<ContactRequestOwnerRelation>;
-  user?: InputMaybe<ContactRequestUserRelation>;
-};
-
-/** Allow manipulating the relationship between the types 'ContactRequest' and 'User' using the field 'ContactRequest.owner'. */
-export type ContactRequestOwnerRelation = {
-  /** Connect a document of type 'User' with the current document using its ID. */
-  connect?: InputMaybe<Scalars['ID']>;
-  /** Create a document of type 'User' and associate it with the current document. */
-  create?: InputMaybe<UserInput>;
-};
-
-/** The pagination object for elements of type 'ContactRequest'. */
-export type ContactRequestPage = {
-  __typename?: 'ContactRequestPage';
-  /** A cursor for elements coming after the current page. */
-  after?: Maybe<Scalars['String']>;
-  /** A cursor for elements coming before the current page. */
-  before?: Maybe<Scalars['String']>;
-  /** The elements of type 'ContactRequest' in this page. */
-  data: Array<Maybe<ContactRequest>>;
-};
-
-/** Allow manipulating the relationship between the types 'ContactRequest' and 'User' using the field 'ContactRequest.user'. */
-export type ContactRequestUserRelation = {
-  /** Connect a document of type 'User' with the current document using its ID. */
-  connect?: InputMaybe<Scalars['ID']>;
-  /** Create a document of type 'User' and associate it with the current document. */
-  create?: InputMaybe<UserInput>;
-};
-
-/** Allow manipulating the relationship between the types 'Contact' and 'User' using the field 'Contact.user'. */
-export type ContactUserRelation = {
+/** Allow manipulating the relationship between the types 'Contact' and 'User' using the field 'Contact.user_two'. */
+export type ContactUser_TwoRelation = {
   /** Connect a document of type 'User' with the current document using its ID. */
   connect?: InputMaybe<Scalars['ID']>;
   /** Create a document of type 'User' and associate it with the current document. */
@@ -182,7 +136,6 @@ export type Mutation = {
   __typename?: 'Mutation';
   createAvailableItem?: Maybe<AvailableItem>;
   createContact?: Maybe<Contact>;
-  createContactRequest?: Maybe<ContactRequest>;
   createItem?: Maybe<Item>;
   createSpace?: Maybe<Space>;
   /** Create a new document in the collection of 'SpaceContactLink' */
@@ -193,8 +146,6 @@ export type Mutation = {
   deleteAvailableItem?: Maybe<AvailableItem>;
   /** Delete an existing document in the collection of 'Contact' */
   deleteContact?: Maybe<Contact>;
-  /** Delete an existing document in the collection of 'ContactRequest' */
-  deleteContactRequest?: Maybe<ContactRequest>;
   /** Delete an existing document in the collection of 'Item' */
   deleteItem?: Maybe<Item>;
   /** Delete an existing document in the collection of 'Space' */
@@ -208,8 +159,6 @@ export type Mutation = {
   partialUpdateAvailableItem?: Maybe<AvailableItem>;
   /** Partially updates an existing document in the collection of 'Contact'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'. */
   partialUpdateContact?: Maybe<Contact>;
-  /** Partially updates an existing document in the collection of 'ContactRequest'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'. */
-  partialUpdateContactRequest?: Maybe<ContactRequest>;
   /** Partially updates an existing document in the collection of 'Item'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'. */
   partialUpdateItem?: Maybe<Item>;
   /** Partially updates an existing document in the collection of 'Space'. It only modifies the values that are specified in the arguments. During execution, it verifies that required fields are not set to 'null'. */
@@ -223,8 +172,6 @@ export type Mutation = {
   updateAvailableItem?: Maybe<AvailableItem>;
   /** Update an existing document in the collection of 'Contact' */
   updateContact?: Maybe<Contact>;
-  /** Update an existing document in the collection of 'ContactRequest' */
-  updateContactRequest?: Maybe<ContactRequest>;
   /** Update an existing document in the collection of 'Item' */
   updateItem?: Maybe<Item>;
   /** Update an existing document in the collection of 'Space' */
@@ -244,14 +191,8 @@ export type MutationCreateAvailableItemArgs = {
 
 
 export type MutationCreateContactArgs = {
-  owner: Scalars['String'];
-  user: Scalars['String'];
-};
-
-
-export type MutationCreateContactRequestArgs = {
-  owner: Scalars['String'];
-  user: Scalars['String'];
+  user_one: Scalars['String'];
+  user_two: Scalars['String'];
 };
 
 
@@ -290,11 +231,6 @@ export type MutationDeleteContactArgs = {
 };
 
 
-export type MutationDeleteContactRequestArgs = {
-  id: Scalars['ID'];
-};
-
-
 export type MutationDeleteItemArgs = {
   id: Scalars['ID'];
 };
@@ -329,12 +265,6 @@ export type MutationPartialUpdateAvailableItemArgs = {
 
 export type MutationPartialUpdateContactArgs = {
   data: PartialUpdateContactInput;
-  id: Scalars['ID'];
-};
-
-
-export type MutationPartialUpdateContactRequestArgs = {
-  data: PartialUpdateContactRequestInput;
   id: Scalars['ID'];
 };
 
@@ -382,12 +312,6 @@ export type MutationUpdateContactArgs = {
 };
 
 
-export type MutationUpdateContactRequestArgs = {
-  data: ContactRequestInput;
-  id: Scalars['ID'];
-};
-
-
 export type MutationUpdateItemArgs = {
   data: ItemInput;
   id: Scalars['ID'];
@@ -420,14 +344,9 @@ export type PartialUpdateAvailableItemInput = {
 
 /** 'Contact' input values */
 export type PartialUpdateContactInput = {
-  owner?: InputMaybe<ContactOwnerRelation>;
-  user?: InputMaybe<ContactUserRelation>;
-};
-
-/** 'ContactRequest' input values */
-export type PartialUpdateContactRequestInput = {
-  owner?: InputMaybe<ContactRequestOwnerRelation>;
-  user?: InputMaybe<ContactRequestUserRelation>;
+  status?: InputMaybe<ContactStatus>;
+  user_one?: InputMaybe<ContactUser_OneRelation>;
+  user_two?: InputMaybe<ContactUser_TwoRelation>;
 };
 
 /** 'Item' input values */
@@ -471,8 +390,6 @@ export type PartialUpdateTokenInput = {
 
 /** 'User' input values */
 export type PartialUpdateUserInput = {
-  contact_requests?: InputMaybe<UserContact_RequestsRelation>;
-  contacts?: InputMaybe<UserContactsRelation>;
   email?: InputMaybe<Scalars['String']>;
   items?: InputMaybe<UserItemsRelation>;
   name?: InputMaybe<Scalars['String']>;
@@ -487,8 +404,6 @@ export type Query = {
   findAvailableItemByID?: Maybe<AvailableItem>;
   /** Find a document from the collection of 'Contact' by its id. */
   findContactByID?: Maybe<Contact>;
-  /** Find a document from the collection of 'ContactRequest' by its id. */
-  findContactRequestByID?: Maybe<ContactRequest>;
   /** Find a document from the collection of 'Item' by its id. */
   findItemByID?: Maybe<Item>;
   /** Find a document from the collection of 'Space' by its id. */
@@ -498,10 +413,12 @@ export type Query = {
   findUserByEmail?: Maybe<User>;
   /** Find a document from the collection of 'User' by its id. */
   findUserByID?: Maybe<User>;
+  getIncomingContactRequests?: Maybe<Array<Contact>>;
   getItems?: Maybe<Array<Item>>;
   getModelItems?: Maybe<Array<AvailableItem>>;
   getUserByEmail?: Maybe<ShortUser>;
   getUserById?: Maybe<ShortUser>;
+  getUserContacts?: Maybe<Array<Contact>>;
 };
 
 
@@ -511,11 +428,6 @@ export type QueryFindAvailableItemByIdArgs = {
 
 
 export type QueryFindContactByIdArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryFindContactRequestByIdArgs = {
   id: Scalars['ID'];
 };
 
@@ -545,6 +457,11 @@ export type QueryFindUserByIdArgs = {
 };
 
 
+export type QueryGetIncomingContactRequestsArgs = {
+  user_id: Scalars['String'];
+};
+
+
 export type QueryGetItemsArgs = {
   user_id?: InputMaybe<Scalars['String']>;
 };
@@ -563,6 +480,11 @@ export type QueryGetUserByEmailArgs = {
 
 export type QueryGetUserByIdArgs = {
   id?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryGetUserContactsArgs = {
+  user_id: Scalars['String'];
 };
 
 export type ShortUser = {
@@ -703,26 +625,12 @@ export type User = {
   _id: Scalars['ID'];
   /** The document's timestamp. */
   _ts: Scalars['Long'];
-  contact_requests: ContactRequestPage;
-  contacts: ContactPage;
   email: Scalars['String'];
   items: ItemPage;
   name: Scalars['String'];
   password: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
   spaces: SpacePage;
-};
-
-
-export type UserContact_RequestsArgs = {
-  _cursor?: InputMaybe<Scalars['String']>;
-  _size?: InputMaybe<Scalars['Int']>;
-};
-
-
-export type UserContactsArgs = {
-  _cursor?: InputMaybe<Scalars['String']>;
-  _size?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -737,30 +645,8 @@ export type UserSpacesArgs = {
   _size?: InputMaybe<Scalars['Int']>;
 };
 
-/** Allow manipulating the relationship between the types 'User' and 'ContactRequest'. */
-export type UserContact_RequestsRelation = {
-  /** Connect one or more documents of type 'ContactRequest' with the current document using their IDs. */
-  connect?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-  /** Create one or more documents of type 'ContactRequest' and associate them with the current document. */
-  create?: InputMaybe<Array<InputMaybe<ContactRequestInput>>>;
-  /** Disconnect the given documents of type 'ContactRequest' from the current document using their IDs. */
-  disconnect?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-};
-
-/** Allow manipulating the relationship between the types 'User' and 'Contact'. */
-export type UserContactsRelation = {
-  /** Connect one or more documents of type 'Contact' with the current document using their IDs. */
-  connect?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-  /** Create one or more documents of type 'Contact' and associate them with the current document. */
-  create?: InputMaybe<Array<InputMaybe<ContactInput>>>;
-  /** Disconnect the given documents of type 'Contact' from the current document using their IDs. */
-  disconnect?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-};
-
 /** 'User' input values */
 export type UserInput = {
-  contact_requests?: InputMaybe<UserContact_RequestsRelation>;
-  contacts?: InputMaybe<UserContactsRelation>;
   email: Scalars['String'];
   items?: InputMaybe<UserItemsRelation>;
   name: Scalars['String'];

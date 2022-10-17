@@ -3,14 +3,14 @@ import {useNavigate} from "react-router-dom";
 import EditableListWithSearch from "../components/EditableListWithSearch";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
-import {GET_USER_CONTACTS} from '../services/UsersService'
+import {GET_INCOMING_CONTACT_REQUESTS} from '../services/UsersService'
 import {NetworkStatus} from '@apollo/client';
 import BaseModal from '../components/BaseComponents/BaseModal'
 import AddContactModal from "../components/AddContactModal";
 import { useLoading } from "../contexts/LoadingContext";
 import SubmitActionModal from "../components/SubmitActionModal";
-import {useDeleteContactMutation, useGetUserContactsQuery} from "../generated/apollo-functions";
-import {GetUserContactsQuery} from "../generated/operations";
+import {useDeleteContactMutation, useGetIncomingContactRequestsQuery} from "../generated/apollo-functions";
+import {GetIncomingContactRequestsQuery} from "../generated/operations";
 
 interface ShortContact {
   _id: string,
@@ -43,7 +43,7 @@ const Contacts = () => {
     setOpen(false);
   };
   
-  const {data, loading: contactsLoading, networkStatus} = useGetUserContactsQuery({
+  const {data, loading: contactsLoading, networkStatus} = useGetIncomingContactRequestsQuery({
     variables: {
       user_id: userId!
     },
@@ -53,11 +53,11 @@ const Contacts = () => {
   const [deleteItem, {loading: deleteLoading}] = useDeleteContactMutation();
 
   useEffect(()=> {
-    if (data?.getUserContacts?.length) {
-      setContacts(data.getUserContacts.map((contact) => ({
-        _id: contact!._id,
-        name: contact!.user_two.name,
-        userId: contact!.user_two._id
+    if (data?.getIncomingContactRequests?.length) {
+      setContacts(data.getIncomingContactRequests.map((request) => ({
+        _id: request!._id,
+        name: request!.user_one.name,
+        userId: request!.user_one._id
       })))
     }
   }, [data]);
@@ -67,23 +67,23 @@ const Contacts = () => {
       {
         variables: {id: deleteContactId},
         update(cache, {data}) {
-          const {getUserContacts} = cache.readQuery<GetUserContactsQuery>({
-            query: GET_USER_CONTACTS,
+          const {getIncomingContactRequests} = cache.readQuery<GetIncomingContactRequestsQuery>({
+            query: GET_INCOMING_CONTACT_REQUESTS,
             variables: {
               id: userId
             }
-          }) || ({} as Partial<GetUserContactsQuery>);
+          }) || ({} as Partial<GetIncomingContactRequestsQuery>);
           cache.writeQuery({
-            query: GET_USER_CONTACTS,
+            query: GET_INCOMING_CONTACT_REQUESTS,
             variables: {
               id: userId
             },
             data: {
-              getUserContacts: {
-                ...getUserContacts,
+              getIncomingContactRequests: {
+                ...getIncomingContactRequests,
                 contacts: {
-                  ...getUserContacts,
-                  data: getUserContacts?.filter((contact) => contact!._id !== data!.deleteContact!._id)
+                  ...getIncomingContactRequests,
+                  data: getIncomingContactRequests?.filter((contact) => contact!._id !== data!.deleteContact!._id)
                 }
               }
             }
