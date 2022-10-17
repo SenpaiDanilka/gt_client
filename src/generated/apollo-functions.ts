@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import * as Operations from "./operations";
+import { CreateAvailableItemMutation, CreateAvailableItemMutationVariables, CreateContactMutation, CreateContactMutationVariables, CreateItemMutation, CreateItemMutationVariables, CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables, DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables, DeleteContactMutation, DeleteContactMutationVariables, DeleteItemMutation, DeleteItemMutationVariables, DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables, DeleteSpaceMutation, DeleteSpaceMutationVariables, FindItemByIdQuery, FindItemByIdQueryVariables, FindSpaceByIdQuery, FindSpaceByIdQueryVariables, FindUserByEmailQuery, FindUserByEmailQueryVariables, FindUserContactRequestsByUserIdQuery, FindUserContactRequestsByUserIdQueryVariables, FindUserContactsByIdQuery, FindUserContactsByIdQueryVariables, FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables, FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables, GetItemsQuery, GetItemsQueryVariables, GetModelItemsQuery, GetModelItemsQueryVariables, GetUserByIdQuery, GetUserByIdQueryVariables, UpdateItemMutation, UpdateItemMutationVariables, UpdateSpaceMutation, UpdateSpaceMutationVariables, UserLoginMutation, UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables } from './operations';
 const defaultOptions = {} as const;
 
 export const UserLoginDocument = gql`
@@ -13,7 +13,7 @@ export const UserLoginDocument = gql`
   }
 }
     `;
-export type UserLoginMutationFn = Apollo.MutationFunction<Operations.UserLoginMutation, Operations.UserLoginMutationVariables>;
+export type UserLoginMutationFn = Apollo.MutationFunction<UserLoginMutation, UserLoginMutationVariables>;
 
 /**
  * __useUserLoginMutation__
@@ -26,20 +26,20 @@ export type UserLoginMutationFn = Apollo.MutationFunction<Operations.UserLoginMu
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.UserLoginMutation, { data, loading, error }] = useUserLoginMutation({
+ * const [userLoginMutation, { data, loading, error }] = useUserLoginMutation({
  *   variables: {
  *      email: // value for 'email'
  *      password: // value for 'password'
  *   },
  * });
  */
-export function useUserLoginMutation(baseOptions?: Apollo.MutationHookOptions<Operations.UserLoginMutation, Operations.UserLoginMutationVariables>) {
+export function useUserLoginMutation(baseOptions?: Apollo.MutationHookOptions<UserLoginMutation, UserLoginMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.UserLoginMutation, Operations.UserLoginMutationVariables>(UserLoginDocument, options);
+        return Apollo.useMutation<UserLoginMutation, UserLoginMutationVariables>(UserLoginDocument, options);
       }
 export type UserLoginMutationHookResult = ReturnType<typeof useUserLoginMutation>;
-export type UserLoginMutationResult = Apollo.MutationResult<Operations.UserLoginMutation>;
-export type UserLoginMutationOptions = Apollo.BaseMutationOptions<Operations.UserLoginMutation, Operations.UserLoginMutationVariables>;
+export type UserLoginMutationResult = Apollo.MutationResult<UserLoginMutation>;
+export type UserLoginMutationOptions = Apollo.BaseMutationOptions<UserLoginMutation, UserLoginMutationVariables>;
 export const UserSignUpDocument = gql`
     mutation UserSignUp($name: String!, $email: String!, $password: String!) {
   registerUser(name: $name, email: $email, password: $password) {
@@ -48,7 +48,7 @@ export const UserSignUpDocument = gql`
   }
 }
     `;
-export type UserSignUpMutationFn = Apollo.MutationFunction<Operations.UserSignUpMutation, Operations.UserSignUpMutationVariables>;
+export type UserSignUpMutationFn = Apollo.MutationFunction<UserSignUpMutation, UserSignUpMutationVariables>;
 
 /**
  * __useUserSignUpMutation__
@@ -61,7 +61,7 @@ export type UserSignUpMutationFn = Apollo.MutationFunction<Operations.UserSignUp
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.UserSignUpMutation, { data, loading, error }] = useUserSignUpMutation({
+ * const [userSignUpMutation, { data, loading, error }] = useUserSignUpMutation({
  *   variables: {
  *      name: // value for 'name'
  *      email: // value for 'email'
@@ -69,13 +69,13 @@ export type UserSignUpMutationFn = Apollo.MutationFunction<Operations.UserSignUp
  *   },
  * });
  */
-export function useUserSignUpMutation(baseOptions?: Apollo.MutationHookOptions<Operations.UserSignUpMutation, Operations.UserSignUpMutationVariables>) {
+export function useUserSignUpMutation(baseOptions?: Apollo.MutationHookOptions<UserSignUpMutation, UserSignUpMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.UserSignUpMutation, Operations.UserSignUpMutationVariables>(UserSignUpDocument, options);
+        return Apollo.useMutation<UserSignUpMutation, UserSignUpMutationVariables>(UserSignUpDocument, options);
       }
 export type UserSignUpMutationHookResult = ReturnType<typeof useUserSignUpMutation>;
-export type UserSignUpMutationResult = Apollo.MutationResult<Operations.UserSignUpMutation>;
-export type UserSignUpMutationOptions = Apollo.BaseMutationOptions<Operations.UserSignUpMutation, Operations.UserSignUpMutationVariables>;
+export type UserSignUpMutationResult = Apollo.MutationResult<UserSignUpMutation>;
+export type UserSignUpMutationOptions = Apollo.BaseMutationOptions<UserSignUpMutation, UserSignUpMutationVariables>;
 export const DeleteItemDocument = gql`
     mutation DeleteItem($id: ID!) {
   deleteItem(id: $id) {
@@ -83,7 +83,7 @@ export const DeleteItemDocument = gql`
   }
 }
     `;
-export type DeleteItemMutationFn = Apollo.MutationFunction<Operations.DeleteItemMutation, Operations.DeleteItemMutationVariables>;
+export type DeleteItemMutationFn = Apollo.MutationFunction<DeleteItemMutation, DeleteItemMutationVariables>;
 
 /**
  * __useDeleteItemMutation__
@@ -96,19 +96,19 @@ export type DeleteItemMutationFn = Apollo.MutationFunction<Operations.DeleteItem
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.DeleteItemMutation, { data, loading, error }] = useDeleteItemMutation({
+ * const [deleteItemMutation, { data, loading, error }] = useDeleteItemMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDeleteItemMutation(baseOptions?: Apollo.MutationHookOptions<Operations.DeleteItemMutation, Operations.DeleteItemMutationVariables>) {
+export function useDeleteItemMutation(baseOptions?: Apollo.MutationHookOptions<DeleteItemMutation, DeleteItemMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.DeleteItemMutation, Operations.DeleteItemMutationVariables>(DeleteItemDocument, options);
+        return Apollo.useMutation<DeleteItemMutation, DeleteItemMutationVariables>(DeleteItemDocument, options);
       }
 export type DeleteItemMutationHookResult = ReturnType<typeof useDeleteItemMutation>;
-export type DeleteItemMutationResult = Apollo.MutationResult<Operations.DeleteItemMutation>;
-export type DeleteItemMutationOptions = Apollo.BaseMutationOptions<Operations.DeleteItemMutation, Operations.DeleteItemMutationVariables>;
+export type DeleteItemMutationResult = Apollo.MutationResult<DeleteItemMutation>;
+export type DeleteItemMutationOptions = Apollo.BaseMutationOptions<DeleteItemMutation, DeleteItemMutationVariables>;
 export const FindUserItemsByIdDocument = gql`
     query FindUserItemsByID($id: ID!) {
   findUserByID(id: $id) {
@@ -141,17 +141,17 @@ export const FindUserItemsByIdDocument = gql`
  *   },
  * });
  */
-export function useFindUserItemsByIdQuery(baseOptions: Apollo.QueryHookOptions<Operations.FindUserItemsByIdQuery, Operations.FindUserItemsByIdQueryVariables>) {
+export function useFindUserItemsByIdQuery(baseOptions: Apollo.QueryHookOptions<FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Operations.FindUserItemsByIdQuery, Operations.FindUserItemsByIdQueryVariables>(FindUserItemsByIdDocument, options);
+        return Apollo.useQuery<FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables>(FindUserItemsByIdDocument, options);
       }
-export function useFindUserItemsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Operations.FindUserItemsByIdQuery, Operations.FindUserItemsByIdQueryVariables>) {
+export function useFindUserItemsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Operations.FindUserItemsByIdQuery, Operations.FindUserItemsByIdQueryVariables>(FindUserItemsByIdDocument, options);
+          return Apollo.useLazyQuery<FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables>(FindUserItemsByIdDocument, options);
         }
 export type FindUserItemsByIdQueryHookResult = ReturnType<typeof useFindUserItemsByIdQuery>;
 export type FindUserItemsByIdLazyQueryHookResult = ReturnType<typeof useFindUserItemsByIdLazyQuery>;
-export type FindUserItemsByIdQueryResult = Apollo.QueryResult<Operations.FindUserItemsByIdQuery, Operations.FindUserItemsByIdQueryVariables>;
+export type FindUserItemsByIdQueryResult = Apollo.QueryResult<FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables>;
 export const GetItemsDocument = gql`
     query GetItems($user_id: String!) {
   getItems(user_id: $user_id) {
@@ -179,17 +179,17 @@ export const GetItemsDocument = gql`
  *   },
  * });
  */
-export function useGetItemsQuery(baseOptions: Apollo.QueryHookOptions<Operations.GetItemsQuery, Operations.GetItemsQueryVariables>) {
+export function useGetItemsQuery(baseOptions: Apollo.QueryHookOptions<GetItemsQuery, GetItemsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Operations.GetItemsQuery, Operations.GetItemsQueryVariables>(GetItemsDocument, options);
+        return Apollo.useQuery<GetItemsQuery, GetItemsQueryVariables>(GetItemsDocument, options);
       }
-export function useGetItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Operations.GetItemsQuery, Operations.GetItemsQueryVariables>) {
+export function useGetItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetItemsQuery, GetItemsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Operations.GetItemsQuery, Operations.GetItemsQueryVariables>(GetItemsDocument, options);
+          return Apollo.useLazyQuery<GetItemsQuery, GetItemsQueryVariables>(GetItemsDocument, options);
         }
 export type GetItemsQueryHookResult = ReturnType<typeof useGetItemsQuery>;
 export type GetItemsLazyQueryHookResult = ReturnType<typeof useGetItemsLazyQuery>;
-export type GetItemsQueryResult = Apollo.QueryResult<Operations.GetItemsQuery, Operations.GetItemsQueryVariables>;
+export type GetItemsQueryResult = Apollo.QueryResult<GetItemsQuery, GetItemsQueryVariables>;
 export const GetModelItemsDocument = gql`
     query GetModelItems($model: AvailabilityModel!, $model_id: String!) {
   getModelItems(model: $model, model_id: $model_id) {
@@ -222,17 +222,17 @@ export const GetModelItemsDocument = gql`
  *   },
  * });
  */
-export function useGetModelItemsQuery(baseOptions: Apollo.QueryHookOptions<Operations.GetModelItemsQuery, Operations.GetModelItemsQueryVariables>) {
+export function useGetModelItemsQuery(baseOptions: Apollo.QueryHookOptions<GetModelItemsQuery, GetModelItemsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Operations.GetModelItemsQuery, Operations.GetModelItemsQueryVariables>(GetModelItemsDocument, options);
+        return Apollo.useQuery<GetModelItemsQuery, GetModelItemsQueryVariables>(GetModelItemsDocument, options);
       }
-export function useGetModelItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Operations.GetModelItemsQuery, Operations.GetModelItemsQueryVariables>) {
+export function useGetModelItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetModelItemsQuery, GetModelItemsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Operations.GetModelItemsQuery, Operations.GetModelItemsQueryVariables>(GetModelItemsDocument, options);
+          return Apollo.useLazyQuery<GetModelItemsQuery, GetModelItemsQueryVariables>(GetModelItemsDocument, options);
         }
 export type GetModelItemsQueryHookResult = ReturnType<typeof useGetModelItemsQuery>;
 export type GetModelItemsLazyQueryHookResult = ReturnType<typeof useGetModelItemsLazyQuery>;
-export type GetModelItemsQueryResult = Apollo.QueryResult<Operations.GetModelItemsQuery, Operations.GetModelItemsQueryVariables>;
+export type GetModelItemsQueryResult = Apollo.QueryResult<GetModelItemsQuery, GetModelItemsQueryVariables>;
 export const DeleteAvailableItemDocument = gql`
     mutation DeleteAvailableItem($id: ID!) {
   deleteAvailableItem(id: $id) {
@@ -240,7 +240,7 @@ export const DeleteAvailableItemDocument = gql`
   }
 }
     `;
-export type DeleteAvailableItemMutationFn = Apollo.MutationFunction<Operations.DeleteAvailableItemMutation, Operations.DeleteAvailableItemMutationVariables>;
+export type DeleteAvailableItemMutationFn = Apollo.MutationFunction<DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables>;
 
 /**
  * __useDeleteAvailableItemMutation__
@@ -253,19 +253,19 @@ export type DeleteAvailableItemMutationFn = Apollo.MutationFunction<Operations.D
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.DeleteAvailableItemMutation, { data, loading, error }] = useDeleteAvailableItemMutation({
+ * const [deleteAvailableItemMutation, { data, loading, error }] = useDeleteAvailableItemMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDeleteAvailableItemMutation(baseOptions?: Apollo.MutationHookOptions<Operations.DeleteAvailableItemMutation, Operations.DeleteAvailableItemMutationVariables>) {
+export function useDeleteAvailableItemMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.DeleteAvailableItemMutation, Operations.DeleteAvailableItemMutationVariables>(DeleteAvailableItemDocument, options);
+        return Apollo.useMutation<DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables>(DeleteAvailableItemDocument, options);
       }
 export type DeleteAvailableItemMutationHookResult = ReturnType<typeof useDeleteAvailableItemMutation>;
-export type DeleteAvailableItemMutationResult = Apollo.MutationResult<Operations.DeleteAvailableItemMutation>;
-export type DeleteAvailableItemMutationOptions = Apollo.BaseMutationOptions<Operations.DeleteAvailableItemMutation, Operations.DeleteAvailableItemMutationVariables>;
+export type DeleteAvailableItemMutationResult = Apollo.MutationResult<DeleteAvailableItemMutation>;
+export type DeleteAvailableItemMutationOptions = Apollo.BaseMutationOptions<DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables>;
 export const FindItemByIdDocument = gql`
     query FindItemByID($id: ID!) {
   findItemByID(id: $id) {
@@ -293,17 +293,17 @@ export const FindItemByIdDocument = gql`
  *   },
  * });
  */
-export function useFindItemByIdQuery(baseOptions: Apollo.QueryHookOptions<Operations.FindItemByIdQuery, Operations.FindItemByIdQueryVariables>) {
+export function useFindItemByIdQuery(baseOptions: Apollo.QueryHookOptions<FindItemByIdQuery, FindItemByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Operations.FindItemByIdQuery, Operations.FindItemByIdQueryVariables>(FindItemByIdDocument, options);
+        return Apollo.useQuery<FindItemByIdQuery, FindItemByIdQueryVariables>(FindItemByIdDocument, options);
       }
-export function useFindItemByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Operations.FindItemByIdQuery, Operations.FindItemByIdQueryVariables>) {
+export function useFindItemByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindItemByIdQuery, FindItemByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Operations.FindItemByIdQuery, Operations.FindItemByIdQueryVariables>(FindItemByIdDocument, options);
+          return Apollo.useLazyQuery<FindItemByIdQuery, FindItemByIdQueryVariables>(FindItemByIdDocument, options);
         }
 export type FindItemByIdQueryHookResult = ReturnType<typeof useFindItemByIdQuery>;
 export type FindItemByIdLazyQueryHookResult = ReturnType<typeof useFindItemByIdLazyQuery>;
-export type FindItemByIdQueryResult = Apollo.QueryResult<Operations.FindItemByIdQuery, Operations.FindItemByIdQueryVariables>;
+export type FindItemByIdQueryResult = Apollo.QueryResult<FindItemByIdQuery, FindItemByIdQueryVariables>;
 export const CreateItemDocument = gql`
     mutation CreateItem($name: String!, $description: String!, $type: ItemType!, $owner: String!) {
   createItem(name: $name, description: $description, type: $type, owner: $owner) {
@@ -314,7 +314,7 @@ export const CreateItemDocument = gql`
   }
 }
     `;
-export type CreateItemMutationFn = Apollo.MutationFunction<Operations.CreateItemMutation, Operations.CreateItemMutationVariables>;
+export type CreateItemMutationFn = Apollo.MutationFunction<CreateItemMutation, CreateItemMutationVariables>;
 
 /**
  * __useCreateItemMutation__
@@ -327,7 +327,7 @@ export type CreateItemMutationFn = Apollo.MutationFunction<Operations.CreateItem
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.CreateItemMutation, { data, loading, error }] = useCreateItemMutation({
+ * const [createItemMutation, { data, loading, error }] = useCreateItemMutation({
  *   variables: {
  *      name: // value for 'name'
  *      description: // value for 'description'
@@ -336,13 +336,13 @@ export type CreateItemMutationFn = Apollo.MutationFunction<Operations.CreateItem
  *   },
  * });
  */
-export function useCreateItemMutation(baseOptions?: Apollo.MutationHookOptions<Operations.CreateItemMutation, Operations.CreateItemMutationVariables>) {
+export function useCreateItemMutation(baseOptions?: Apollo.MutationHookOptions<CreateItemMutation, CreateItemMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.CreateItemMutation, Operations.CreateItemMutationVariables>(CreateItemDocument, options);
+        return Apollo.useMutation<CreateItemMutation, CreateItemMutationVariables>(CreateItemDocument, options);
       }
 export type CreateItemMutationHookResult = ReturnType<typeof useCreateItemMutation>;
-export type CreateItemMutationResult = Apollo.MutationResult<Operations.CreateItemMutation>;
-export type CreateItemMutationOptions = Apollo.BaseMutationOptions<Operations.CreateItemMutation, Operations.CreateItemMutationVariables>;
+export type CreateItemMutationResult = Apollo.MutationResult<CreateItemMutation>;
+export type CreateItemMutationOptions = Apollo.BaseMutationOptions<CreateItemMutation, CreateItemMutationVariables>;
 export const CreateAvailableItemDocument = gql`
     mutation CreateAvailableItem($model: AvailabilityModel!, $model_id: String!, $item_id: String!) {
   createAvailableItem(model: $model, model_id: $model_id, item_id: $item_id) {
@@ -358,7 +358,7 @@ export const CreateAvailableItemDocument = gql`
   }
 }
     `;
-export type CreateAvailableItemMutationFn = Apollo.MutationFunction<Operations.CreateAvailableItemMutation, Operations.CreateAvailableItemMutationVariables>;
+export type CreateAvailableItemMutationFn = Apollo.MutationFunction<CreateAvailableItemMutation, CreateAvailableItemMutationVariables>;
 
 /**
  * __useCreateAvailableItemMutation__
@@ -371,7 +371,7 @@ export type CreateAvailableItemMutationFn = Apollo.MutationFunction<Operations.C
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.CreateAvailableItemMutation, { data, loading, error }] = useCreateAvailableItemMutation({
+ * const [createAvailableItemMutation, { data, loading, error }] = useCreateAvailableItemMutation({
  *   variables: {
  *      model: // value for 'model'
  *      model_id: // value for 'model_id'
@@ -379,13 +379,13 @@ export type CreateAvailableItemMutationFn = Apollo.MutationFunction<Operations.C
  *   },
  * });
  */
-export function useCreateAvailableItemMutation(baseOptions?: Apollo.MutationHookOptions<Operations.CreateAvailableItemMutation, Operations.CreateAvailableItemMutationVariables>) {
+export function useCreateAvailableItemMutation(baseOptions?: Apollo.MutationHookOptions<CreateAvailableItemMutation, CreateAvailableItemMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.CreateAvailableItemMutation, Operations.CreateAvailableItemMutationVariables>(CreateAvailableItemDocument, options);
+        return Apollo.useMutation<CreateAvailableItemMutation, CreateAvailableItemMutationVariables>(CreateAvailableItemDocument, options);
       }
 export type CreateAvailableItemMutationHookResult = ReturnType<typeof useCreateAvailableItemMutation>;
-export type CreateAvailableItemMutationResult = Apollo.MutationResult<Operations.CreateAvailableItemMutation>;
-export type CreateAvailableItemMutationOptions = Apollo.BaseMutationOptions<Operations.CreateAvailableItemMutation, Operations.CreateAvailableItemMutationVariables>;
+export type CreateAvailableItemMutationResult = Apollo.MutationResult<CreateAvailableItemMutation>;
+export type CreateAvailableItemMutationOptions = Apollo.BaseMutationOptions<CreateAvailableItemMutation, CreateAvailableItemMutationVariables>;
 export const UpdateItemDocument = gql`
     mutation UpdateItem($id: ID!, $data: ItemInput!) {
   updateItem(id: $id, data: $data) {
@@ -396,7 +396,7 @@ export const UpdateItemDocument = gql`
   }
 }
     `;
-export type UpdateItemMutationFn = Apollo.MutationFunction<Operations.UpdateItemMutation, Operations.UpdateItemMutationVariables>;
+export type UpdateItemMutationFn = Apollo.MutationFunction<UpdateItemMutation, UpdateItemMutationVariables>;
 
 /**
  * __useUpdateItemMutation__
@@ -409,20 +409,20 @@ export type UpdateItemMutationFn = Apollo.MutationFunction<Operations.UpdateItem
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.UpdateItemMutation, { data, loading, error }] = useUpdateItemMutation({
+ * const [updateItemMutation, { data, loading, error }] = useUpdateItemMutation({
  *   variables: {
  *      id: // value for 'id'
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useUpdateItemMutation(baseOptions?: Apollo.MutationHookOptions<Operations.UpdateItemMutation, Operations.UpdateItemMutationVariables>) {
+export function useUpdateItemMutation(baseOptions?: Apollo.MutationHookOptions<UpdateItemMutation, UpdateItemMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.UpdateItemMutation, Operations.UpdateItemMutationVariables>(UpdateItemDocument, options);
+        return Apollo.useMutation<UpdateItemMutation, UpdateItemMutationVariables>(UpdateItemDocument, options);
       }
 export type UpdateItemMutationHookResult = ReturnType<typeof useUpdateItemMutation>;
-export type UpdateItemMutationResult = Apollo.MutationResult<Operations.UpdateItemMutation>;
-export type UpdateItemMutationOptions = Apollo.BaseMutationOptions<Operations.UpdateItemMutation, Operations.UpdateItemMutationVariables>;
+export type UpdateItemMutationResult = Apollo.MutationResult<UpdateItemMutation>;
+export type UpdateItemMutationOptions = Apollo.BaseMutationOptions<UpdateItemMutation, UpdateItemMutationVariables>;
 export const FindUserSpacesByIdDocument = gql`
     query FindUserSpacesByID($id: ID!) {
   findUserByID(id: $id) {
@@ -454,17 +454,17 @@ export const FindUserSpacesByIdDocument = gql`
  *   },
  * });
  */
-export function useFindUserSpacesByIdQuery(baseOptions: Apollo.QueryHookOptions<Operations.FindUserSpacesByIdQuery, Operations.FindUserSpacesByIdQueryVariables>) {
+export function useFindUserSpacesByIdQuery(baseOptions: Apollo.QueryHookOptions<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Operations.FindUserSpacesByIdQuery, Operations.FindUserSpacesByIdQueryVariables>(FindUserSpacesByIdDocument, options);
+        return Apollo.useQuery<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>(FindUserSpacesByIdDocument, options);
       }
-export function useFindUserSpacesByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Operations.FindUserSpacesByIdQuery, Operations.FindUserSpacesByIdQueryVariables>) {
+export function useFindUserSpacesByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Operations.FindUserSpacesByIdQuery, Operations.FindUserSpacesByIdQueryVariables>(FindUserSpacesByIdDocument, options);
+          return Apollo.useLazyQuery<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>(FindUserSpacesByIdDocument, options);
         }
 export type FindUserSpacesByIdQueryHookResult = ReturnType<typeof useFindUserSpacesByIdQuery>;
 export type FindUserSpacesByIdLazyQueryHookResult = ReturnType<typeof useFindUserSpacesByIdLazyQuery>;
-export type FindUserSpacesByIdQueryResult = Apollo.QueryResult<Operations.FindUserSpacesByIdQuery, Operations.FindUserSpacesByIdQueryVariables>;
+export type FindUserSpacesByIdQueryResult = Apollo.QueryResult<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>;
 export const DeleteSpaceDocument = gql`
     mutation DeleteSpace($id: ID!) {
   deleteSpace(id: $id) {
@@ -472,7 +472,7 @@ export const DeleteSpaceDocument = gql`
   }
 }
     `;
-export type DeleteSpaceMutationFn = Apollo.MutationFunction<Operations.DeleteSpaceMutation, Operations.DeleteSpaceMutationVariables>;
+export type DeleteSpaceMutationFn = Apollo.MutationFunction<DeleteSpaceMutation, DeleteSpaceMutationVariables>;
 
 /**
  * __useDeleteSpaceMutation__
@@ -485,19 +485,19 @@ export type DeleteSpaceMutationFn = Apollo.MutationFunction<Operations.DeleteSpa
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.DeleteSpaceMutation, { data, loading, error }] = useDeleteSpaceMutation({
+ * const [deleteSpaceMutation, { data, loading, error }] = useDeleteSpaceMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDeleteSpaceMutation(baseOptions?: Apollo.MutationHookOptions<Operations.DeleteSpaceMutation, Operations.DeleteSpaceMutationVariables>) {
+export function useDeleteSpaceMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSpaceMutation, DeleteSpaceMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.DeleteSpaceMutation, Operations.DeleteSpaceMutationVariables>(DeleteSpaceDocument, options);
+        return Apollo.useMutation<DeleteSpaceMutation, DeleteSpaceMutationVariables>(DeleteSpaceDocument, options);
       }
 export type DeleteSpaceMutationHookResult = ReturnType<typeof useDeleteSpaceMutation>;
-export type DeleteSpaceMutationResult = Apollo.MutationResult<Operations.DeleteSpaceMutation>;
-export type DeleteSpaceMutationOptions = Apollo.BaseMutationOptions<Operations.DeleteSpaceMutation, Operations.DeleteSpaceMutationVariables>;
+export type DeleteSpaceMutationResult = Apollo.MutationResult<DeleteSpaceMutation>;
+export type DeleteSpaceMutationOptions = Apollo.BaseMutationOptions<DeleteSpaceMutation, DeleteSpaceMutationVariables>;
 export const CreateSpaceDocument = gql`
     mutation CreateSpace($name: String!, $description: String!, $owner: String!) {
   createSpace(name: $name, description: $description, owner: $owner) {
@@ -507,7 +507,7 @@ export const CreateSpaceDocument = gql`
   }
 }
     `;
-export type CreateSpaceMutationFn = Apollo.MutationFunction<Operations.CreateSpaceMutation, Operations.CreateSpaceMutationVariables>;
+export type CreateSpaceMutationFn = Apollo.MutationFunction<CreateSpaceMutation, CreateSpaceMutationVariables>;
 
 /**
  * __useCreateSpaceMutation__
@@ -520,7 +520,7 @@ export type CreateSpaceMutationFn = Apollo.MutationFunction<Operations.CreateSpa
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.CreateSpaceMutation, { data, loading, error }] = useCreateSpaceMutation({
+ * const [createSpaceMutation, { data, loading, error }] = useCreateSpaceMutation({
  *   variables: {
  *      name: // value for 'name'
  *      description: // value for 'description'
@@ -528,13 +528,13 @@ export type CreateSpaceMutationFn = Apollo.MutationFunction<Operations.CreateSpa
  *   },
  * });
  */
-export function useCreateSpaceMutation(baseOptions?: Apollo.MutationHookOptions<Operations.CreateSpaceMutation, Operations.CreateSpaceMutationVariables>) {
+export function useCreateSpaceMutation(baseOptions?: Apollo.MutationHookOptions<CreateSpaceMutation, CreateSpaceMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.CreateSpaceMutation, Operations.CreateSpaceMutationVariables>(CreateSpaceDocument, options);
+        return Apollo.useMutation<CreateSpaceMutation, CreateSpaceMutationVariables>(CreateSpaceDocument, options);
       }
 export type CreateSpaceMutationHookResult = ReturnType<typeof useCreateSpaceMutation>;
-export type CreateSpaceMutationResult = Apollo.MutationResult<Operations.CreateSpaceMutation>;
-export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<Operations.CreateSpaceMutation, Operations.CreateSpaceMutationVariables>;
+export type CreateSpaceMutationResult = Apollo.MutationResult<CreateSpaceMutation>;
+export type CreateSpaceMutationOptions = Apollo.BaseMutationOptions<CreateSpaceMutation, CreateSpaceMutationVariables>;
 export const FindSpaceByIdDocument = gql`
     query FindSpaceByID($id: ID!) {
   findSpaceByID(id: $id) {
@@ -573,17 +573,17 @@ export const FindSpaceByIdDocument = gql`
  *   },
  * });
  */
-export function useFindSpaceByIdQuery(baseOptions: Apollo.QueryHookOptions<Operations.FindSpaceByIdQuery, Operations.FindSpaceByIdQueryVariables>) {
+export function useFindSpaceByIdQuery(baseOptions: Apollo.QueryHookOptions<FindSpaceByIdQuery, FindSpaceByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Operations.FindSpaceByIdQuery, Operations.FindSpaceByIdQueryVariables>(FindSpaceByIdDocument, options);
+        return Apollo.useQuery<FindSpaceByIdQuery, FindSpaceByIdQueryVariables>(FindSpaceByIdDocument, options);
       }
-export function useFindSpaceByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Operations.FindSpaceByIdQuery, Operations.FindSpaceByIdQueryVariables>) {
+export function useFindSpaceByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindSpaceByIdQuery, FindSpaceByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Operations.FindSpaceByIdQuery, Operations.FindSpaceByIdQueryVariables>(FindSpaceByIdDocument, options);
+          return Apollo.useLazyQuery<FindSpaceByIdQuery, FindSpaceByIdQueryVariables>(FindSpaceByIdDocument, options);
         }
 export type FindSpaceByIdQueryHookResult = ReturnType<typeof useFindSpaceByIdQuery>;
 export type FindSpaceByIdLazyQueryHookResult = ReturnType<typeof useFindSpaceByIdLazyQuery>;
-export type FindSpaceByIdQueryResult = Apollo.QueryResult<Operations.FindSpaceByIdQuery, Operations.FindSpaceByIdQueryVariables>;
+export type FindSpaceByIdQueryResult = Apollo.QueryResult<FindSpaceByIdQuery, FindSpaceByIdQueryVariables>;
 export const UpdateSpaceDocument = gql`
     mutation UpdateSpace($id: ID!, $data: SpaceInput!) {
   updateSpace(id: $id, data: $data) {
@@ -593,7 +593,7 @@ export const UpdateSpaceDocument = gql`
   }
 }
     `;
-export type UpdateSpaceMutationFn = Apollo.MutationFunction<Operations.UpdateSpaceMutation, Operations.UpdateSpaceMutationVariables>;
+export type UpdateSpaceMutationFn = Apollo.MutationFunction<UpdateSpaceMutation, UpdateSpaceMutationVariables>;
 
 /**
  * __useUpdateSpaceMutation__
@@ -606,20 +606,20 @@ export type UpdateSpaceMutationFn = Apollo.MutationFunction<Operations.UpdateSpa
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.UpdateSpaceMutation, { data, loading, error }] = useUpdateSpaceMutation({
+ * const [updateSpaceMutation, { data, loading, error }] = useUpdateSpaceMutation({
  *   variables: {
  *      id: // value for 'id'
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useUpdateSpaceMutation(baseOptions?: Apollo.MutationHookOptions<Operations.UpdateSpaceMutation, Operations.UpdateSpaceMutationVariables>) {
+export function useUpdateSpaceMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSpaceMutation, UpdateSpaceMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.UpdateSpaceMutation, Operations.UpdateSpaceMutationVariables>(UpdateSpaceDocument, options);
+        return Apollo.useMutation<UpdateSpaceMutation, UpdateSpaceMutationVariables>(UpdateSpaceDocument, options);
       }
 export type UpdateSpaceMutationHookResult = ReturnType<typeof useUpdateSpaceMutation>;
-export type UpdateSpaceMutationResult = Apollo.MutationResult<Operations.UpdateSpaceMutation>;
-export type UpdateSpaceMutationOptions = Apollo.BaseMutationOptions<Operations.UpdateSpaceMutation, Operations.UpdateSpaceMutationVariables>;
+export type UpdateSpaceMutationResult = Apollo.MutationResult<UpdateSpaceMutation>;
+export type UpdateSpaceMutationOptions = Apollo.BaseMutationOptions<UpdateSpaceMutation, UpdateSpaceMutationVariables>;
 export const CreateSpaceContactLinkDocument = gql`
     mutation CreateSpaceContactLink($data: SpaceContactLinkInput!) {
   createSpaceContactLink(data: $data) {
@@ -634,7 +634,7 @@ export const CreateSpaceContactLinkDocument = gql`
   }
 }
     `;
-export type CreateSpaceContactLinkMutationFn = Apollo.MutationFunction<Operations.CreateSpaceContactLinkMutation, Operations.CreateSpaceContactLinkMutationVariables>;
+export type CreateSpaceContactLinkMutationFn = Apollo.MutationFunction<CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables>;
 
 /**
  * __useCreateSpaceContactLinkMutation__
@@ -647,19 +647,19 @@ export type CreateSpaceContactLinkMutationFn = Apollo.MutationFunction<Operation
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.CreateSpaceContactLinkMutation, { data, loading, error }] = useCreateSpaceContactLinkMutation({
+ * const [createSpaceContactLinkMutation, { data, loading, error }] = useCreateSpaceContactLinkMutation({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useCreateSpaceContactLinkMutation(baseOptions?: Apollo.MutationHookOptions<Operations.CreateSpaceContactLinkMutation, Operations.CreateSpaceContactLinkMutationVariables>) {
+export function useCreateSpaceContactLinkMutation(baseOptions?: Apollo.MutationHookOptions<CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.CreateSpaceContactLinkMutation, Operations.CreateSpaceContactLinkMutationVariables>(CreateSpaceContactLinkDocument, options);
+        return Apollo.useMutation<CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables>(CreateSpaceContactLinkDocument, options);
       }
 export type CreateSpaceContactLinkMutationHookResult = ReturnType<typeof useCreateSpaceContactLinkMutation>;
-export type CreateSpaceContactLinkMutationResult = Apollo.MutationResult<Operations.CreateSpaceContactLinkMutation>;
-export type CreateSpaceContactLinkMutationOptions = Apollo.BaseMutationOptions<Operations.CreateSpaceContactLinkMutation, Operations.CreateSpaceContactLinkMutationVariables>;
+export type CreateSpaceContactLinkMutationResult = Apollo.MutationResult<CreateSpaceContactLinkMutation>;
+export type CreateSpaceContactLinkMutationOptions = Apollo.BaseMutationOptions<CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables>;
 export const DeleteSpaceContactLinkDocument = gql`
     mutation DeleteSpaceContactLink($id: ID!) {
   deleteSpaceContactLink(id: $id) {
@@ -667,7 +667,7 @@ export const DeleteSpaceContactLinkDocument = gql`
   }
 }
     `;
-export type DeleteSpaceContactLinkMutationFn = Apollo.MutationFunction<Operations.DeleteSpaceContactLinkMutation, Operations.DeleteSpaceContactLinkMutationVariables>;
+export type DeleteSpaceContactLinkMutationFn = Apollo.MutationFunction<DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables>;
 
 /**
  * __useDeleteSpaceContactLinkMutation__
@@ -680,19 +680,19 @@ export type DeleteSpaceContactLinkMutationFn = Apollo.MutationFunction<Operation
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.DeleteSpaceContactLinkMutation, { data, loading, error }] = useDeleteSpaceContactLinkMutation({
+ * const [deleteSpaceContactLinkMutation, { data, loading, error }] = useDeleteSpaceContactLinkMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDeleteSpaceContactLinkMutation(baseOptions?: Apollo.MutationHookOptions<Operations.DeleteSpaceContactLinkMutation, Operations.DeleteSpaceContactLinkMutationVariables>) {
+export function useDeleteSpaceContactLinkMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.DeleteSpaceContactLinkMutation, Operations.DeleteSpaceContactLinkMutationVariables>(DeleteSpaceContactLinkDocument, options);
+        return Apollo.useMutation<DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables>(DeleteSpaceContactLinkDocument, options);
       }
 export type DeleteSpaceContactLinkMutationHookResult = ReturnType<typeof useDeleteSpaceContactLinkMutation>;
-export type DeleteSpaceContactLinkMutationResult = Apollo.MutationResult<Operations.DeleteSpaceContactLinkMutation>;
-export type DeleteSpaceContactLinkMutationOptions = Apollo.BaseMutationOptions<Operations.DeleteSpaceContactLinkMutation, Operations.DeleteSpaceContactLinkMutationVariables>;
+export type DeleteSpaceContactLinkMutationResult = Apollo.MutationResult<DeleteSpaceContactLinkMutation>;
+export type DeleteSpaceContactLinkMutationOptions = Apollo.BaseMutationOptions<DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables>;
 export const DeleteContactDocument = gql`
     mutation DeleteContact($id: ID!) {
   deleteContact(id: $id) {
@@ -700,7 +700,7 @@ export const DeleteContactDocument = gql`
   }
 }
     `;
-export type DeleteContactMutationFn = Apollo.MutationFunction<Operations.DeleteContactMutation, Operations.DeleteContactMutationVariables>;
+export type DeleteContactMutationFn = Apollo.MutationFunction<DeleteContactMutation, DeleteContactMutationVariables>;
 
 /**
  * __useDeleteContactMutation__
@@ -713,19 +713,19 @@ export type DeleteContactMutationFn = Apollo.MutationFunction<Operations.DeleteC
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.DeleteContactMutation, { data, loading, error }] = useDeleteContactMutation({
+ * const [deleteContactMutation, { data, loading, error }] = useDeleteContactMutation({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useDeleteContactMutation(baseOptions?: Apollo.MutationHookOptions<Operations.DeleteContactMutation, Operations.DeleteContactMutationVariables>) {
+export function useDeleteContactMutation(baseOptions?: Apollo.MutationHookOptions<DeleteContactMutation, DeleteContactMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.DeleteContactMutation, Operations.DeleteContactMutationVariables>(DeleteContactDocument, options);
+        return Apollo.useMutation<DeleteContactMutation, DeleteContactMutationVariables>(DeleteContactDocument, options);
       }
 export type DeleteContactMutationHookResult = ReturnType<typeof useDeleteContactMutation>;
-export type DeleteContactMutationResult = Apollo.MutationResult<Operations.DeleteContactMutation>;
-export type DeleteContactMutationOptions = Apollo.BaseMutationOptions<Operations.DeleteContactMutation, Operations.DeleteContactMutationVariables>;
+export type DeleteContactMutationResult = Apollo.MutationResult<DeleteContactMutation>;
+export type DeleteContactMutationOptions = Apollo.BaseMutationOptions<DeleteContactMutation, DeleteContactMutationVariables>;
 export const CreateContactDocument = gql`
     mutation CreateContact($owner: String!, $user: String!) {
   createContact(owner: $owner, user: $user) {
@@ -741,7 +741,7 @@ export const CreateContactDocument = gql`
   }
 }
     `;
-export type CreateContactMutationFn = Apollo.MutationFunction<Operations.CreateContactMutation, Operations.CreateContactMutationVariables>;
+export type CreateContactMutationFn = Apollo.MutationFunction<CreateContactMutation, CreateContactMutationVariables>;
 
 /**
  * __useCreateContactMutation__
@@ -754,20 +754,20 @@ export type CreateContactMutationFn = Apollo.MutationFunction<Operations.CreateC
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [Operations.CreateContactMutation, { data, loading, error }] = useCreateContactMutation({
+ * const [createContactMutation, { data, loading, error }] = useCreateContactMutation({
  *   variables: {
  *      owner: // value for 'owner'
  *      user: // value for 'user'
  *   },
  * });
  */
-export function useCreateContactMutation(baseOptions?: Apollo.MutationHookOptions<Operations.CreateContactMutation, Operations.CreateContactMutationVariables>) {
+export function useCreateContactMutation(baseOptions?: Apollo.MutationHookOptions<CreateContactMutation, CreateContactMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<Operations.CreateContactMutation, Operations.CreateContactMutationVariables>(CreateContactDocument, options);
+        return Apollo.useMutation<CreateContactMutation, CreateContactMutationVariables>(CreateContactDocument, options);
       }
 export type CreateContactMutationHookResult = ReturnType<typeof useCreateContactMutation>;
-export type CreateContactMutationResult = Apollo.MutationResult<Operations.CreateContactMutation>;
-export type CreateContactMutationOptions = Apollo.BaseMutationOptions<Operations.CreateContactMutation, Operations.CreateContactMutationVariables>;
+export type CreateContactMutationResult = Apollo.MutationResult<CreateContactMutation>;
+export type CreateContactMutationOptions = Apollo.BaseMutationOptions<CreateContactMutation, CreateContactMutationVariables>;
 export const FindUserContactsByIdDocument = gql`
     query FindUserContactsByID($id: ID!) {
   findUserByID(id: $id) {
@@ -801,17 +801,61 @@ export const FindUserContactsByIdDocument = gql`
  *   },
  * });
  */
-export function useFindUserContactsByIdQuery(baseOptions: Apollo.QueryHookOptions<Operations.FindUserContactsByIdQuery, Operations.FindUserContactsByIdQueryVariables>) {
+export function useFindUserContactsByIdQuery(baseOptions: Apollo.QueryHookOptions<FindUserContactsByIdQuery, FindUserContactsByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Operations.FindUserContactsByIdQuery, Operations.FindUserContactsByIdQueryVariables>(FindUserContactsByIdDocument, options);
+        return Apollo.useQuery<FindUserContactsByIdQuery, FindUserContactsByIdQueryVariables>(FindUserContactsByIdDocument, options);
       }
-export function useFindUserContactsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Operations.FindUserContactsByIdQuery, Operations.FindUserContactsByIdQueryVariables>) {
+export function useFindUserContactsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindUserContactsByIdQuery, FindUserContactsByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Operations.FindUserContactsByIdQuery, Operations.FindUserContactsByIdQueryVariables>(FindUserContactsByIdDocument, options);
+          return Apollo.useLazyQuery<FindUserContactsByIdQuery, FindUserContactsByIdQueryVariables>(FindUserContactsByIdDocument, options);
         }
 export type FindUserContactsByIdQueryHookResult = ReturnType<typeof useFindUserContactsByIdQuery>;
 export type FindUserContactsByIdLazyQueryHookResult = ReturnType<typeof useFindUserContactsByIdLazyQuery>;
-export type FindUserContactsByIdQueryResult = Apollo.QueryResult<Operations.FindUserContactsByIdQuery, Operations.FindUserContactsByIdQueryVariables>;
+export type FindUserContactsByIdQueryResult = Apollo.QueryResult<FindUserContactsByIdQuery, FindUserContactsByIdQueryVariables>;
+export const FindUserContactRequestsByUserIdDocument = gql`
+    query FindUserContactRequestsByUserID($id: ID!) {
+  findUserByID(id: $id) {
+    _id
+    contact_requests {
+      data {
+        _id
+        owner {
+          _id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindUserContactRequestsByUserIdQuery__
+ *
+ * To run a query within a React component, call `useFindUserContactRequestsByUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindUserContactRequestsByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindUserContactRequestsByUserIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useFindUserContactRequestsByUserIdQuery(baseOptions: Apollo.QueryHookOptions<FindUserContactRequestsByUserIdQuery, FindUserContactRequestsByUserIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindUserContactRequestsByUserIdQuery, FindUserContactRequestsByUserIdQueryVariables>(FindUserContactRequestsByUserIdDocument, options);
+      }
+export function useFindUserContactRequestsByUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindUserContactRequestsByUserIdQuery, FindUserContactRequestsByUserIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindUserContactRequestsByUserIdQuery, FindUserContactRequestsByUserIdQueryVariables>(FindUserContactRequestsByUserIdDocument, options);
+        }
+export type FindUserContactRequestsByUserIdQueryHookResult = ReturnType<typeof useFindUserContactRequestsByUserIdQuery>;
+export type FindUserContactRequestsByUserIdLazyQueryHookResult = ReturnType<typeof useFindUserContactRequestsByUserIdLazyQuery>;
+export type FindUserContactRequestsByUserIdQueryResult = Apollo.QueryResult<FindUserContactRequestsByUserIdQuery, FindUserContactRequestsByUserIdQueryVariables>;
 export const FindUserByEmailDocument = gql`
     query FindUserByEmail($email: String!) {
   findUserByEmail(email: $email) {
@@ -837,17 +881,17 @@ export const FindUserByEmailDocument = gql`
  *   },
  * });
  */
-export function useFindUserByEmailQuery(baseOptions: Apollo.QueryHookOptions<Operations.FindUserByEmailQuery, Operations.FindUserByEmailQueryVariables>) {
+export function useFindUserByEmailQuery(baseOptions: Apollo.QueryHookOptions<FindUserByEmailQuery, FindUserByEmailQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Operations.FindUserByEmailQuery, Operations.FindUserByEmailQueryVariables>(FindUserByEmailDocument, options);
+        return Apollo.useQuery<FindUserByEmailQuery, FindUserByEmailQueryVariables>(FindUserByEmailDocument, options);
       }
-export function useFindUserByEmailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Operations.FindUserByEmailQuery, Operations.FindUserByEmailQueryVariables>) {
+export function useFindUserByEmailLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindUserByEmailQuery, FindUserByEmailQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Operations.FindUserByEmailQuery, Operations.FindUserByEmailQueryVariables>(FindUserByEmailDocument, options);
+          return Apollo.useLazyQuery<FindUserByEmailQuery, FindUserByEmailQueryVariables>(FindUserByEmailDocument, options);
         }
 export type FindUserByEmailQueryHookResult = ReturnType<typeof useFindUserByEmailQuery>;
 export type FindUserByEmailLazyQueryHookResult = ReturnType<typeof useFindUserByEmailLazyQuery>;
-export type FindUserByEmailQueryResult = Apollo.QueryResult<Operations.FindUserByEmailQuery, Operations.FindUserByEmailQueryVariables>;
+export type FindUserByEmailQueryResult = Apollo.QueryResult<FindUserByEmailQuery, FindUserByEmailQueryVariables>;
 export const GetUserByIdDocument = gql`
     query GetUserById($id: String!) {
   getUserById(id: $id) {
@@ -876,14 +920,14 @@ export const GetUserByIdDocument = gql`
  *   },
  * });
  */
-export function useGetUserByIdQuery(baseOptions: Apollo.QueryHookOptions<Operations.GetUserByIdQuery, Operations.GetUserByIdQueryVariables>) {
+export function useGetUserByIdQuery(baseOptions: Apollo.QueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<Operations.GetUserByIdQuery, Operations.GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+        return Apollo.useQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
       }
-export function useGetUserByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Operations.GetUserByIdQuery, Operations.GetUserByIdQueryVariables>) {
+export function useGetUserByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<Operations.GetUserByIdQuery, Operations.GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+          return Apollo.useLazyQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
         }
 export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
 export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
-export type GetUserByIdQueryResult = Apollo.QueryResult<Operations.GetUserByIdQuery, Operations.GetUserByIdQueryVariables>;
+export type GetUserByIdQueryResult = Apollo.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;

@@ -9,7 +9,7 @@ import BaseModal from '../components/BaseComponents/BaseModal'
 import AddContactModal from "../components/AddContactModal";
 import { useLoading } from "../contexts/LoadingContext";
 import SubmitActionModal from "../components/SubmitActionModal";
-import {useDeleteContactMutation, useFindUserContactsByIdQuery} from "../generated/apollo-functions";
+import {useDeleteContactMutation, useFindUserContactRequestsByUserIdQuery} from "../generated/apollo-functions";
 import {FindUserContactsByIdQuery} from "../generated/operations";
 
 interface ShortContact {
@@ -43,7 +43,7 @@ const Contacts = () => {
     setOpen(false);
   };
   
-  const {data, loading: contactsLoading, networkStatus} = useFindUserContactsByIdQuery({
+  const {data, loading: contactsLoading, networkStatus} = useFindUserContactRequestsByUserIdQuery({
     variables: {
       id: userId!
     },
@@ -53,11 +53,11 @@ const Contacts = () => {
   const [deleteItem, {loading: deleteLoading}] = useDeleteContactMutation();
 
   useEffect(()=> {
-    if (data?.findUserByID?.contacts.data.length) {
-      setContacts(data.findUserByID.contacts.data.map((contact) => ({
-        _id: contact!._id,
-        name: contact!.user.name,
-        userId: contact!.user._id
+    if (data?.findUserByID?.contact_requests.data.length) {
+      setContacts(data.findUserByID.contact_requests.data.map((request) => ({
+        _id: request!._id,
+        name: request!.owner.name,
+        userId: request!.owner._id
       })))
     }
   }, [data]);
