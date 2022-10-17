@@ -24,6 +24,17 @@ export const GET_USER_ITEMS = gql`
   }
 `;
 
+export const GET_ITEMS = gql`
+  query GetItems($user_id: String!) {
+    getItems(user_id: $user_id) {
+      _id
+      description
+      name
+      type
+    }
+  }
+`;
+
 export const GET_SPACE_ITEMS = gql`
   query GetModelItems($model: AvailabilityModel!, $model_id: String!) {
     getModelItems(model: $model, model_id: $model_id) {

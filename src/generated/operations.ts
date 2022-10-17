@@ -31,6 +31,13 @@ export type FindUserItemsByIdQueryVariables = Exact<{
 
 export type FindUserItemsByIdQuery = { __typename?: 'Query', findUserByID?: { __typename?: 'User', _id: string, items: { __typename?: 'ItemPage', data: Array<{ __typename?: 'Item', _id: string, description?: string | null, name: string, type: ItemType } | null> } } | null };
 
+export type GetItemsQueryVariables = Exact<{
+  user_id: Scalars['String'];
+}>;
+
+
+export type GetItemsQuery = { __typename?: 'Query', getItems?: Array<{ __typename?: 'Item', _id: string, description?: string | null, name: string, type: ItemType }> | null };
+
 export type GetModelItemsQueryVariables = Exact<{
   model: AvailabilityModel;
   model_id: Scalars['String'];
