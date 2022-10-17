@@ -2,11 +2,9 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import useDebounce from '../hooks/useDebounce';
 import {FC, useEffect, useState} from 'react';
-import {GET_USER_CONTACTS} from '../services/UsersService'
 import CircularProgress from '@mui/material/CircularProgress';
 import {useLoading} from "../contexts/LoadingContext";
-import {useCreateContactMutation, useFindUserByEmailLazyQuery} from "../generated/apollo-functions";
-import {FindUserContactsByIdQuery} from "../generated/operations";
+import {useCreateContactRequestMutation, useFindUserByEmailLazyQuery} from "../generated/apollo-functions";
 
 type ResultsType = {
   __typename?: "User";
@@ -28,7 +26,7 @@ const AddContactModal: FC<Props> = ({
   const debouncedSearchTerm = useDebounce(searchValue, 500);
   const userId = localStorage.getItem("userId");
   const [findUserByEmail] = useFindUserByEmailLazyQuery();
-  const [createContact, {loading}] = useCreateContactMutation();
+  const [createContactRequest, {loading}] = useCreateContactRequestMutation();
 
   useEffect(
     () => {
@@ -59,42 +57,16 @@ const AddContactModal: FC<Props> = ({
   }, [loading]);
 
   const addContact = async (option: ResultsType) => {
-    await createContact({
+    await createContactRequest({
       variables: {
         owner: userId!,
         user: option._id
-      },
-      update(cache, {data}) {
-        const {findUserByID} = cache.readQuery<FindUserContactsByIdQuery>({
-          query: GET_USER_CONTACTS,
-          variables: {
-            id: userId
-          }
-        }) || ({} as Partial<FindUserContactsByIdQuery>);
-        cache.writeQuery({
-          query: GET_USER_CONTACTS,
-          variables: {
-            id: userId
-          },
-          data: {
-            findUserByID: {
-              ...findUserByID,
-              contacts: {
-                ...findUserByID?.contacts,
-                data: [
-                  ...findUserByID!.contacts!.data,
-                  data!.createContact
-                ]
-              }
-            }
-          }
-        });
       },
       onQueryUpdated: () => {
         handleClose();
         setAlertData({
           isOpen: true,
-          text: 'Contact has been added',
+          text: 'Request has been sent',
           type: 'success'
         });
       },

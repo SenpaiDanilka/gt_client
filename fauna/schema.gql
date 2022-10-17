@@ -5,18 +5,12 @@ type User {
   phone: String
   spaces: [Space]! @relation
   items: [Item]! @relation
-  contacts: [Contact]! @relation(name: "user_contacts")
-  contact_requests: [ContactRequest]! @relation(name: "user_contact_requests")
-}
-
-type ContactRequest {
-  owner: User!
-  user: User! @relation(name: "user_contact_requests")
 }
 
 type Contact {
-  owner: User! @relation(name: "user_contacts")
-  user: User!
+  user_one: User!
+  user_two: User!
+  status: ContactStatus!
 }
 
 type SpaceContactLink {
@@ -42,6 +36,12 @@ type AvailableItem {
   model: AvailabilityModel!
   model_id: String!
   item: Item!
+}
+
+enum ContactStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
 }
 
 enum AvailabilityModel {
@@ -90,14 +90,9 @@ type Mutation {
   ): Item @resolver(name: "CreateItem")
 
   createContact(
-    owner: String!
-    user: String!
+    user_one: String!
+    user_two: String!
   ): Contact @resolver(name: "CreateContact")
-
-  createContactRequest(
-    owner: String!
-    user: String!
-  ): ContactRequest @resolver(name: "CreateContactRequest")
 
   createAvailableItem(
     model: AvailabilityModel!

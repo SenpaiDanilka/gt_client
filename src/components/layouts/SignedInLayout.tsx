@@ -67,11 +67,6 @@ function NavBar() {
       name: "My contacts",
       id: "contacts"
     },
-    {
-      path: "/contact_requests",
-      name: "Contact requests",
-      id: "contact_requests"
-    },
   ];
 
   return (

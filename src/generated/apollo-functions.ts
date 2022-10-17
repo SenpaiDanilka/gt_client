@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import { CreateAvailableItemMutation, CreateAvailableItemMutationVariables, CreateContactMutation, CreateContactMutationVariables, CreateItemMutation, CreateItemMutationVariables, CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables, DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables, DeleteContactMutation, DeleteContactMutationVariables, DeleteItemMutation, DeleteItemMutationVariables, DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables, DeleteSpaceMutation, DeleteSpaceMutationVariables, FindItemByIdQuery, FindItemByIdQueryVariables, FindSpaceByIdQuery, FindSpaceByIdQueryVariables, FindUserByEmailQuery, FindUserByEmailQueryVariables, FindUserContactRequestsByUserIdQuery, FindUserContactRequestsByUserIdQueryVariables, FindUserContactsByIdQuery, FindUserContactsByIdQueryVariables, FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables, FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables, GetItemsQuery, GetItemsQueryVariables, GetModelItemsQuery, GetModelItemsQueryVariables, GetUserByIdQuery, GetUserByIdQueryVariables, UpdateItemMutation, UpdateItemMutationVariables, UpdateSpaceMutation, UpdateSpaceMutationVariables, UserLoginMutation, UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables } from './operations';
+import { UserLoginMutation, UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables, DeleteItemMutation, DeleteItemMutationVariables, FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables, GetItemsQuery, GetItemsQueryVariables, GetModelItemsQuery, GetModelItemsQueryVariables, DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables, FindItemByIdQuery, FindItemByIdQueryVariables, CreateItemMutation, CreateItemMutationVariables, CreateAvailableItemMutation, CreateAvailableItemMutationVariables, UpdateItemMutation, UpdateItemMutationVariables, FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables, DeleteSpaceMutation, DeleteSpaceMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables, FindSpaceByIdQuery, FindSpaceByIdQueryVariables, UpdateSpaceMutation, UpdateSpaceMutationVariables, CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables, DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables, DeleteContactMutation, DeleteContactMutationVariables, CreateContactMutation, CreateContactMutationVariables, CreateContactRequestMutation, CreateContactRequestMutationVariables, FindUserContactsByIdQuery, FindUserContactsByIdQueryVariables, FindUserContactRequestsByUserIdQuery, FindUserContactRequestsByUserIdQueryVariables, FindUserByEmailQuery, FindUserByEmailQueryVariables, GetUserByIdQuery, GetUserByIdQueryVariables } from './operations';
 const defaultOptions = {} as const;
 
 export const UserLoginDocument = gql`
@@ -768,6 +768,48 @@ export function useCreateContactMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateContactMutationHookResult = ReturnType<typeof useCreateContactMutation>;
 export type CreateContactMutationResult = Apollo.MutationResult<CreateContactMutation>;
 export type CreateContactMutationOptions = Apollo.BaseMutationOptions<CreateContactMutation, CreateContactMutationVariables>;
+export const CreateContactRequestDocument = gql`
+    mutation CreateContactRequest($owner: String!, $user: String!) {
+  createContactRequest(owner: $owner, user: $user) {
+    _id
+    owner {
+      _id
+      name
+    }
+    user {
+      _id
+      name
+    }
+  }
+}
+    `;
+export type CreateContactRequestMutationFn = Apollo.MutationFunction<CreateContactRequestMutation, CreateContactRequestMutationVariables>;
+
+/**
+ * __useCreateContactRequestMutation__
+ *
+ * To run a mutation, you first call `useCreateContactRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateContactRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createContactRequestMutation, { data, loading, error }] = useCreateContactRequestMutation({
+ *   variables: {
+ *      owner: // value for 'owner'
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useCreateContactRequestMutation(baseOptions?: Apollo.MutationHookOptions<CreateContactRequestMutation, CreateContactRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateContactRequestMutation, CreateContactRequestMutationVariables>(CreateContactRequestDocument, options);
+      }
+export type CreateContactRequestMutationHookResult = ReturnType<typeof useCreateContactRequestMutation>;
+export type CreateContactRequestMutationResult = Apollo.MutationResult<CreateContactRequestMutation>;
+export type CreateContactRequestMutationOptions = Apollo.BaseMutationOptions<CreateContactRequestMutation, CreateContactRequestMutationVariables>;
 export const FindUserContactsByIdDocument = gql`
     query FindUserContactsByID($id: ID!) {
   findUserByID(id: $id) {

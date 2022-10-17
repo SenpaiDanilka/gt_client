@@ -9,17 +9,18 @@ export const DELETE_CONTACT = gql`
 `;
 
 export const CREATE_CONTACT = gql`
-  mutation CreateContact($owner: String!, $user: String!) {
-    createContact(owner: $owner, user: $user) {
+  mutation CreateContact($user_one: String!, $user_two: String!) {
+    createContact(user_one: $user_one, user_two: $user_two) {
       _id,
-      owner {
+      user_one {
         _id
         name
       }
-      user {
+      user_two {
         _id
         name
       }
+      status
     }
   }
 `;
@@ -31,24 +32,12 @@ export const GET_USER_CONTACTS = gql`
       contacts {
         data {
           _id
-          user {
+          status
+          user_one {
             _id
             name
           }
-        }
-      }
-    }
-  }
-`;
-
-export const GET_USER_CONTACT_REQUESTS = gql`
-  query FindUserContactRequestsByUserID($id: ID!) {
-    findUserByID(id: $id) {
-      _id
-      contact_requests {
-        data {
-          _id
-          owner {
+          user_two {
             _id
             name
           }

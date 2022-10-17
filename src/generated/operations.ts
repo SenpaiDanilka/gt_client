@@ -1,4 +1,4 @@
-import { AvailabilityModel, Exact, ItemInput, ItemType, Scalars, SpaceContactLinkInput, SpaceInput } from "./types";
+import { Exact, Scalars, ItemType, AvailabilityModel, ItemInput, SpaceInput, SpaceContactLinkInput } from "./types";
 
 export type UserLoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -153,6 +153,14 @@ export type CreateContactMutationVariables = Exact<{
 
 
 export type CreateContactMutation = { __typename?: 'Mutation', createContact?: { __typename?: 'Contact', _id: string, owner: { __typename?: 'User', _id: string, name: string }, user: { __typename?: 'User', _id: string, name: string } } | null };
+
+export type CreateContactRequestMutationVariables = Exact<{
+  owner: Scalars['String'];
+  user: Scalars['String'];
+}>;
+
+
+export type CreateContactRequestMutation = { __typename?: 'Mutation', createContactRequest?: { __typename?: 'ContactRequest', _id: string, owner: { __typename?: 'User', _id: string, name: string }, user: { __typename?: 'User', _id: string, name: string } } | null };
 
 export type FindUserContactsByIdQueryVariables = Exact<{
   id: Scalars['ID'];
