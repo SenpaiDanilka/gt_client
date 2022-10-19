@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import { UserLoginMutation, UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables, DeleteItemMutation, DeleteItemMutationVariables, FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables, GetItemsQuery, GetItemsQueryVariables, GetModelItemsQuery, GetModelItemsQueryVariables, DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables, FindItemByIdQuery, FindItemByIdQueryVariables, CreateItemMutation, CreateItemMutationVariables, CreateAvailableItemMutation, CreateAvailableItemMutationVariables, UpdateItemMutation, UpdateItemMutationVariables, FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables, DeleteSpaceMutation, DeleteSpaceMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables, FindSpaceByIdQuery, FindSpaceByIdQueryVariables, UpdateSpaceMutation, UpdateSpaceMutationVariables, CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables, DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables, DeleteContactMutation, DeleteContactMutationVariables, CreateContactMutation, CreateContactMutationVariables, GetUserContactsQuery, GetUserContactsQueryVariables, GetIncomingContactRequestsQuery, GetIncomingContactRequestsQueryVariables, FindUserByEmailQuery, FindUserByEmailQueryVariables, GetUserByIdQuery, GetUserByIdQueryVariables } from './operations';
+import { UserLoginMutation, UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables, DeleteItemMutation, DeleteItemMutationVariables, FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables, GetItemsQuery, GetItemsQueryVariables, GetModelItemsQuery, GetModelItemsQueryVariables, DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables, FindItemByIdQuery, FindItemByIdQueryVariables, CreateItemMutation, CreateItemMutationVariables, CreateAvailableItemMutation, CreateAvailableItemMutationVariables, UpdateItemMutation, UpdateItemMutationVariables, FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables, DeleteSpaceMutation, DeleteSpaceMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables, FindSpaceByIdQuery, FindSpaceByIdQueryVariables, UpdateSpaceMutation, UpdateSpaceMutationVariables, CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables, DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables, DeleteContactMutation, DeleteContactMutationVariables, CreateContactMutation, CreateContactMutationVariables, PartialUpdateContactMutation, PartialUpdateContactMutationVariables, GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables, GetIncomingContactRequestsQuery, GetIncomingContactRequestsQueryVariables, FindUserByEmailQuery, FindUserByEmailQueryVariables, GetUserByIdQuery, GetUserByIdQueryVariables } from './operations';
 const defaultOptions = {} as const;
 
 export const UserLoginDocument = gql`
@@ -779,9 +779,52 @@ export function useCreateContactMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateContactMutationHookResult = ReturnType<typeof useCreateContactMutation>;
 export type CreateContactMutationResult = Apollo.MutationResult<CreateContactMutation>;
 export type CreateContactMutationOptions = Apollo.BaseMutationOptions<CreateContactMutation, CreateContactMutationVariables>;
-export const GetUserContactsDocument = gql`
-    query GetUserContacts($user_id: String!) {
-  getUserContacts(user_id: $user_id) {
+export const PartialUpdateContactDocument = gql`
+    mutation PartialUpdateContact($id: ID!, $data: PartialUpdateContactInput!) {
+  partialUpdateContact(id: $id, data: $data) {
+    _id
+    status
+    user_one {
+      _id
+      name
+    }
+    user_two {
+      _id
+      name
+    }
+  }
+}
+    `;
+export type PartialUpdateContactMutationFn = Apollo.MutationFunction<PartialUpdateContactMutation, PartialUpdateContactMutationVariables>;
+
+/**
+ * __usePartialUpdateContactMutation__
+ *
+ * To run a mutation, you first call `usePartialUpdateContactMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePartialUpdateContactMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [partialUpdateContactMutation, { data, loading, error }] = usePartialUpdateContactMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function usePartialUpdateContactMutation(baseOptions?: Apollo.MutationHookOptions<PartialUpdateContactMutation, PartialUpdateContactMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PartialUpdateContactMutation, PartialUpdateContactMutationVariables>(PartialUpdateContactDocument, options);
+      }
+export type PartialUpdateContactMutationHookResult = ReturnType<typeof usePartialUpdateContactMutation>;
+export type PartialUpdateContactMutationResult = Apollo.MutationResult<PartialUpdateContactMutation>;
+export type PartialUpdateContactMutationOptions = Apollo.BaseMutationOptions<PartialUpdateContactMutation, PartialUpdateContactMutationVariables>;
+export const GetContactsByUserIdDocument = gql`
+    query GetContactsByUserId($user_id: String!) {
+  getContactsByUserId(user_id: $user_id) {
     _id
     status
     user_one {
@@ -797,32 +840,32 @@ export const GetUserContactsDocument = gql`
     `;
 
 /**
- * __useGetUserContactsQuery__
+ * __useGetContactsByUserIdQuery__
  *
- * To run a query within a React component, call `useGetUserContactsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserContactsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetContactsByUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetContactsByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetUserContactsQuery({
+ * const { data, loading, error } = useGetContactsByUserIdQuery({
  *   variables: {
  *      user_id: // value for 'user_id'
  *   },
  * });
  */
-export function useGetUserContactsQuery(baseOptions: Apollo.QueryHookOptions<GetUserContactsQuery, GetUserContactsQueryVariables>) {
+export function useGetContactsByUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUserContactsQuery, GetUserContactsQueryVariables>(GetUserContactsDocument, options);
+        return Apollo.useQuery<GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables>(GetContactsByUserIdDocument, options);
       }
-export function useGetUserContactsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserContactsQuery, GetUserContactsQueryVariables>) {
+export function useGetContactsByUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUserContactsQuery, GetUserContactsQueryVariables>(GetUserContactsDocument, options);
+          return Apollo.useLazyQuery<GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables>(GetContactsByUserIdDocument, options);
         }
-export type GetUserContactsQueryHookResult = ReturnType<typeof useGetUserContactsQuery>;
-export type GetUserContactsLazyQueryHookResult = ReturnType<typeof useGetUserContactsLazyQuery>;
-export type GetUserContactsQueryResult = Apollo.QueryResult<GetUserContactsQuery, GetUserContactsQueryVariables>;
+export type GetContactsByUserIdQueryHookResult = ReturnType<typeof useGetContactsByUserIdQuery>;
+export type GetContactsByUserIdLazyQueryHookResult = ReturnType<typeof useGetContactsByUserIdLazyQuery>;
+export type GetContactsByUserIdQueryResult = Apollo.QueryResult<GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables>;
 export const GetIncomingContactRequestsDocument = gql`
     query GetIncomingContactRequests($user_id: String!) {
   getIncomingContactRequests(user_id: $user_id) {

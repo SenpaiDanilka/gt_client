@@ -1,16 +1,13 @@
 import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
 import EditableListWithSearch from "../components/EditableListWithSearch";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
-import BaseMenu from "../components/BaseComponents/BaseMenu";
-import {GET_INCOMING_CONTACT_REQUESTS} from '../services/UsersService'
+import BaseButton from "../components/BaseComponents/BaseButton"
 import {NetworkStatus} from '@apollo/client';
-import BaseModal from '../components/BaseComponents/BaseModal'
+import BaseModal from '../components/BaseComponents/BaseModal';
 import AddContactModal from "../components/AddContactModal";
 import { useLoading } from "../contexts/LoadingContext";
-import SubmitActionModal from "../components/SubmitActionModal";
-import {useDeleteContactMutation, useGetIncomingContactRequestsQuery} from "../generated/apollo-functions";
-import {GetIncomingContactRequestsQuery} from "../generated/operations";
+import {useGetIncomingContactRequestsQuery, usePartialUpdateContactMutation} from "../generated/apollo-functions";
+import { ContactStatus } from "../generated/types";
 
 interface ShortContact {
   _id: string,
@@ -20,21 +17,9 @@ interface ShortContact {
 
 const Contacts = () => {
   const userId = localStorage.getItem("userId")
-  const {setLoading, setAlertData} = useLoading();
-  const navigate = useNavigate();
+  const {setLoading} = useLoading();
   const [searchValue, setSearchValue] = useState('');
   const [contacts, setContacts] = useState<ShortContact[]>([]);
-  const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
-  const [deleteContactId, setDeleteContactId] = useState('');
-
-  const handleOnDeleteClick = (id: string) => {
-    setDeleteContactId(id);
-    setIsApproveModalOpen(true);
-  };
-  const handleCancelDeleteClick = () => {
-    setIsApproveModalOpen(false);
-  };
-
   const [open, setOpen] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -50,7 +35,7 @@ const Contacts = () => {
     fetchPolicy: 'cache-and-network'
   });
 
-  const [deleteItem, {loading: deleteLoading}] = useDeleteContactMutation();
+  const [updateContact, {loading: updatingContact}] = usePartialUpdateContactMutation();
 
   useEffect(()=> {
     if (data?.getIncomingContactRequests?.length) {
@@ -62,83 +47,56 @@ const Contacts = () => {
     }
   }, [data]);
 
-  const handleDelete = async () => {
-    await deleteItem(
-      {
-        variables: {id: deleteContactId},
-        update(cache, {data}) {
-          const {getIncomingContactRequests} = cache.readQuery<GetIncomingContactRequestsQuery>({
-            query: GET_INCOMING_CONTACT_REQUESTS,
-            variables: {
-              id: userId
-            }
-          }) || ({} as Partial<GetIncomingContactRequestsQuery>);
-          cache.writeQuery({
-            query: GET_INCOMING_CONTACT_REQUESTS,
-            variables: {
-              id: userId
-            },
-            data: {
-              getIncomingContactRequests: {
-                ...getIncomingContactRequests,
-                contacts: {
-                  ...getIncomingContactRequests,
-                  data: getIncomingContactRequests?.filter((contact) => contact!._id !== data!.deleteContact!._id)
-                }
-              }
-            }
-          });
-        },
-        onQueryUpdated: () => {
-          setAlertData({
-            isOpen: true,
-            text: 'Contact has been deleted',
-            type: 'success'
-          });
-          setIsApproveModalOpen(false);
-        },
-        onError: () => {
-          setAlertData({
-            isOpen: true,
-            text: 'Smth went wrong',
-            type: 'error'
-          });
-        },
-      })
-  };
-
-  const menuOptions = (id: string) => ([
-    {
-      children: 'Delete',
-      id: 'delete',
-      onClick: () => handleOnDeleteClick(id)
-    },
-    {
-      children: 'View profile',
-      id: 'view',
-      onClick: () => { navigate(`/contacts/${id}`) }
-    }
-  ]);
-
   useEffect(() => {
-    setLoading(networkStatus === NetworkStatus.refetch || contactsLoading || deleteLoading)
-  }, [networkStatus, contactsLoading, deleteLoading]);
+    setLoading(networkStatus === NetworkStatus.refetch || contactsLoading || updatingContact)
+  }, [networkStatus, contactsLoading, updatingContact]);
 
   const List = (
-    contacts.map((user) => (
+    contacts.map((contact) => (
       <div
         className="flex justify-between items-center"
-        key={user._id}
+        key={contact._id}
       >
         <div className="flex items-center p-4">
           <BaseAvatar
-            alt={`${user._id}`}
+            alt={`${contact._id}`}
             size={40}
             className="mr-2"
           />
-          {`${user.name}`}
+          {`${contact.name}`}
         </div>
-        <BaseMenu options={menuOptions(String(user._id))}/>
+        <BaseButton
+          variant="contained"
+          buttonType="icon"
+          onClick={() => {
+            updateContact({
+              variables: {
+                id: contact._id!,
+                data: {
+                  status: ContactStatus.Accepted
+                }
+              }
+            })
+          }}
+        >
+          accept
+        </BaseButton>
+        <BaseButton
+          variant="contained"
+          buttonType="icon"
+          onClick={() => {
+            updateContact({
+              variables: {
+                id: contact._id!,
+                data: {
+                  status: ContactStatus.Declined
+                }
+              }
+            })
+          }}
+        >
+          decline
+        </BaseButton>
       </div>
     ))
   );
@@ -157,15 +115,6 @@ const Contacts = () => {
       >
         <AddContactModal handleClose={handleClose} />
       </BaseModal>
-      <SubmitActionModal
-        open={isApproveModalOpen}
-        onSubmit={handleDelete}
-        onCancel={handleCancelDeleteClick}
-      >
-        <p className="mb-4">Delete contact ID: {
-          <span className="font-bold">{deleteContactId}</span>
-        }?</p>
-      </SubmitActionModal>
     </div>
   )
 }

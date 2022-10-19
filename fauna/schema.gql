@@ -116,6 +116,6 @@ type Query {
   getUserById(id: String): ShortUser @resolver(name: "GetUserById")
   getModelItems(model: AvailabilityModel!, model_id: String!): [AvailableItem!] @resolver(name: "GetModelItems")
   getIncomingContactRequests(user_id: String!): [Contact!] @resolver(name: "GetIncomingContactRequests")
-  getUserContacts(user_id: String!): [Contact!] @resolver(name: "GetUserContacts")
+  getContactsByUserId(user_id: String!): [Contact!] @resolver(name: "GetContactsByUserId")
   getItems(user_id: String): [Item!] @resolver(name: "GetItems")
 }

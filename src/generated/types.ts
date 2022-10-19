@@ -413,12 +413,12 @@ export type Query = {
   findUserByEmail?: Maybe<User>;
   /** Find a document from the collection of 'User' by its id. */
   findUserByID?: Maybe<User>;
+  getContactsByUserId?: Maybe<Array<Contact>>;
   getIncomingContactRequests?: Maybe<Array<Contact>>;
   getItems?: Maybe<Array<Item>>;
   getModelItems?: Maybe<Array<AvailableItem>>;
   getUserByEmail?: Maybe<ShortUser>;
   getUserById?: Maybe<ShortUser>;
-  getUserContacts?: Maybe<Array<Contact>>;
 };
 
 
@@ -457,6 +457,11 @@ export type QueryFindUserByIdArgs = {
 };
 
 
+export type QueryGetContactsByUserIdArgs = {
+  user_id: Scalars['String'];
+};
+
+
 export type QueryGetIncomingContactRequestsArgs = {
   user_id: Scalars['String'];
 };
@@ -480,11 +485,6 @@ export type QueryGetUserByEmailArgs = {
 
 export type QueryGetUserByIdArgs = {
   id?: InputMaybe<Scalars['String']>;
-};
-
-
-export type QueryGetUserContactsArgs = {
-  user_id: Scalars['String'];
 };
 
 export type ShortUser = {

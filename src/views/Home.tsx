@@ -11,12 +11,12 @@ const Home = () => {
       id: userId!
     }
   });
-  const {data: getItemsData, loading: getItemsLoading} = useGetItemsQuery({
-    variables: {
-      user_id: userId!
-    },
-    fetchPolicy: 'cache-and-network'
-  });
+  // const {data: getItemsData, loading: getItemsLoading} = useGetItemsQuery({
+  //   variables: {
+  //     user_id: userId!
+  //   },
+  //   fetchPolicy: 'cache-and-network'
+  // });
   const { setLoading } = useLoading();
 
   useEffect(() => {

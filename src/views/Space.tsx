@@ -10,7 +10,7 @@ import AddButton from "../components/AddButton";
 import {useLoading} from "../contexts/LoadingContext";
 import {CREATE_SPACE_CONTACT_LINK, DELETE_SPACE_CONTACT_LINK} from "../services/SpacesService";
 import {CREATE_AVAILABLE_ITEM, GET_USER_ITEMS, GET_SPACE_ITEMS, DELETE_ITEM_FROM_SPACE} from "../services/ItemsService";
-import {GET_USER_CONTACTS} from '../services/UsersService'
+import {GET_CONTACTS_BY_USER_ID} from '../services/UsersService'
 import {useQuery, useMutation} from '@apollo/client';
 import EntityActions from "../components/EntityActions";
 import EditSpaceForm from "../components/spaces/EditSpaceForm";
@@ -50,7 +50,7 @@ export default function Space() {
     }
   }, [findSpaceByIdData])
 
-  const {data: userContactsData, loading: userContactsLoading} = useQuery(GET_USER_CONTACTS, {
+  const {data: userContactsData, loading: userContactsLoading} = useQuery(GET_CONTACTS_BY_USER_ID, {
     variables: {
       id: userId
     }
