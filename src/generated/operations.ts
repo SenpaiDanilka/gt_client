@@ -169,6 +169,13 @@ export type GetContactsByUserIdQueryVariables = Exact<{
 
 export type GetContactsByUserIdQuery = { __typename?: 'Query', getContactsByUserId?: Array<{ __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } }> | null };
 
+export type GetSentContactRequestsQueryVariables = Exact<{
+  user_id: Scalars['String'];
+}>;
+
+
+export type GetSentContactRequestsQuery = { __typename?: 'Query', getSentContactRequests?: Array<{ __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } }> | null };
+
 export type GetIncomingContactRequestsQueryVariables = Exact<{
   user_id: Scalars['String'];
 }>;

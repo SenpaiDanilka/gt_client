@@ -59,6 +59,23 @@ export const GET_CONTACTS_BY_USER_ID = gql`
   }
 `;
 
+export const GET_SENT_CONTACT_REQUESTS = gql`
+  query GetSentContactRequests($user_id: String!) {
+    getSentContactRequests(user_id: $user_id) {
+      _id
+      status
+      user_one {
+        _id
+        name
+      }
+      user_two {
+        _id
+        name
+      }
+    }
+  }
+`;
+
 export const GET_INCOMING_CONTACT_REQUESTS = gql`
   query GetIncomingContactRequests($user_id: String!) {
     getIncomingContactRequests(user_id: $user_id) {

@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import { UserLoginMutation, UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables, DeleteItemMutation, DeleteItemMutationVariables, FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables, GetItemsQuery, GetItemsQueryVariables, GetModelItemsQuery, GetModelItemsQueryVariables, DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables, FindItemByIdQuery, FindItemByIdQueryVariables, CreateItemMutation, CreateItemMutationVariables, CreateAvailableItemMutation, CreateAvailableItemMutationVariables, UpdateItemMutation, UpdateItemMutationVariables, FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables, DeleteSpaceMutation, DeleteSpaceMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables, FindSpaceByIdQuery, FindSpaceByIdQueryVariables, UpdateSpaceMutation, UpdateSpaceMutationVariables, CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables, DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables, DeleteContactMutation, DeleteContactMutationVariables, CreateContactMutation, CreateContactMutationVariables, PartialUpdateContactMutation, PartialUpdateContactMutationVariables, GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables, GetIncomingContactRequestsQuery, GetIncomingContactRequestsQueryVariables, FindUserByEmailQuery, FindUserByEmailQueryVariables, GetUserByIdQuery, GetUserByIdQueryVariables } from './operations';
+import { UserLoginMutation, UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables, DeleteItemMutation, DeleteItemMutationVariables, FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables, GetItemsQuery, GetItemsQueryVariables, GetModelItemsQuery, GetModelItemsQueryVariables, DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables, FindItemByIdQuery, FindItemByIdQueryVariables, CreateItemMutation, CreateItemMutationVariables, CreateAvailableItemMutation, CreateAvailableItemMutationVariables, UpdateItemMutation, UpdateItemMutationVariables, FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables, DeleteSpaceMutation, DeleteSpaceMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables, FindSpaceByIdQuery, FindSpaceByIdQueryVariables, UpdateSpaceMutation, UpdateSpaceMutationVariables, CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables, DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables, DeleteContactMutation, DeleteContactMutationVariables, CreateContactMutation, CreateContactMutationVariables, PartialUpdateContactMutation, PartialUpdateContactMutationVariables, GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables, GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables, GetIncomingContactRequestsQuery, GetIncomingContactRequestsQueryVariables, FindUserByEmailQuery, FindUserByEmailQueryVariables, GetUserByIdQuery, GetUserByIdQueryVariables } from './operations';
 const defaultOptions = {} as const;
 
 export const UserLoginDocument = gql`
@@ -866,6 +866,50 @@ export function useGetContactsByUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetContactsByUserIdQueryHookResult = ReturnType<typeof useGetContactsByUserIdQuery>;
 export type GetContactsByUserIdLazyQueryHookResult = ReturnType<typeof useGetContactsByUserIdLazyQuery>;
 export type GetContactsByUserIdQueryResult = Apollo.QueryResult<GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables>;
+export const GetSentContactRequestsDocument = gql`
+    query GetSentContactRequests($user_id: String!) {
+  getSentContactRequests(user_id: $user_id) {
+    _id
+    status
+    user_one {
+      _id
+      name
+    }
+    user_two {
+      _id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSentContactRequestsQuery__
+ *
+ * To run a query within a React component, call `useGetSentContactRequestsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSentContactRequestsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSentContactRequestsQuery({
+ *   variables: {
+ *      user_id: // value for 'user_id'
+ *   },
+ * });
+ */
+export function useGetSentContactRequestsQuery(baseOptions: Apollo.QueryHookOptions<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>(GetSentContactRequestsDocument, options);
+      }
+export function useGetSentContactRequestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>(GetSentContactRequestsDocument, options);
+        }
+export type GetSentContactRequestsQueryHookResult = ReturnType<typeof useGetSentContactRequestsQuery>;
+export type GetSentContactRequestsLazyQueryHookResult = ReturnType<typeof useGetSentContactRequestsLazyQuery>;
+export type GetSentContactRequestsQueryResult = Apollo.QueryResult<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>;
 export const GetIncomingContactRequestsDocument = gql`
     query GetIncomingContactRequests($user_id: String!) {
   getIncomingContactRequests(user_id: $user_id) {

@@ -417,6 +417,7 @@ export type Query = {
   getIncomingContactRequests?: Maybe<Array<Contact>>;
   getItems?: Maybe<Array<Item>>;
   getModelItems?: Maybe<Array<AvailableItem>>;
+  getSentContactRequests?: Maybe<Array<Contact>>;
   getUserByEmail?: Maybe<ShortUser>;
   getUserById?: Maybe<ShortUser>;
 };
@@ -475,6 +476,11 @@ export type QueryGetItemsArgs = {
 export type QueryGetModelItemsArgs = {
   model: AvailabilityModel;
   model_id: Scalars['String'];
+};
+
+
+export type QueryGetSentContactRequestsArgs = {
+  user_id: Scalars['String'];
 };
 
 
