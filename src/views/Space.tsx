@@ -17,7 +17,8 @@ import {
   useCreateSpaceContactLinkMutation, useDeleteAvailableItemMutation, useDeleteSpaceContactLinkMutation,
   useDeleteSpaceMutation,
   useFindSpaceByIdQuery,
-  useFindUserContactsByIdQuery, useFindUserItemsByIdQuery, useGetModelItemsQuery,
+  useFindUserItemsByIdQuery, useGetContactsByUserIdQuery,
+  useGetModelItemsQuery,
   useUpdateSpaceMutation
 } from "../generated/apollo-functions";
 import {AvailabilityModel} from "../generated/types";
@@ -53,26 +54,28 @@ export default function Space() {
     if (findSpaceByIdData?.findSpaceByID?.contacts.data.length) {
       setSpaceUsers(findSpaceByIdData?.findSpaceByID.contacts.data.map((contactLink) => ({
         _id: contactLink!._id,
-        name: contactLink!.contact.user.name,
-        optionId: contactLink!.contact.user._id
+        /* TODO probably wrong fields */
+        name: contactLink!.contact.user_one.name,
+        optionId: contactLink!.contact.user_one._id
       })))
     }
   }, [findSpaceByIdData])
 
-  const {data: userContactsData, loading: userContactsLoading} = useFindUserContactsByIdQuery({
+  const {data: userContactsData, loading: userContactsLoading} = useGetContactsByUserIdQuery({
     variables: {
-      id: userId!
+      user_id: userId!
     }
   });
 
   useEffect(() => {
-    if (userContactsData?.findUserByID?.contacts.data.length) {
-      setAvailableUsers(userContactsData?.findUserByID.contacts.data.map((contact) => ({
+    /* TODO needs type update /*
+/*    if (userContactsData?.getContactsByUserId?.contacts.data.length) {
+      setAvailableUsers(userContactsData?.getContactsByUserId.contacts.data.map((contact) => ({
         _id: contact!._id,
         name: contact!.user.name,
         optionId: contact!.user._id
       })))
-    }
+    }*/
   }, [userContactsData])
 
   const {data: userItemsData, loading: getUserItemsLoading} = useFindUserItemsByIdQuery({
@@ -249,8 +252,9 @@ export default function Space() {
         !!spaceContactLink && setSpaceUsers(current => {
           return [...current, {
             _id: spaceContactLink._id,
-            name: spaceContactLink.contact.user.name,
-            optionId: spaceContactLink.contact.user._id
+            /* TODO probably wrong fields */
+            name: spaceContactLink.contact.user_one.name,
+            optionId: spaceContactLink.contact.user_one._id
           }];
         });
       })

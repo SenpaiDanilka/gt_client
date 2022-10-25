@@ -1,4 +1,13 @@
-import { Exact, Scalars, ItemType, AvailabilityModel, ItemInput, ContactStatus, SpaceInput, SpaceContactLinkInput, PartialUpdateContactInput } from "./types";
+import {
+  AvailabilityModel,
+  ContactStatus,
+  Exact, ItemInput,
+  ItemType,
+  PartialUpdateContactInput,
+  Scalars,
+  SpaceContactLinkInput,
+  SpaceInput
+} from "./types";
 
 export type UserLoginMutationVariables = Exact<{
   email: Scalars['String'];
