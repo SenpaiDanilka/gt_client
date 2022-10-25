@@ -42,27 +42,33 @@ export default function Space() {
 
   useEffect(() => {
     if (findSpaceByIdData?.findSpaceByID?.contacts.data.length) {
-      setSpaceUsers(findSpaceByIdData?.findSpaceByID.contacts.data.map((contactLink: any) => ({
-        _id: contactLink._id,
-        name: contactLink.contact.user.name,
-        optionId: contactLink.contact.user._id
-      })))
+      setSpaceUsers(findSpaceByIdData?.findSpaceByID.contacts.data.map((contactLink: any) => {
+        const contactUser = userId === contactLink.contact.user_one._id ? contactLink.contact.user_two : contactLink.contact.user_one 
+        return {
+          _id: contactLink._id,
+          name: contactUser.name,
+          optionId: contactUser._id
+        }
+      }))
     }
   }, [findSpaceByIdData])
 
   const {data: userContactsData, loading: userContactsLoading} = useQuery(GET_CONTACTS_BY_USER_ID, {
     variables: {
-      id: userId
+      user_id: userId
     }
   });
 
   useEffect(() => {
-    if (userContactsData?.findUserByID.contacts.data.length) {
-      setAvailableUsers(userContactsData?.findUserByID.contacts.data.map((contact: any) => ({
-        _id: contact._id,
-        name: contact.user.name,
-        optionId: contact.user._id
-      })))
+    if (userContactsData?.getContactsByUserId.length) {
+      setAvailableUsers(userContactsData?.getContactsByUserId.map((contact: any) => {
+        const contactUser = userId === contact.user_one._id ? contact.user_two : contact.user_one
+        return {
+          _id: contact._id,
+          name: contactUser.name,
+          optionId: contactUser._id
+        }
+      }))
     }
   }, [userContactsData])
 
@@ -226,10 +232,12 @@ export default function Space() {
         }
       }).then((res: any) => {
         setSpaceUsers(current => {
+          const contact = res.data.createSpaceContactLink.contact
+          const contactUser = userId === contact.user_one._id ? contact.user_two : contact.user_one
           return [...current, {
             _id: res.data.createSpaceContactLink._id,
-            name: res.data.createSpaceContactLink.contact.user.name,
-            optionId: res.data.createSpaceContactLink.contact.user._id
+            name: contactUser.name,
+            optionId: contactUser._id
           }];
         });
       })
