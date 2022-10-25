@@ -3,30 +3,16 @@ import EditableListWithSearch from "../components/EditableListWithSearch";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import BaseButton from "../components/BaseComponents/BaseButton"
 import {NetworkStatus} from '@apollo/client';
-import BaseModal from '../components/BaseComponents/BaseModal';
-import AddContactModal from "../components/AddContactModal";
 import { useLoading } from "../contexts/LoadingContext";
 import {useGetIncomingContactRequestsQuery, usePartialUpdateContactMutation} from "../generated/apollo-functions";
 import { ContactStatus } from "../generated/types";
-
-interface ShortContact {
-  _id: string,
-  name: string,
-  userId: string
-}
+import { ShortContact } from "../models/ContactModels";
 
 const Contacts = () => {
   const userId = localStorage.getItem("userId")
   const {setLoading} = useLoading();
   const [searchValue, setSearchValue] = useState('');
   const [contacts, setContacts] = useState<ShortContact[]>([]);
-  const [open, setOpen] = useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
   
   const {data, loading: contactsLoading, networkStatus} = useGetIncomingContactRequestsQuery({
     variables: {
@@ -106,15 +92,8 @@ const Contacts = () => {
       <EditableListWithSearch
         searchValue={searchValue}
         setSearchValue={setSearchValue}
-        onAddClick={() => handleClickOpen()}
         list={List}
       />
-      <BaseModal
-        open={open}
-        onClose={handleClose}
-      >
-        <AddContactModal handleClose={handleClose} />
-      </BaseModal>
     </div>
   )
 }

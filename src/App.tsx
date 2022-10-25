@@ -42,7 +42,11 @@ export default function App() {
       ),
       children: [
         {
-          path: "/", element: <Home/>
+          path: "/", 
+          children: [
+            {index: true, element: <Home/>},
+            {path: ":id", element: <Home/>},
+          ]
         },
         {
           path: "/items",
