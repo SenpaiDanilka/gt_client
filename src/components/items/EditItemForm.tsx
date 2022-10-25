@@ -1,4 +1,4 @@
-import React, {FC, FormEvent} from "react";
+import React, {FC, FormEvent, useState} from "react";
 import BaseInput from "../BaseComponents/BaseInput";
 import {MenuItem} from "@mui/material";
 import BaseButton from "../BaseComponents/BaseButton";
@@ -7,6 +7,9 @@ import {FormDataType} from "../../models/CommonModels";
 import {isRequired, minLength} from "../../utils/validate";
 import {useTranslation} from "react-i18next";
 import {ItemType} from "../../generated/types";
+import BaseInput2 from "../BaseComponents/BaseInput2";
+import SearchIcon from "@mui/icons-material/Search";
+import PasswordVisibilityButton from "../PasswordVisibilityButton";
 
 const defaultFieldsState = {
   name: '',
@@ -35,7 +38,7 @@ const EditItemForm: FC<Props> = ({
   editData= defaultFieldsState,
   onCancel
 }) => {
-  const {t} = useTranslation('common');
+  const {t} = useTranslation(['common', 'items']);
   const {
     handleKeyPress,
     formData,
@@ -53,11 +56,12 @@ const EditItemForm: FC<Props> = ({
     e.preventDefault();
     !validateAll() && onSubmit(formData);
   };
+  const [passwordVisibility, setPasswordVisibility] = useState(false);
 
   return (
     <form
       noValidate
-      className="flex flex-col items-center space-y-4 p-4"
+      className="flex flex-col items-center space-y-4 p-4 w-[400px]"
       onKeyDown={handleKeyPress}
       onSubmit={handleSubmit}
     >
@@ -69,10 +73,27 @@ const EditItemForm: FC<Props> = ({
           onChange={(val) => handleChange(val, "name")}
           onBlur={(e) => handleBlur(e, formFieldsRules.name)}
         />*/}
-      <BaseInput
+{/*      <BaseInput
         id="name"
+        variant="standard"
         errors={formData.name.errors}
         label={t('name')}
+        value={formData.name.value}
+        onChange={(val) => handleChange(val, "name")}
+        onBlur={(e) => handleBlur(e, formFieldsRules.name)}
+      />*/}
+      <BaseInput2
+        id="name"
+        label={t('name')}
+        type={passwordVisibility ? 'text' : 'password'}
+      iconEnd={
+      <PasswordVisibilityButton
+        visibility={passwordVisibility}
+        onClick={setPasswordVisibility}
+      />}
+        inputClasses="text-xl px-10 peer"
+        iconStart={<SearchIcon className="peer-focus:[&>*]:fill-blue" />}
+        errors={formData.name.errors}
         value={formData.name.value}
         onChange={(val) => handleChange(val, "name")}
         onBlur={(e) => handleBlur(e, formFieldsRules.name)}
@@ -80,6 +101,8 @@ const EditItemForm: FC<Props> = ({
       <BaseInput
         id="type"
         isSelect
+        disableUnderline
+        variant="filled"
         errors={formData.type.errors}
         label={t('type')}
         value={formData.type.value}
@@ -91,15 +114,16 @@ const EditItemForm: FC<Props> = ({
               value={option}
               key={option}
             >
-              { t(`itemTypes.${option}`)}
+              { t(`itemTypes.${option}`, { ns: 'items' })}
             </MenuItem>
           ))
         }
       </BaseInput>
       <BaseInput
+        variant="standard"
         label={t('description')}
         value={formData.description.value}
-        rows={4}
+        maxRows={4}
         multiline
         onChange={(val) => handleChange(val, "description")}
         className="my-4"

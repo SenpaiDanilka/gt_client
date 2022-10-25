@@ -26,20 +26,35 @@ export interface BaseInputPropsType {
   placeholder?: string;
   children?: ReactNode | ReactNode[];
   isSelect?: boolean;
+  disableUnderline?: boolean;
 }
 
 const textFieldSX = {
+  '& .MuiInputBase-root': {
+    '&::before': {
+      borderColor: '#A5B4CA'
+    },
+    '&::after': {
+      borderColor: '#6284FF'
+    },
+    '&:hover': {
+      borderColor: '#6284FF'
+    }
+  },
+  '& .MuiInputLabel-root.Mui-focused': {
+    color: '#6284FF'
+  },
   '& .MuiOutlinedInput-root': {
     backgroundColor: 'white',
 
     '& fieldset': {
-      borderColor: '#6B7280',
+      borderColor: '#A5B4CA',
     },
     '&:not(.Mui-disabled):not(.Mui-error):hover fieldset' : {
-      borderColor: '#3B82F6',
+      borderColor: '#6284FF',
     },
     '&:not(.Mui-error).Mui-focused fieldset': {
-      borderColor: '#2563EB',
+      borderColor: '#6284FF',
     }
   },
 };
@@ -66,7 +81,8 @@ const BaseInput: React.FC<BaseInputPropsType> = ({
   minRows,
   placeholder,
   children,
-  isSelect
+  isSelect,
+  disableUnderline
 }) => {
   const {t} = useTranslation('validations');
   const inputProps = {
@@ -78,7 +94,10 @@ const BaseInput: React.FC<BaseInputPropsType> = ({
       ? (
         <InputAdornment position="end">{iconEnd}</InputAdornment>
       ) : null,
-    className: "rounded-xl"
+    className: 'rounded-xl text-mgb dark:text-white dark:bg-dark-bg',
+    ...(variant === 'filled' || variant === 'standard'
+      ? { disableUnderline: disableUnderline }
+      : {})
   };
   const helperText = !!errors.length && t(errors[0].text, errors[0].additionalData);
 

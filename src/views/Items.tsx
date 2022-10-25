@@ -1,8 +1,5 @@
 import {useEffect, useState} from "react";
-import EditableListWithSearch from "../components/EditableListWithSearch";
 import {useNavigate} from "react-router-dom";
-import BaseMenu from "../components/BaseComponents/BaseMenu";
-import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {NetworkStatus} from '@apollo/client';
 import {GET_USER_ITEMS} from "../services/ItemsService";
 import {useLoading} from "../contexts/LoadingContext";
@@ -10,10 +7,12 @@ import SubmitActionModal from "../components/SubmitActionModal";
 import {useDeleteItemMutation, useFindUserItemsByIdQuery} from "../generated/apollo-functions";
 import {FindUserItemsByIdQuery} from "../generated/operations";
 import {useTranslation} from "react-i18next";
+import ItemsTableItem from "../components/items/ItemsTableItem";
+import {Item} from "../generated/types";
 
 const Items = () => {
   const navigate = useNavigate();
-  const {t} = useTranslation('common');
+  const {t} = useTranslation(['common', 'items']);
   const [searchValue, setSearchValue] = useState('');
   const {setLoading, setAlertData} = useLoading();
   const userId = localStorage.getItem("userId")
@@ -82,55 +81,28 @@ const Items = () => {
     setLoading(networkStatus === NetworkStatus.refetch || itemsLoading || deleteLoading)
   }, [networkStatus, itemsLoading, deleteLoading]);
 
-  const menuOptions = (id: string) => ([
-    {
-      children: 'Delete',
-      id: 'delete',
-      onClick: () => handleOnDeleteClick(id)
-    },
-    {
-      children: 'View item',
-      id: 'view',
-      onClick: () => {
-        navigate(`/items/${id}`)
-      }
-    }
-  ]);
-
-  const List = (
-    items && items.map((item) => (
-      <div
-        className="flex justify-between items-center"
-        key={item!._id}
-      >
-        <div className="flex p-4 w-full">
-          <BaseAvatar
-            alt={`Mocked Item ${item!.name}`}
-            size={40}
-            variant="square"
-            className="mr-4"
-          />
-          <div className="flex flex-col flex-1">
-            <span className="mb-2 font-semibold leading-4">{item!.name}</span>
-            <span className="line-clamp-3">{item!.description}</span>
-          </div>
-          <div className="text-right w-28 place-self-center">
-            {t(`itemTypes.${item!.type}`)}
-          </div>
-        </div>
-        <BaseMenu options={menuOptions(item!._id)}/>
-      </div>
-    ))
-  );
+  const columns = ['name', 'category', 'status', 'tenant'];
 
   return (
     <div className="p-4">
-      <EditableListWithSearch
-        searchValue={searchValue}
-        setSearchValue={setSearchValue}
-        onAddClick={() => navigate('/items/new')}
-        list={List}
-      />
+      <div className="hidden md:grid grid-cols-4 gap-x-3 mb-2.5">
+        {
+          columns.map((column) => (
+            <span key={column} className="text-mgb dark:text-gb">
+              {t(`itemsTable.${column}`, { ns: 'items' })}
+            </span>
+          ))
+        }
+      </div>
+      {
+        items && items.map((item) => (
+          <ItemsTableItem
+            key={item!._id}
+            item={item as Item}
+            onDelete={handleOnDeleteClick}
+          />
+        ))
+      }
       <SubmitActionModal
         open={isApproveModalOpen}
         onSubmit={deleteItem}

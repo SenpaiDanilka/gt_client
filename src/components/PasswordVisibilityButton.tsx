@@ -21,8 +21,8 @@ const PasswordVisibilityButton: React.FC<PasswordIconProps> = ({
     >
       {
         !visibility
-          ? <VisibilityOffIcon fontSize="small" className="[&>*]:hover:fill-blue-600"/>
-          : <VisibilityIcon fontSize="small" className="[&>*]:fill-blue-600"/>
+          ? <VisibilityOffIcon fontSize="small" className="[&>*]:hover:fill-blue"/>
+          : <VisibilityIcon fontSize="small" className="[&>*]:fill-blue"/>
       }
     </BaseButton>
   );
