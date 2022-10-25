@@ -15,6 +15,7 @@ export class User implements UserModel {
   items_count
   spaces_count
   contacts_count
+  contact_requests_count
   id
 
   constructor({
@@ -24,6 +25,7 @@ export class User implements UserModel {
     items_count = 0,
     spaces_count = 0,
     contacts_count = 0,
+    contact_requests_count = 0,
     id = "id"
   } = {}) {
     this.name = name;
@@ -32,6 +34,7 @@ export class User implements UserModel {
     this.items_count = items_count;
     this.spaces_count = spaces_count;
     this.contacts_count = contacts_count;
+    this.contact_requests_count = contact_requests_count;
     this.id = id;
   }
 }

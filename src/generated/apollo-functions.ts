@@ -998,6 +998,7 @@ export const GetUserByIdDocument = gql`
     spaces_count
     items_count
     contacts_count
+    contact_requests_count
   }
 }
     `;

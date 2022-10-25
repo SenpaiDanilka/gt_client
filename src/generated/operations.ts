@@ -195,4 +195,4 @@ export type GetUserByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUserByIdQuery = { __typename?: 'Query', getUserById?: { __typename?: 'ShortUser', name: string, email: string, spaces_count: number, items_count: number, contacts_count: number } | null };
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById?: { __typename?: 'ShortUser', name: string, email: string, spaces_count: number, items_count: number, contacts_count: number, contact_requests_count: number } | null };
