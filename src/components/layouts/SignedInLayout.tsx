@@ -82,7 +82,7 @@ function NavBar() {
         navigationRoutes.map(route => (
           <Link
             key={route.id}
-            className="border-blue-800 border-l-2 last:border-r-2 text-white hover:bg-blue-700 cursor-pointer w-[120px] flex items-center justify-center"
+            className="border-blue-800 border-l-2 last:border-r-2 text-white hover:bg-blue-700 cursor-pointer w-[120px] text-center flex items-center justify-center"
             to={route.path}
           >
             { route.name }

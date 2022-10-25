@@ -5,6 +5,9 @@ import {FC, useEffect, useState} from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import {useLoading} from "../contexts/LoadingContext";
 import {useCreateContactMutation, useFindUserByEmailLazyQuery} from "../generated/apollo-functions";
+import {GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables} from "../generated/operations";
+import {GET_SENT_CONTACT_REQUESTS} from "../services/UsersService";
+import {Contact} from "../generated/types";
 
 type ResultsType = {
   __typename?: "User";
@@ -62,7 +65,24 @@ const AddContactModal: FC<Props> = ({
         user_one: userId!,
         user_two: option._id
       },
-      onQueryUpdated: () => {
+      update(cache, { data }) {
+        const {getSentContactRequests} = cache.readQuery<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>({
+          query: GET_SENT_CONTACT_REQUESTS,
+          variables: {
+            user_id: userId!
+          }
+        }) || ({} as Partial<GetSentContactRequestsQuery>);
+        cache.writeQuery<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>({
+          query: GET_SENT_CONTACT_REQUESTS,
+          variables: {
+            user_id: userId!
+          },
+          data: {
+            getSentContactRequests: [...getSentContactRequests!, data!.createContact!]
+          }
+        });
+      },
+      onCompleted: () => {
         handleClose();
         setAlertData({
           isOpen: true,

@@ -10,7 +10,6 @@ import Item from "./views/Item";
 import Space from "./views/Space";
 import SpaceNew from "./views/SpaceNew";
 import Cookie from "js-cookie";
-import Contact from "./views/Contact";
 import SignedInLayout from "./components/layouts/SignedInLayout";
 import SignedOutLayout from "./components/layouts/SignedOutLayout";
 import Settings from "./views/Settings";
@@ -66,21 +65,15 @@ export default function App() {
         },
         {
           path: "/contacts",
-          children: [
-            {index: true, element: <Contacts/>},
-            {path: ":id", element: <Contact/>},
-          ]
+          element: <Contacts/>
         },
         {
           path: "/contact_requests",
-          children: [
-            {index: true, element: <ContactRequests/>},
-            {path: ":id", element: <ContactRequests/>},
-          ]
+          element: <ContactRequests/>
         },
         {
           path: "/settings",
-          element: <Settings />
+          element: <Settings/>
         }
       ]
     }

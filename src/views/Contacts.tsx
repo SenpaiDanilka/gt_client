@@ -1,17 +1,22 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import EditableListWithSearch from "../components/EditableListWithSearch";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
 import {Tab, Tabs} from "@mui/material";
-import {GET_CONTACTS_BY_USER_ID} from '../services/UsersService'
-import {NetworkStatus} from '@apollo/client';
+import {GET_CONTACTS_BY_USER_ID, GET_SENT_CONTACT_REQUESTS} from '../services/UsersService'
+import {ApolloCache, NetworkStatus} from '@apollo/client';
 import BaseModal from '../components/BaseComponents/BaseModal'
 import AddContactModal from "../components/AddContactModal";
 import { useLoading } from "../contexts/LoadingContext";
 import SubmitActionModal from "../components/SubmitActionModal";
 import {useDeleteContactMutation, useGetContactsByUserIdQuery, useGetSentContactRequestsQuery} from "../generated/apollo-functions";
-import {GetContactsByUserIdQuery} from "../generated/operations";
+import {
+  DeleteContactMutation,
+  GetContactsByUserIdQuery,
+  GetContactsByUserIdQueryVariables,
+  GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables
+} from "../generated/operations";
 import { ShortContact } from "../models/ContactModels";
 import { useTranslation } from "react-i18next";
 
@@ -52,67 +57,93 @@ const Contacts = () => {
   const {data, loading: contactsLoading, networkStatus} = useGetContactsByUserIdQuery({
     variables: {
       user_id: userId!
-    }
+    },
+    fetchPolicy: 'cache-and-network'
   });
   
   useEffect(()=> {
-    if (data?.getContactsByUserId?.length) {
+    if (data?.getContactsByUserId) {
       setContacts(data.getContactsByUserId.map((contact) => {
-        const user = contact.user_one._id === userId ? contact.user_two : contact.user_one
+        const user = contact.user_one._id === userId
+          ? contact.user_two
+          : contact.user_one;
         return {
           _id: contact!._id,
           name: user.name,
           userId: user._id
-        }
+        };
       }))
+    } else {
+      setContacts([]);
     }
   }, [data]);
 
   const {data: sentRequestsData, loading: sentRequestsLoading} = useGetSentContactRequestsQuery({
     variables: {
       user_id: userId!
-    }
+    },
+    fetchPolicy: 'cache-and-network'
   });
   
   useEffect(()=> {
-    if (sentRequestsData?.getSentContactRequests?.length) {
+    if (sentRequestsData?.getSentContactRequests) {
       setSentRequests(sentRequestsData.getSentContactRequests.map((contact) => {
-        const user = contact.user_one._id === userId ? contact.user_two : contact.user_one
+        const user = contact.user_one._id === userId
+          ? contact.user_two
+          : contact.user_one;
         return {
           _id: contact!._id,
           name: user.name,
           userId: user._id
-        }
+        };
       }))
     }
   }, [sentRequestsData]);
+
+  const updateContacts = (cache: ApolloCache<any>, data?: DeleteContactMutation | null) => {
+    const {getContactsByUserId} = cache.readQuery<GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables>({
+      query: GET_CONTACTS_BY_USER_ID,
+      variables: {
+        user_id: userId!
+      }
+    }) || ({} as Partial<GetContactsByUserIdQuery>);
+    cache.writeQuery<GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables>({
+      query: GET_CONTACTS_BY_USER_ID,
+      variables: {
+        user_id: userId!
+      },
+      data: {
+        getContactsByUserId: getContactsByUserId!.filter((contact) => contact!._id !== data!.deleteContact!._id)
+      }
+    });
+  };
+
+  const updateSentContacts = (cache: ApolloCache<any>, data?: DeleteContactMutation | null) => {
+    const {getSentContactRequests} = cache.readQuery<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>({
+      query: GET_SENT_CONTACT_REQUESTS,
+      variables: {
+        user_id: userId!
+      }
+    }) || ({} as Partial<GetSentContactRequestsQuery>);
+    cache.writeQuery<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>({
+      query: GET_SENT_CONTACT_REQUESTS,
+      variables: {
+        user_id: userId!
+      },
+      data: {
+        getSentContactRequests: getSentContactRequests!.filter((contact) => contact!._id !== data!.deleteContact!._id)
+      }
+    });
+  };
 
   const handleDelete = async () => {
     await deleteItem(
       {
         variables: {id: deleteContactId},
         update(cache, {data}) {
-          const {getContactsByUserId} = cache.readQuery<GetContactsByUserIdQuery>({
-            query: GET_CONTACTS_BY_USER_ID,
-            variables: {
-              id: userId
-            }
-          }) || ({} as Partial<GetContactsByUserIdQuery>);
-          cache.writeQuery({
-            query: GET_CONTACTS_BY_USER_ID,
-            variables: {
-              id: userId
-            },
-            data: {
-              getContactsByUserId: {
-                ...getContactsByUserId,
-                contacts: {
-                  ...getContactsByUserId,
-                  data: getContactsByUserId?.filter((contact) => contact!._id !== data!.deleteContact!._id)
-                }
-              }
-            }
-          });
+          tab
+            ? updateSentContacts(cache, data)
+            : updateContacts(cache, data);
         },
         onQueryUpdated: () => {
           setAlertData({
@@ -128,7 +159,7 @@ const Contacts = () => {
             text: 'Smth went wrong',
             type: 'error'
           });
-        },
+        }
       })
   };
 
@@ -146,7 +177,7 @@ const Contacts = () => {
   ]);
 
   useEffect(() => {
-    setLoading(networkStatus === NetworkStatus.refetch || contactsLoading || sentRequestsLoading || deleteLoading)
+    setLoading(networkStatus === NetworkStatus.refetch || contactsLoading || sentRequestsLoading || deleteLoading);
   }, [networkStatus, contactsLoading, deleteLoading, sentRequestsLoading]);
   
 
@@ -175,7 +206,7 @@ const Contacts = () => {
         value={tab}
         onChange={handleSetTab}
         centered
-        className="max-w-[300px]"
+        className="max-w-[300px] mx-auto"
       >
         <Tab label={t('contacts')} className="normal-case text-xl"/>
         <Tab label={t('sent_requests')} className="normal-case text-xl"/>

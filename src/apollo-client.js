@@ -29,7 +29,31 @@ const client = new ApolloClient({
     authLink,
     httpLink
   ]),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          // All this queries mutation triggers 'recommendation' warning. They won't be included in build.
+          // So it's possible to remove later.
+          getContactsByUserId: {
+            merge(existing, incoming) {
+              return incoming;
+            }
+          },
+          getSentContactRequests: {
+            merge(existing, incoming) {
+              return incoming;
+            }
+          },
+          getIncomingContactRequests: {
+            merge(existing, incoming) {
+              return incoming;
+            }
+          }
+        }
+      }
+    }
+  })
 });
 
 export default client;
