@@ -9,14 +9,32 @@ export const DELETE_CONTACT = gql`
 `;
 
 export const CREATE_CONTACT = gql`
-  mutation CreateContact($owner: String!, $user: String!) {
-    createContact(owner: $owner, user: $user) {
-      _id,
-      owner {
+  mutation CreateContact($user_one: String!, $user_two: String!) {
+    createContact(user_one: $user_one, user_two: $user_two) {
+      _id
+      user_one {
         _id
         name
       }
-      user {
+      user_two {
+        _id
+        name
+      }
+      status
+    }
+  }
+`;
+
+export const PARTIAL_UPDATE_CONTACT = gql`
+  mutation PartialUpdateContact($id: ID!, $data: PartialUpdateContactInput!) {
+    partialUpdateContact(id: $id, data: $data) {
+      _id
+      status
+      user_one {
+        _id
+        name
+      }
+      user_two {
         _id
         name
       }
@@ -24,18 +42,52 @@ export const CREATE_CONTACT = gql`
   }
 `;
 
-export const GET_USER_CONTACTS = gql`
-  query FindUserContactsByID($id: ID!) {
-    findUserByID(id: $id) {
+export const GET_CONTACTS_BY_USER_ID = gql`
+  query GetContactsByUserId($user_id: String!) {
+    getContactsByUserId(user_id: $user_id) {
       _id
-      contacts {
-        data {
-          _id
-          user {
-            _id
-            name
-          }
-        }
+      status
+      user_one {
+        _id
+        name
+      }
+      user_two {
+        _id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_SENT_CONTACT_REQUESTS = gql`
+  query GetSentContactRequests($user_id: String!) {
+    getSentContactRequests(user_id: $user_id) {
+      _id
+      status
+      user_one {
+        _id
+        name
+      }
+      user_two {
+        _id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_INCOMING_CONTACT_REQUESTS = gql`
+  query GetIncomingContactRequests($user_id: String!) {
+    getIncomingContactRequests(user_id: $user_id) {
+      _id
+      status
+      user_one {
+        _id
+        name
+      }
+      user_two {
+        _id
+        name
       }
     }
   }

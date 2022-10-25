@@ -2,11 +2,9 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import useDebounce from '../hooks/useDebounce';
 import {FC, useEffect, useState} from 'react';
-import {GET_USER_CONTACTS} from '../services/UsersService'
 import CircularProgress from '@mui/material/CircularProgress';
 import {useLoading} from "../contexts/LoadingContext";
 import {useCreateContactMutation, useFindUserByEmailLazyQuery} from "../generated/apollo-functions";
-import {FindUserContactsByIdQuery} from "../generated/operations";
 
 type ResultsType = {
   __typename?: "User";
@@ -61,40 +59,14 @@ const AddContactModal: FC<Props> = ({
   const addContact = async (option: ResultsType) => {
     await createContact({
       variables: {
-        owner: userId!,
-        user: option._id
-      },
-      update(cache, {data}) {
-        const {findUserByID} = cache.readQuery<FindUserContactsByIdQuery>({
-          query: GET_USER_CONTACTS,
-          variables: {
-            id: userId
-          }
-        }) || ({} as Partial<FindUserContactsByIdQuery>);
-        cache.writeQuery({
-          query: GET_USER_CONTACTS,
-          variables: {
-            id: userId
-          },
-          data: {
-            findUserByID: {
-              ...findUserByID,
-              contacts: {
-                ...findUserByID?.contacts,
-                data: [
-                  ...findUserByID!.contacts!.data,
-                  data!.createContact
-                ]
-              }
-            }
-          }
-        });
+        user_one: userId!,
+        user_two: option._id
       },
       onQueryUpdated: () => {
         handleClose();
         setAlertData({
           isOpen: true,
-          text: 'Contact has been added',
+          text: 'Request has been sent',
           type: 'success'
         });
       },

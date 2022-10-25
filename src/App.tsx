@@ -5,6 +5,7 @@ import Home from "./views/Home";
 import Items from "./views/Items";
 import Spaces from "./views/Spaces";
 import Contacts from "./views/Contacts";
+import ContactRequests from "./views/ContactRequests";
 import Item from "./views/Item";
 import Space from "./views/Space";
 import SpaceNew from "./views/SpaceNew";
@@ -41,7 +42,11 @@ export default function App() {
       ),
       children: [
         {
-          path: "/", element: <Home/>
+          path: "/", 
+          children: [
+            {index: true, element: <Home/>},
+            {path: ":id", element: <Home/>},
+          ]
         },
         {
           path: "/items",
@@ -64,6 +69,13 @@ export default function App() {
           children: [
             {index: true, element: <Contacts/>},
             {path: ":id", element: <Contact/>},
+          ]
+        },
+        {
+          path: "/contact_requests",
+          children: [
+            {index: true, element: <ContactRequests/>},
+            {path: ":id", element: <ContactRequests/>},
           ]
         },
         {
