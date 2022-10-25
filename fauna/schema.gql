@@ -108,6 +108,7 @@ type ShortUser @embedded {
   spaces_count: Int!
   items_count: Int!
   contacts_count: Int!
+  contact_requests_count: Int!
 }
 
 type Query {

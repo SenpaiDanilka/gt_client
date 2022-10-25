@@ -359,6 +359,7 @@ export type PartialUpdateItemInput = {
 
 /** 'ShortUser' input values */
 export type PartialUpdateShortUserInput = {
+  contact_requests_count?: InputMaybe<Scalars['Int']>;
   contacts_count?: InputMaybe<Scalars['Int']>;
   email?: InputMaybe<Scalars['String']>;
   items_count?: InputMaybe<Scalars['Int']>;
@@ -495,6 +496,7 @@ export type QueryGetUserByIdArgs = {
 
 export type ShortUser = {
   __typename?: 'ShortUser';
+  contact_requests_count: Scalars['Int'];
   contacts_count: Scalars['Int'];
   email: Scalars['String'];
   items_count: Scalars['Int'];
@@ -504,6 +506,7 @@ export type ShortUser = {
 
 /** 'ShortUser' input values */
 export type ShortUserInput = {
+  contact_requests_count: Scalars['Int'];
   contacts_count: Scalars['Int'];
   email: Scalars['String'];
   items_count: Scalars['Int'];
