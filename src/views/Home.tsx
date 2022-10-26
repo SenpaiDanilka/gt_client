@@ -3,12 +3,14 @@ import { NetworkStatus } from '@apollo/client';
 import {useLoading} from "../contexts/LoadingContext";
 import {useEffect} from "react";
 import {useGetUserByIdQuery, useGetItemsQuery} from "../generated/apollo-functions";
+import {useParams} from "react-router-dom";
 
 const Home = () => {
+  const { id } = useParams();
   const userId = localStorage.getItem("userId")
   const {data, loading, networkStatus} = useGetUserByIdQuery({
     variables: {
-      id: userId!
+      id: id ? id : userId!
     }
   });
   const {data: getItemsData, loading: getItemsLoading} = useGetItemsQuery({

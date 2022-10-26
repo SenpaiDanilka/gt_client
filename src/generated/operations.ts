@@ -1,4 +1,13 @@
-import {AvailabilityModel, Exact, ItemInput, ItemType, Scalars, SpaceContactLinkInput, SpaceInput} from "./types";
+import {
+  AvailabilityModel,
+  ContactStatus,
+  Exact, ItemInput,
+  ItemType,
+  PartialUpdateContactInput,
+  Scalars,
+  SpaceContactLinkInput,
+  SpaceInput
+} from "./types";
 
 export type UserLoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -115,7 +124,7 @@ export type FindSpaceByIdQueryVariables = Exact<{
 }>;
 
 
-export type FindSpaceByIdQuery = { __typename?: 'Query', findSpaceByID?: { __typename?: 'Space', _id: string, name: string, description?: string | null, contacts: { __typename?: 'SpaceContactLinkPage', data: Array<{ __typename?: 'SpaceContactLink', _id: string, contact: { __typename?: 'Contact', _id: string, user: { __typename?: 'User', _id: string, name: string } } } | null> } } | null };
+export type FindSpaceByIdQuery = { __typename?: 'Query', findSpaceByID?: { __typename?: 'Space', _id: string, name: string, description?: string | null, contacts: { __typename?: 'SpaceContactLinkPage', data: Array<{ __typename?: 'SpaceContactLink', _id: string, contact: { __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } } } | null> } } | null };
 
 export type UpdateSpaceMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -130,7 +139,7 @@ export type CreateSpaceContactLinkMutationVariables = Exact<{
 }>;
 
 
-export type CreateSpaceContactLinkMutation = { __typename?: 'Mutation', createSpaceContactLink: { __typename?: 'SpaceContactLink', _id: string, contact: { __typename?: 'Contact', _id: string, user: { __typename?: 'User', _id: string, name: string } } } };
+export type CreateSpaceContactLinkMutation = { __typename?: 'Mutation', createSpaceContactLink: { __typename?: 'SpaceContactLink', _id: string, contact: { __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } } } };
 
 export type DeleteSpaceContactLinkMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -147,19 +156,41 @@ export type DeleteContactMutationVariables = Exact<{
 export type DeleteContactMutation = { __typename?: 'Mutation', deleteContact?: { __typename?: 'Contact', _id: string } | null };
 
 export type CreateContactMutationVariables = Exact<{
-  owner: Scalars['String'];
-  user: Scalars['String'];
+  user_one: Scalars['String'];
+  user_two: Scalars['String'];
 }>;
 
 
-export type CreateContactMutation = { __typename?: 'Mutation', createContact?: { __typename?: 'Contact', _id: string, owner: { __typename?: 'User', _id: string, name: string }, user: { __typename?: 'User', _id: string, name: string } } | null };
+export type CreateContactMutation = { __typename?: 'Mutation', createContact?: { __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } } | null };
 
-export type FindUserContactsByIdQueryVariables = Exact<{
+export type PartialUpdateContactMutationVariables = Exact<{
   id: Scalars['ID'];
+  data: PartialUpdateContactInput;
 }>;
 
 
-export type FindUserContactsByIdQuery = { __typename?: 'Query', findUserByID?: { __typename?: 'User', _id: string, contacts: { __typename?: 'ContactPage', data: Array<{ __typename?: 'Contact', _id: string, user: { __typename?: 'User', _id: string, name: string } } | null> } } | null };
+export type PartialUpdateContactMutation = { __typename?: 'Mutation', partialUpdateContact?: { __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } } | null };
+
+export type GetContactsByUserIdQueryVariables = Exact<{
+  user_id: Scalars['String'];
+}>;
+
+
+export type GetContactsByUserIdQuery = { __typename?: 'Query', getContactsByUserId?: Array<{ __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } }> | null };
+
+export type GetSentContactRequestsQueryVariables = Exact<{
+  user_id: Scalars['String'];
+}>;
+
+
+export type GetSentContactRequestsQuery = { __typename?: 'Query', getSentContactRequests?: Array<{ __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } }> | null };
+
+export type GetIncomingContactRequestsQueryVariables = Exact<{
+  user_id: Scalars['String'];
+}>;
+
+
+export type GetIncomingContactRequestsQuery = { __typename?: 'Query', getIncomingContactRequests?: Array<{ __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } }> | null };
 
 export type FindUserByEmailQueryVariables = Exact<{
   email: Scalars['String'];
@@ -173,4 +204,4 @@ export type GetUserByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUserByIdQuery = { __typename?: 'Query', getUserById?: { __typename?: 'ShortUser', name: string, email: string, spaces_count: number, items_count: number, contacts_count: number } | null };
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById?: { __typename?: 'ShortUser', name: string, email: string, spaces_count: number, items_count: number, contacts_count: number, contact_requests_count: number } | null };

@@ -44,7 +44,12 @@ export const FIND_SPACE_BY_ID = gql`
           _id
           contact {
             _id
-            user {
+            status
+            user_one {
+              _id
+              name
+            }
+            user_two {
               _id
               name
             }
@@ -71,7 +76,12 @@ export const CREATE_SPACE_CONTACT_LINK = gql`
       _id
       contact {
         _id
-        user {
+        status
+        user_one {
+          _id
+          name
+        }
+        user_two {
           _id
           name
         }

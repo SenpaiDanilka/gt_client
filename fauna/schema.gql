@@ -5,12 +5,12 @@ type User {
   phone: String
   spaces: [Space]! @relation
   items: [Item]! @relation
-  contacts: [Contact]! @relation(name: "user_contacts")
 }
 
 type Contact {
-  owner: User! @relation(name: "user_contacts")
-  user: User!
+  user_one: User!
+  user_two: User!
+  status: ContactStatus!
 }
 
 type SpaceContactLink {
@@ -36,6 +36,12 @@ type AvailableItem {
   model: AvailabilityModel!
   model_id: String!
   item: Item!
+}
+
+enum ContactStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
 }
 
 enum AvailabilityModel {
@@ -84,8 +90,8 @@ type Mutation {
   ): Item @resolver(name: "CreateItem")
 
   createContact(
-    owner: String!
-    user: String!
+    user_one: String!
+    user_two: String!
   ): Contact @resolver(name: "CreateContact")
 
   createAvailableItem(
@@ -102,6 +108,7 @@ type ShortUser @embedded {
   spaces_count: Int!
   items_count: Int!
   contacts_count: Int!
+  contact_requests_count: Int!
 }
 
 type Query {
@@ -109,5 +116,8 @@ type Query {
   getUserByEmail(email: String): ShortUser @resolver(name: "GetUserByEmail")
   getUserById(id: String): ShortUser @resolver(name: "GetUserById")
   getModelItems(model: AvailabilityModel!, model_id: String!): [AvailableItem!] @resolver(name: "GetModelItems")
+  getIncomingContactRequests(user_id: String!): [Contact!] @resolver(name: "GetIncomingContactRequests")
+  getSentContactRequests(user_id: String!): [Contact!] @resolver(name: "GetSentContactRequests")
+  getContactsByUserId(user_id: String!): [Contact!] @resolver(name: "GetContactsByUserId")
   getItems(user_id: String): [Item!] @resolver(name: "GetItems")
 }

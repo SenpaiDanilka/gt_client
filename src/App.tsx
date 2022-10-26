@@ -5,11 +5,11 @@ import Home from "./views/Home";
 import Items from "./views/Items";
 import Spaces from "./views/Spaces";
 import Contacts from "./views/Contacts";
+import ContactRequests from "./views/ContactRequests";
 import Item from "./views/Item";
 import Space from "./views/Space";
 import SpaceNew from "./views/SpaceNew";
 import Cookie from "js-cookie";
-import Contact from "./views/Contact";
 import SignedInLayout from "./components/layouts/SignedInLayout";
 import SignedOutLayout from "./components/layouts/SignedOutLayout";
 import Settings from "./views/Settings";
@@ -46,7 +46,11 @@ export default function App() {
       ),
       children: [
         {
-          path: "/", element: <Home/>
+          path: "/", 
+          children: [
+            {index: true, element: <Home/>},
+            {path: ":id", element: <Home/>},
+          ]
         },
         {
           path: "/items",
@@ -66,14 +70,15 @@ export default function App() {
         },
         {
           path: "/contacts",
-          children: [
-            {index: true, element: <Contacts/>},
-            {path: ":id", element: <Contact/>},
-          ]
+          element: <Contacts/>
+        },
+        {
+          path: "/contact_requests",
+          element: <ContactRequests/>
         },
         {
           path: "/settings",
-          element: <Settings />
+          element: <Settings/>
         }
       ]
     }

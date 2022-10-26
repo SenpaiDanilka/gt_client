@@ -2,11 +2,12 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import useDebounce from '../hooks/useDebounce';
 import {FC, useEffect, useState} from 'react';
-import {GET_USER_CONTACTS} from '../services/UsersService'
 import CircularProgress from '@mui/material/CircularProgress';
 import {useLoading} from "../contexts/LoadingContext";
 import {useCreateContactMutation, useFindUserByEmailLazyQuery} from "../generated/apollo-functions";
-import {FindUserContactsByIdQuery} from "../generated/operations";
+import {GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables} from "../generated/operations";
+import {GET_SENT_CONTACT_REQUESTS} from "../services/UsersService";
+import {Contact} from "../generated/types";
 
 type ResultsType = {
   __typename?: "User";
@@ -61,40 +62,31 @@ const AddContactModal: FC<Props> = ({
   const addContact = async (option: ResultsType) => {
     await createContact({
       variables: {
-        owner: userId!,
-        user: option._id
+        user_one: userId!,
+        user_two: option._id
       },
-      update(cache, {data}) {
-        const {findUserByID} = cache.readQuery<FindUserContactsByIdQuery>({
-          query: GET_USER_CONTACTS,
+      update(cache, { data }) {
+        const {getSentContactRequests} = cache.readQuery<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>({
+          query: GET_SENT_CONTACT_REQUESTS,
           variables: {
-            id: userId
+            user_id: userId!
           }
-        }) || ({} as Partial<FindUserContactsByIdQuery>);
-        cache.writeQuery({
-          query: GET_USER_CONTACTS,
+        }) || ({} as Partial<GetSentContactRequestsQuery>);
+        cache.writeQuery<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>({
+          query: GET_SENT_CONTACT_REQUESTS,
           variables: {
-            id: userId
+            user_id: userId!
           },
           data: {
-            findUserByID: {
-              ...findUserByID,
-              contacts: {
-                ...findUserByID?.contacts,
-                data: [
-                  ...findUserByID!.contacts!.data,
-                  data!.createContact
-                ]
-              }
-            }
+            getSentContactRequests: [...getSentContactRequests!, data!.createContact!]
           }
         });
       },
-      onQueryUpdated: () => {
+      onCompleted: () => {
         handleClose();
         setAlertData({
           isOpen: true,
-          text: 'Contact has been added',
+          text: 'Request has been sent',
           type: 'success'
         });
       },

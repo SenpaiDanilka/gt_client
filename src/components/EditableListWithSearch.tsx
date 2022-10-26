@@ -7,7 +7,7 @@ import AddButton from "./AddButton";
 interface Props {
   searchValue: string;
   setSearchValue: (val: string) => void;
-  onAddClick: () => void;
+  onAddClick?: () => void;
   list: ReactNode
 }
 
@@ -18,7 +18,7 @@ const EditableListWithSearch: React.FC<Props> = ({
   list
 }) => {
   const handleAddClick = () => {
-    onAddClick();
+    onAddClick && onAddClick();
   };
 
   return (
@@ -28,9 +28,9 @@ const EditableListWithSearch: React.FC<Props> = ({
           value={searchValue}
           onChange={setSearchValue}
           iconEnd={<SearchIcon fontSize="small"/>}
-          className="mr-4 max-w-[700px]"
+          className="max-w-[700px]"
         />
-        <AddButton onClick={handleAddClick}/>
+        {onAddClick && <AddButton onClick={handleAddClick} className="ml-4"/>}
       </div>
       <BaseContainer className="divide-y-2 max-w-[700px]">
         { list }
