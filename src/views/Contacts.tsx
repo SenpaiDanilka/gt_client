@@ -217,7 +217,10 @@ const Contacts = () => {
         </p>
         {
           contacts.map((contact) => (
-            <div className="flex justify-between items-center text-base">
+            <div
+              className="flex justify-between items-center text-base"
+              key={contact._id}
+            >
               <div className="flex items-center p-4">
                 <BaseAvatar
                   alt={`${contact._id}`}
