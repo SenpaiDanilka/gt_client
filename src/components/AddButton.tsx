@@ -5,15 +5,17 @@ import {classNames} from "../utils/helpers";
 
 interface Props {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  className?: string
+  className?: string;
+  text?: string;
 }
 
 const AddButton = ({
   onClick,
-  className
+  className,
+  text
 }: Props) => {
   const classes = classNames(
-    'bg-blue-600 hover:bg-blue-700 text-white rounded-md',
+    'bg-blue text-white text-base rounded-md',
     className
   );
 
@@ -24,7 +26,10 @@ const AddButton = ({
       onClick={onClick}
       className={classes}
     >
-      <AddIcon fontSize="small"/>
+      <AddIcon className="text-base" />
+      {
+        text && <span className="ml-2">{ text }</span>
+      }
     </BaseButton>
   );
 }

@@ -109,10 +109,12 @@ export default function Item() {
             </div>
             {
               item.description &&
-              <p className="my-2">{item.description}</p>
+              <p>{item.description}</p>
             }
-            <span className="mr-2.5">Category: {t(`itemTypes.${item!.type}`)}</span>
-            <span>Status: Available</span>
+            <div className="mt-2">
+              <span className="mr-2.5">Category: {t(`itemTypes.${item!.type}`)}</span>
+              <span>Status: Available</span>
+            </div>
             <EntityActions
               onDelete={handleDeleteItem}
               onEdit={toggleEditItem}

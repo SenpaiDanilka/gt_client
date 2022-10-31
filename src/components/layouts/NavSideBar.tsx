@@ -1,19 +1,22 @@
 import {Link, useLocation} from "react-router-dom";
-import React, {FC, useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import SentimentSatisfiedAltIcon from '@mui/icons-material/SentimentSatisfiedAlt';
 import PublicIcon from '@mui/icons-material/Public';
 import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
 import ImportContactsIcon from '@mui/icons-material/ImportContacts';
+import MarkunreadMailboxOutlinedIcon from '@mui/icons-material/MarkunreadMailboxOutlined';
 import BaseButton from "../BaseComponents/BaseButton";
 import CloseIcon from '@mui/icons-material/Close';
+import {useGetUserByIdQuery} from "../../generated/apollo-functions";
+import {useLoading} from "../../contexts/LoadingContext";
+import {NetworkStatus} from "@apollo/client";
 
-interface Props {
-  onClose: () => void;
-}
+const handleMenuToggle = () => {
+  const menu = document.querySelector("#mobile-menu");
+  menu!.classList.toggle('hidden');
+};
 
-const NavSideBar: FC<Props> = ({
-  onClose
-}) => {
+const NavSideBar = () => {
   return (
     <div id="mobile-menu" className="bg-white dark:bg-dark-bg min-w-[250px] md:min-w-[220px] max-w-[250px] md:max-w-[220px] py-4 px-5 h-full border-r border-br-stroke dark:border-br-dark hidden md:flex flex-col">
       <div className="flex items-center justify-center mb-3 md:mb-12">
@@ -24,7 +27,7 @@ const NavSideBar: FC<Props> = ({
         <div className="md:hidden flex-1 flex justify-end">
           <BaseButton
             buttonType="icon"
-            onClick={onClose}
+            onClick={handleMenuToggle}
             className="text-gb hover:text-blue dark:hover:text-white"
           >
             <CloseIcon />
@@ -41,39 +44,61 @@ export default NavSideBar;
 const NavBar = () => {
   const location = useLocation();
   const [activePath, setActivePath] = useState('/');
+  const { setLoading } = useLoading();
+  const userId = localStorage.getItem("userId")
+
+  const {data, loading, networkStatus} = useGetUserByIdQuery({
+    variables: {
+      id: userId!
+    },
+    fetchPolicy: "cache-and-network"
+  });
+
+  const user = data?.getUserById!;
+
+  useEffect(() => {
+    setLoading(networkStatus === NetworkStatus.refetch || loading)
+  }, [networkStatus, loading]);
 
   useEffect(() => {
     setActivePath(location.pathname);
   }, [location]);
 
-  const navigationRoutes = [
+  const navigationRoutes = user && [
     {
       path: "/",
       name: "Available",
       id: "available",
       icon: <SentimentSatisfiedAltIcon />,
-      counter: 17
+      counter: 17 //Mocked
     },
     {
       path: "/spaces",
       name: "My spaces",
       id: "spaces",
       icon: <PublicIcon />,
-      counter: 3
+      counter: user.spaces_count
     },
     {
       path: "/items",
       name: "My items",
       id: "items",
       icon: <DevicesOtherIcon />,
-      counter: 9
+      counter: user.items_count
     },
     {
       path: "/contacts",
       name: "Contacts",
       id: "contacts",
       icon: <ImportContactsIcon />,
-      counter: 126
+      counter: user.contacts_count
+    },
+    {
+      path: "/contact_requests",
+      name: "Contact requests",
+      id: "requests",
+      icon: <MarkunreadMailboxOutlinedIcon />,
+      counter: user.contact_requests_count
     },
   ];
 
@@ -100,11 +125,12 @@ const NavBar = () => {
       className="flex flex-col text-base"
     >
       {
-        navigationRoutes.map(route => (
+        user && navigationRoutes.map(route => (
           <Link
             key={route.id}
             className={linkClasses(route.path)}
             to={route.path}
+            onClick={handleMenuToggle}
           >
             <div className="mr-3 [&>svg]:w-5 [&>*]:h-5">
               { route.icon }

@@ -9,6 +9,7 @@ import {FindUserItemsByIdQuery} from "../generated/operations";
 import {useTranslation} from "react-i18next";
 import ItemsTableItem from "../components/items/ItemsTableItem";
 import {Item} from "../generated/types";
+import AddButton from "../components/AddButton";
 
 const Items = () => {
   const navigate = useNavigate();
@@ -33,7 +34,7 @@ const Items = () => {
     setIsApproveModalOpen(false);
   };
 
-  const items = data?.findUserByID?.items.data;
+  const items = data?.findUserByID?.items.data || [];
 
   const [deleteItem, {loading: deleteLoading}] = useDeleteItemMutation({
     variables: {id: deleteItemId},
@@ -85,6 +86,9 @@ const Items = () => {
 
   return (
     <div className="p-4">
+      <div id="controls" className="flex justify-end mb-4">
+        <AddButton text="Add Item" onClick={() => navigate('/items/new')} />
+      </div>
       <div className="hidden md:grid grid-cols-4 gap-x-3 mb-2.5">
         {
           columns.map((column) => (

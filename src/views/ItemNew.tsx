@@ -1,5 +1,4 @@
 import React, {useEffect} from "react";
-import BaseContainer from "../components/BaseComponents/BaseContainer";
 import {useLoading} from "../contexts/LoadingContext";
 import {useNavigate} from "react-router-dom";
 import EditItemForm from "../components/items/EditItemForm";
@@ -43,10 +42,10 @@ export default function ItemNew() {
   }
 
   return (
-    <BaseContainer className="p-4 my-4 mx-auto max-w-[700px] h-[400px]">
+    <div className="p-4">
       <EditItemForm
         onSubmit={handleSave}
       />
-    </BaseContainer>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, {FC, FormEvent, useState} from "react";
-import BaseInput from "../BaseComponents/BaseInput";
+import BaseInputOld from "../BaseComponents/BaseInputOld";
 import {MenuItem} from "@mui/material";
 import BaseButton from "../BaseComponents/BaseButton";
 import useForm from "../../hooks/useForm";
@@ -7,7 +7,7 @@ import {FormDataType} from "../../models/CommonModels";
 import {isRequired, minLength} from "../../utils/validate";
 import {useTranslation} from "react-i18next";
 import {ItemType} from "../../generated/types";
-import BaseInput2 from "../BaseComponents/BaseInput2";
+import BaseInput from "../BaseComponents/BaseInput";
 import SearchIcon from "@mui/icons-material/Search";
 import PasswordVisibilityButton from "../PasswordVisibilityButton";
 
@@ -56,7 +56,6 @@ const EditItemForm: FC<Props> = ({
     e.preventDefault();
     !validateAll() && onSubmit(formData);
   };
-  const [passwordVisibility, setPasswordVisibility] = useState(false);
 
   return (
     <form
@@ -82,23 +81,18 @@ const EditItemForm: FC<Props> = ({
         onChange={(val) => handleChange(val, "name")}
         onBlur={(e) => handleBlur(e, formFieldsRules.name)}
       />*/}
-      <BaseInput2
+      <BaseInput
         id="name"
+        variant="standard"
         label={t('name')}
-        type={passwordVisibility ? 'text' : 'password'}
-      iconEnd={
-      <PasswordVisibilityButton
-        visibility={passwordVisibility}
-        onClick={setPasswordVisibility}
-      />}
-        inputClasses="text-xl px-10 peer"
-        iconStart={<SearchIcon className="peer-focus:[&>*]:fill-blue" />}
+        placeholder={t('name')}
+        inputClasses="text-xl"
         errors={formData.name.errors}
         value={formData.name.value}
         onChange={(val) => handleChange(val, "name")}
         onBlur={(e) => handleBlur(e, formFieldsRules.name)}
       />
-      <BaseInput
+      <BaseInputOld
         id="type"
         isSelect
         disableUnderline
@@ -118,12 +112,13 @@ const EditItemForm: FC<Props> = ({
             </MenuItem>
           ))
         }
-      </BaseInput>
+      </BaseInputOld>
       <BaseInput
+        id="description"
         variant="standard"
+        placeholder={t('description')}
         label={t('description')}
         value={formData.description.value}
-        maxRows={4}
         multiline
         onChange={(val) => handleChange(val, "description")}
         className="my-4"

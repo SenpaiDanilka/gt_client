@@ -23,7 +23,7 @@ const SignedInLayout = () => {
   return (
     <div className="w-screen h-screen bg-white overflow-x-hidden dark:bg-dark-bg flex">
       <div className="[&>:not(.hidden)]:fixed md:[&>:not(.hidden)]:static z-9999 md:z-0">
-        <NavSideBar onClose={handleMenuToggle} />
+        <NavSideBar />
       </div>
       <div className="w-full">
         <div className="h-[80px] flex items-center justify-end py-5 px-5 md:px-10 space-x-10">

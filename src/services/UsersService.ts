@@ -19,6 +19,7 @@ export const CREATE_CONTACT = gql`
       user_two {
         _id
         name
+        email
       }
       status
     }
@@ -53,7 +54,8 @@ export const GET_CONTACTS_BY_USER_ID = gql`
       }
       user_two {
         _id
-        name
+        name,
+        email
       }
     }
   }
@@ -70,7 +72,8 @@ export const GET_SENT_CONTACT_REQUESTS = gql`
       }
       user_two {
         _id
-        name
+        name,
+        email
       }
     }
   }

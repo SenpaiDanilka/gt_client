@@ -1,5 +1,5 @@
 import React, {FC, FormEvent} from "react";
-import BaseInput from "../BaseComponents/BaseInput";
+import BaseInputOld from "../BaseComponents/BaseInputOld";
 import BaseButton from "../BaseComponents/BaseButton";
 import useForm from "../../hooks/useForm";
 import {FormDataType} from "../../models/CommonModels";
@@ -54,7 +54,7 @@ const EditSpaceForm: FC<Props> = ({
       onKeyDown={handleKeyPress}
       onSubmit={handleSubmit}
     >
-      <BaseInput
+      <BaseInputOld
         id="name"
         errors={formData.name.errors}
         label={t('name')}
@@ -62,7 +62,7 @@ const EditSpaceForm: FC<Props> = ({
         onChange={(val) => handleChange(val, "name")}
         onBlur={(e) => handleBlur(e, formFieldsRules.name)}
       />
-      <BaseInput
+      <BaseInputOld
         label="description"
         value={formData.description.value}
         rows={4}

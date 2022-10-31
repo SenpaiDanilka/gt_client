@@ -1,5 +1,5 @@
 import React, {ReactNode} from "react";
-import BaseInput from "./BaseInput";
+import BaseInputOld from "./BaseInputOld";
 import {useTranslation} from "react-i18next";
 import {ValidationError, ValidationFunction} from "../../models/CommonModels";
 
@@ -45,7 +45,7 @@ const BaseForm: React.FC<Props> = ({
       <div className="space-y-4">
         {
           formFieldsData.map(field => (
-            <BaseInput
+            <BaseInputOld
               id={field.id}
               label={t(field.id)}
               value={field.data.value}

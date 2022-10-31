@@ -1,15 +1,17 @@
-import EditableListWithSearch from "../components/EditableListWithSearch";
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import BaseMenu from "../components/BaseComponents/BaseMenu";
 import { GET_USER_SPACES } from "../services/SpacesService";
 import {NetworkStatus} from '@apollo/client';
 import {useLoading} from "../contexts/LoadingContext";
 import SubmitActionModal from "../components/SubmitActionModal";
 import {useDeleteSpaceMutation, useFindUserSpacesByIdQuery} from "../generated/apollo-functions";
 import {FindUserSpacesByIdQuery} from "../generated/operations";
+import AddButton from "../components/AddButton";
+import {useTranslation} from "react-i18next";
+import SpaceCard from "../components/spaces/SpaceCard";
 
 const Spaces = () => {
+  const {t} = useTranslation(['common']);
   const userId = localStorage.getItem("userId")
   const navigate = useNavigate();
   const {setLoading, setAlertData} = useLoading();
@@ -92,30 +94,22 @@ const Spaces = () => {
     }
   ]);
 
-  const List = (
-    spaces && spaces.map((space) => (
-      <div
-        className="flex justify-between items-center"
-        key={space!._id}
-      >
-        <div className="flex justify-between p-4 w-full">
-          <span>{`${space!.name}`}</span>
-          {space!.description && <span>{`${space!.description}`}</span>}
-          {/* <span className="font-bold">{ `IC: ${value * 2} / UC: ${value * 3}` }</span> */}
-        </div>
-        <BaseMenu options={menuOptions(String(space!._id))}/>
-      </div>
-    ))
-  );
-
   return (
-    <div className="p-4">
-      <EditableListWithSearch
-        searchValue={searchValue}
-        setSearchValue={setSearchValue}
-        onAddClick={() => navigate('/spaces/new')}
-        list={List}
-      />
+    <div>
+      <div id="controls" className="flex justify-end p-4">
+        <AddButton text="Add Space" onClick={() => navigate('/spaces/new')} />
+      </div>
+      <div className="flex flex-wrap gap-5 md:gap-10 px-5 md:px-10">
+        {
+          spaces && spaces.map((space) => (
+            <SpaceCard
+              key={space!._id}
+              space={space!}
+              onDelete={() => handleOnDeleteClick(space!._id)}
+            />
+          ))
+        }
+      </div>
       <SubmitActionModal
         open={isApproveModalOpen}
         onSubmit={deleteSpace}

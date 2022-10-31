@@ -1,9 +1,7 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
 import EditableListWithSearch from "../components/EditableListWithSearch";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import BaseMenu from "../components/BaseComponents/BaseMenu";
-import {Tab, Tabs} from "@mui/material";
 import {GET_CONTACTS_BY_USER_ID, GET_SENT_CONTACT_REQUESTS} from '../services/UsersService'
 import {ApolloCache, NetworkStatus} from '@apollo/client';
 import BaseModal from '../components/BaseComponents/BaseModal'
@@ -19,12 +17,15 @@ import {
 } from "../generated/operations";
 import { ShortContact } from "../models/ContactModels";
 import { useTranslation } from "react-i18next";
+import Tooltip from "@mui/material/Tooltip";
+import BaseButton from "../components/BaseComponents/BaseButton";
+import CloseIcon from '@mui/icons-material/Close';
+import AddButton from "../components/AddButton";
 
 const Contacts = () => {
-  const {t} = useTranslation('common');
+  const {t} = useTranslation(['contacts', 'common']);
   const userId = localStorage.getItem("userId")
   const {setLoading, setAlertData} = useLoading();
-  const navigate = useNavigate();
   const [searchValue, setSearchValue] = useState('');
   const [contacts, setContacts] = useState<ShortContact[]>([]);
   const [sentRequests, setSentRequests] = useState<ShortContact[]>([]);
@@ -64,13 +65,12 @@ const Contacts = () => {
   useEffect(()=> {
     if (data?.getContactsByUserId) {
       setContacts(data.getContactsByUserId.map((contact) => {
-        const user = contact.user_one._id === userId
-          ? contact.user_two
-          : contact.user_one;
+        const user = contact.user_two;
         return {
           _id: contact!._id,
           name: user.name,
-          userId: user._id
+          userId: user._id,
+          email: user.email
         };
       }))
     } else {
@@ -88,13 +88,13 @@ const Contacts = () => {
   useEffect(()=> {
     if (sentRequestsData?.getSentContactRequests) {
       setSentRequests(sentRequestsData.getSentContactRequests.map((contact) => {
-        const user = contact.user_one._id === userId
-          ? contact.user_two
-          : contact.user_one;
+        const user = contact.user_two;
         return {
-          _id: contact!._id,
+          _id: contact._id,
           name: user.name,
-          userId: user._id
+          userId: user._id,
+          status: contact.status,
+          email: user.email
         };
       }))
     }
@@ -163,60 +163,85 @@ const Contacts = () => {
       })
   };
 
-  const menuOptions = (id: string, userId: string) => ([
+  const menuOptions = (id: string) => ([
+    {
+      children: 'Resend',
+      id: 'resend',
+      onClick: () => { console.log('resend to id', id) }
+    },
     {
       children: 'Delete',
       id: 'delete',
       onClick: () => handleOnDeleteClick(id)
     },
-    {
-      children: 'View profile',
-      id: 'view',
-      onClick: () => { navigate(`/${userId}`) }
-    }
   ]);
 
   useEffect(() => {
     setLoading(networkStatus === NetworkStatus.refetch || contactsLoading || sentRequestsLoading || deleteLoading);
   }, [networkStatus, contactsLoading, deleteLoading, sentRequestsLoading]);
-  
-
-  const List = (contactsList: ShortContact[]) => (
-    contactsList.map((contact) => (
-      <div
-        className="flex justify-between items-center"
-        key={contact._id}
-      >
-        <div className="flex items-center p-4">
-          <BaseAvatar
-            alt={`${contact._id}`}
-            size={40}
-            className="mr-2"
-          />
-          {`${contact.name}`}
-        </div>
-        <BaseMenu options={menuOptions(String(contact._id), String(contact.userId))}/>
-      </div>
-    ))
-  );
 
   return (
     <div className="p-4">
-      <Tabs
-        value={tab}
-        onChange={handleSetTab}
-        centered
-        className="max-w-[300px] mx-auto"
-      >
-        <Tab label={t('contacts')} className="normal-case text-xl"/>
-        <Tab label={t('sent_requests')} className="normal-case text-xl"/>
-      </Tabs>
-      <EditableListWithSearch
-        searchValue={searchValue}
-        setSearchValue={setSearchValue}
-        onAddClick={() => handleClickOpen()}
-        list={List(tab ? sentRequests : contacts)}
-      />
+      <div id="controls" className="flex justify-end mb-4">
+        <AddButton text="Add contact" onClick={handleClickOpen} />
+      </div>
+
+      <div className="mb-10">
+        <p className="text-xl font-semibold text-mgb dark:text-white">
+          {`${t('sent_requests')} (${sentRequests.length})`}
+        </p>
+        {
+          sentRequests.map((contact) => (
+            <div
+              className="flex justify-between items-center text-base"
+              key={contact._id}
+            >
+              <div className="flex items-center p-4">
+                <BaseAvatar
+                  alt={`${contact._id}`}
+                  size={24}
+                  className="mr-2"
+                />
+                <span className="text-dgb dark:text-white">{contact.email}</span>
+              </div>
+              <span className="text-gb">{t(`contactStatus.${contact.status}`)}</span>
+              <BaseMenu options={menuOptions(String(contact._id))}/>
+            </div>
+          ))
+        }
+      </div>
+
+      <div>
+        <p className="text-xl font-semibold text-mgb dark:text-white">
+          {`${t('contacts')} (${contacts.length})`}
+        </p>
+        {
+          contacts.map((contact) => (
+            <div className="flex justify-between items-center text-base">
+              <div className="flex items-center p-4">
+                <BaseAvatar
+                  alt={`${contact._id}`}
+                  size={24}
+                  className="mr-2"
+                />
+                <span className="text-dgb dark:text-white">{contact.name}</span>
+              </div>
+              <span className="text-gb">{contact.email}</span>
+              <Tooltip title={t('delete', { ns: 'common' })}>
+                <BaseButton
+                  buttonType="icon"
+                  size="small"
+                  className="text-gb hover:text-blue dark:hover:text-white"
+                  onClick={() => handleOnDeleteClick(contact._id)}
+                >
+                  <CloseIcon className="text-3xl md:text-xl" />
+                </BaseButton>
+              </Tooltip>
+            </div>
+          ))
+        }
+      </div>
+
       <BaseModal
         open={open}
         onClose={handleClose}

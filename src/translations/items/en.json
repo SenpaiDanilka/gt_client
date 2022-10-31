@@ -2,6 +2,7 @@
   "itemsTable": {
     "name": "Item Name",
     "category": "Category",
+    "owner": "Owner",
     "status": "Status",
     "tenant": "Tenant"
   },

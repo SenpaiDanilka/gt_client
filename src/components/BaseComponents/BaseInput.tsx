@@ -1,135 +1,147 @@
-import {InputAdornment, TextField} from "@mui/material";
-import React, {ReactNode} from "react";
-import {useTranslation} from "react-i18next";
+import React, {FC, ReactNode, SyntheticEvent, useCallback, useRef, useState} from "react";
 import {ValidationError} from "../../models/CommonModels";
+import {useTranslation} from "react-i18next";
 
-export interface BaseInputPropsType {
+/*TODO WIP CUSTOM INPUT*/
+
+interface Props {
   id?: string;
-  label?: string;
-  variant?: "standard" | "filled" | "outlined";
   value: string;
-  type?: string;
   onChange: (val: string) => void;
   onBlur?: (e: React.FocusEvent) => void;
   onFocus?: (e: React.FocusEvent) => void;
-  required?: boolean;
+  variant?: "standard" | "filled" | "outlined";
+  inputClasses?: string;
+  labelClasses?: string;
+  errorTextClasses?: string;
+  type?: string;
   errors?: ValidationError[];
+  disabled?: boolean;
+  label?: string;
+  placeholder?: string;
   iconStart?: ReactNode;
   iconEnd?: ReactNode;
-  className?: string;
-  autoFocus?: boolean;
-  disabled?: boolean;
   multiline?: boolean;
   rows?: number;
-  maxRows?: number;
-  minRows?: number;
-  placeholder?: string;
-  children?: ReactNode | ReactNode[];
-  isSelect?: boolean;
-  disableUnderline?: boolean;
+  className?: string;
 }
 
-const textFieldSX = {
-  '& .MuiInputBase-root': {
-    '&::before': {
-      borderColor: '#A5B4CA'
-    },
-    '&::after': {
-      borderColor: '#6284FF'
-    },
-    '&:hover': {
-      borderColor: '#6284FF'
-    }
-  },
-  '& .MuiInputLabel-root.Mui-focused': {
-    color: '#6284FF'
-  },
-  '& .MuiOutlinedInput-root': {
-    backgroundColor: 'white',
-
-    '& fieldset': {
-      borderColor: '#A5B4CA',
-    },
-    '&:not(.Mui-disabled):not(.Mui-error):hover fieldset' : {
-      borderColor: '#6284FF',
-    },
-    '&:not(.Mui-error).Mui-focused fieldset': {
-      borderColor: '#6284FF',
-    }
-  },
-};
-
-const BaseInput: React.FC<BaseInputPropsType> = ({
+const BaseInput: FC<Props> = ({
   id,
-  disabled,
-  label,
-  variant,
+  value,
   onChange,
   onBlur,
-  onFocus,
-  value,
+  variant = "outlined",
+  inputClasses = '',
+  labelClasses,
+  errorTextClasses,
   type,
-  required,
-  errors= [],
+  errors = [],
+  disabled,
+  label,
+  placeholder,
   iconStart,
   iconEnd,
-  className,
-  autoFocus,
-  rows,
-  maxRows,
   multiline,
-  minRows,
-  placeholder,
-  children,
-  isSelect,
-  disableUnderline
+  rows,
+  className
 }) => {
   const {t} = useTranslation('validations');
-  const inputProps = {
-    startAdornment: iconStart
-      ? (
-        <InputAdornment position="start">{iconStart}</InputAdornment>
-      ) : null,
-    endAdornment: iconEnd
-      ? (
-        <InputAdornment position="end">{iconEnd}</InputAdornment>
-      ) : null,
-    className: 'rounded-xl text-mgb dark:text-white dark:bg-dark-bg',
-    ...(variant === 'filled' || variant === 'standard'
-      ? { disableUnderline: disableUnderline }
-      : {})
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  const inputClassList = useCallback(() => {
+    const errorClasses = 'border-error';
+    const initialClasses = `p-2 text-mgb placeholder-gb !outline-none w-full dark:bg-dark-bg dark:text-white focus:border-transparent ${inputClasses} ${!!errors.length ? errorClasses : 'border-gb'} ${multiline && 'resize-none overflow-hidden'}`;
+    const outlinedClasses = 'border group-hover:border-blue focus:shadow-input-focus rounded-lg';
+    const standardClasses = 'border-b group-hover:border-blue focus:shadow-standard-input-focus';
+
+    if (variant === 'outlined') {
+      return initialClasses.concat(' ', outlinedClasses);
+    }
+
+    if (variant === 'standard') {
+      return initialClasses.concat(' ', standardClasses);
+    }
+
+    return initialClasses;
+  }, [errors, inputClasses, variant]);
+
+  const errorText = !!errors.length && t(errors[0].text, errors[0].additionalData);
+
+  const onTextAreaChangeHandler = function(e: SyntheticEvent) {
+    const target = e.target as HTMLTextAreaElement;
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.style.height = "0px";
+      const scrollHeight = textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = scrollHeight + "px";
+    }
+    onChange(target.value);
   };
-  const helperText = !!errors.length && t(errors[0].text, errors[0].additionalData);
 
   return (
-    <TextField
-      id={id}
-      autoFocus={autoFocus}
-      disabled={disabled}
-      sx={textFieldSX}
-      rows={rows}
-      maxRows={maxRows}
-      minRows={minRows}
-      multiline={multiline}
-      size="small"
-      fullWidth
-      label={label}
-      variant={variant}
-      onChange={(e) => !disabled && onChange(e.target.value)}
-      onBlur={onBlur}
-      onFocus={onFocus}
-      value={value}
-      type={type}
-      required={required}
-      error={!!errors.length}
-      helperText={helperText}
-      InputProps={inputProps}
-      placeholder={placeholder}
-      className={className}
-      select={isSelect}
-      children={children}
-    />
+    <div className={`group w-full ${className}`}>
+      {
+        <label
+          htmlFor={id}
+          className={`cursor-text block px-1 mb-1 text-base text-gb group-focus-within:text-blue dark:text-white ${labelClasses}`}
+        >
+          {label}
+        </label>
+      }
+      <div className="relative">
+        {
+          iconStart && (
+            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+              {iconStart}
+            </div>
+          )
+        }
+        {
+          multiline
+            ? (
+              <textarea
+                ref={textareaRef}
+                id={id}
+                rows={1}
+                disabled={disabled}
+                placeholder={placeholder}
+                value={value}
+                onChange={onTextAreaChangeHandler}
+                onBlur={onBlur}
+                className={inputClassList()}
+              />
+            )
+            : (
+              <input
+                id={id}
+                disabled={disabled}
+                type={type}
+                placeholder={placeholder}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                onBlur={onBlur}
+                className={inputClassList()}
+              />
+            )
+        }
+
+        {
+          iconEnd && (
+            <div className="flex absolute inset-y-0 right-0 items-center pr-3">
+              {iconEnd}
+            </div>
+          )
+        }
+      </div>
+      {
+        errorText && (
+          <p className={`p-2 text-error text-base ${errorTextClasses}`}>
+            {errorText}
+          </p>
+        )
+      }
+    </div>
   );
-}
+};
 
 export default BaseInput;

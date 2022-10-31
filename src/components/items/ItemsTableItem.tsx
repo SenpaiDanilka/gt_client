@@ -57,7 +57,7 @@ const ItemsTableItem: FC<Props> = ({
       </Link>
       <Tooltip
         title={t('delete', { ns: 'common' })}
-        className="md:hidden group-hover:block absolute right-0 top-1/2 -translate-y-1/2"
+        className="absolute right-0 top-1/2 -translate-y-1/2"
       >
         <BaseButton
           buttonType="icon"

@@ -1,5 +1,5 @@
 import React, {ReactNode} from "react";
-import BaseInput from "./BaseComponents/BaseInput";
+import BaseInputOld from "./BaseComponents/BaseInputOld";
 import SearchIcon from "@mui/icons-material/Search";
 import BaseContainer from "./BaseComponents/BaseContainer";
 import AddButton from "./AddButton";
@@ -24,7 +24,7 @@ const EditableListWithSearch: React.FC<Props> = ({
   return (
     <>
       <div className="flex items-center justify-center py-4">
-        <BaseInput
+        <BaseInputOld
           value={searchValue}
           onChange={setSearchValue}
           iconEnd={<SearchIcon fontSize="small"/>}
