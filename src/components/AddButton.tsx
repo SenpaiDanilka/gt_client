@@ -7,21 +7,24 @@ interface Props {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
   text?: string;
+  variant?: "text" | "contained" | "outlined";
 }
 
 const AddButton = ({
   onClick,
   className,
-  text
+  text,
+  variant = 'contained'
 }: Props) => {
   const classes = classNames(
-    'bg-blue text-white text-base rounded-md',
+    'text-white text-base rounded-md',
+    variant === 'contained' && 'bg-blue',
     className
   );
 
   return (
     <BaseButton
-      variant="contained"
+      variant={variant}
       buttonType="icon"
       onClick={onClick}
       className={classes}

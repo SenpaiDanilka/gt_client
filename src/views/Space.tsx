@@ -320,6 +320,7 @@ export default function Space() {
               />
               <>
                 <AddButton
+                  variant="text"
                   text="Add item"
                   onClick={(e) => handleAddClick(e, 'items')}
                   className="mt-2"
@@ -330,7 +331,7 @@ export default function Space() {
             {
               spaceUsers.map((contact) => (
                 <div
-                  className="flex justify-between items-center text-base"
+                  className="flex justify-between items-center text-base max-w-[300px]"
                   key={contact._id}
                 >
                   <div className="flex items-center p-4">
@@ -355,7 +356,7 @@ export default function Space() {
               ))
             }
             <AddButton
-              key="user"
+              variant="text"
               text="Add user"
               onClick={(e) => handleAddClick(e, 'users')}
               className="mt-2"

@@ -97,30 +97,32 @@ export default function Item() {
             }}
           />
           : item &&
-          <div className="text-base text-gb">
-            <div className="flex">
-              <BaseAvatar
-                alt={item.name}
-                size={140}
-                variant="square"
-                className="mr-4"
-              />
-              <span className="mt-1 text-mgb dark:text-white text-xl font-bold">{item.name}</span>
-            </div>
-            {
-              item.description &&
-              <p>{item.description}</p>
-            }
-            <div className="mt-2">
-              <span className="mr-2.5">Category: {t(`itemTypes.${item!.type}`)}</span>
-              <span>Status: Available</span>
+          <>
+            <div className="text-base text-gb space-y-2">
+              <div className="flex">
+                <BaseAvatar
+                  alt={item.name}
+                  size={140}
+                  variant="square"
+                  className="mr-4"
+                />
+                <span className="mt-1 text-mgb dark:text-white text-xl font-bold">{item.name}</span>
+              </div>
+              {
+                item.description &&
+                <p>{item.description}</p>
+              }
+              <div>
+                <span className="mr-2.5">Category: {t(`itemTypes.${item!.type}`)}</span>
+                <span>Status: Available</span>
+              </div>
             </div>
             <EntityActions
               onDelete={handleDeleteItem}
               onEdit={toggleEditItem}
               className="absolute top-5 right-5"
             />
-          </div>
+          </>
       }
       <SubmitActionModal
         open={isApproveModalOpen}
