@@ -1,11 +1,8 @@
-import UserProfile from "../components/UserProfile";
 import { NetworkStatus } from '@apollo/client';
 import {useLoading} from "../contexts/LoadingContext";
 import {useEffect} from "react";
-import {useGetUserByIdQuery, useGetItemsQuery} from "../generated/apollo-functions";
-import {Link, useParams} from "react-router-dom";
-import ItemsTableItem from "../components/items/ItemsTableItem";
-import {Item} from "../generated/types";
+import {useGetItemsQuery} from "../generated/apollo-functions";
+import {Link} from "react-router-dom";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {useTranslation} from "react-i18next";
 import useGetCurrentBreakpoint from "../hooks/useGetCurrentBreakpoint";
@@ -43,7 +40,10 @@ const Home = () => {
       </div>
       {
         items && items.map((item) => (
-          <div className="relative hover:bg-br-stroke dark:hover:bg-mgb text-base text-dgb dark:text-gb">
+          <div
+            key={item!._id}
+            className="relative hover:bg-br-stroke dark:hover:bg-mgb text-base text-dgb dark:text-gb"
+          >
             {
               isMobileBreakpoint ? (
                 <Link
@@ -60,7 +60,7 @@ const Home = () => {
                   <div className="space-y-3">
                     <div>{item!.name}</div>
                     <div>{t(`itemTypes.${item!.type}`, { ns: 'items' })}</div>
-                    <div>some tenant</div>
+                    <div>{item!.owner.name}</div>
                     <div>status</div>
                   </div>
                 </Link>

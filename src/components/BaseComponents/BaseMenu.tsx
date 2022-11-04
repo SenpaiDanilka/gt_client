@@ -11,12 +11,10 @@ interface Props {
     children: ReactNode;
     onClick?: Function;
   }[];
-  triggerBtnColor?: string;
 }
 
 const BaseMenu: React.FC<Props> = ({
   options,
-  triggerBtnColor
 }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -32,7 +30,7 @@ const BaseMenu: React.FC<Props> = ({
       <BaseButton
         buttonType="icon"
         onClick={handleOpen}
-        className={triggerBtnColor}
+        className="text-gb hover:text-blue dark:hover:text-white"
       >
         <MoreVertIcon />
       </BaseButton>

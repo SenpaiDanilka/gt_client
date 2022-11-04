@@ -1,13 +1,15 @@
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
-import useDebounce from '../hooks/useDebounce';
+import useDebounce from '../../hooks/useDebounce';
 import {FC, useEffect, useState} from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
-import {useLoading} from "../contexts/LoadingContext";
-import {useCreateContactMutation, useFindUserByEmailLazyQuery} from "../generated/apollo-functions";
-import {GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables} from "../generated/operations";
-import {GET_SENT_CONTACT_REQUESTS} from "../services/UsersService";
-import {Contact} from "../generated/types";
+import {useLoading} from "../../contexts/LoadingContext";
+import {useCreateContactMutation, useFindUserByEmailLazyQuery} from "../../generated/apollo-functions";
+import {GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables} from "../../generated/operations";
+import {GET_SENT_CONTACT_REQUESTS} from "../../services/UsersService";
+import {Contact} from "../../generated/types";
+import BaseInput from "../BaseComponents/BaseInput";
+import BaseButton from "../BaseComponents/BaseButton";
 
 type ResultsType = {
   __typename?: "User";
@@ -22,12 +24,14 @@ interface Props {
 const AddContactModal: FC<Props> = ({
   handleClose
 }) => {
+  const [selectedContact, setSelectedContact] = useState<ResultsType | null>(null);
+  const [message, setMessage] = useState('');
   const {setLoading, setAlertData} = useLoading();
   const [searchValue, setSearchValue] = useState('');
   const [results, setResults] = useState<ResultsType[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const debouncedSearchTerm = useDebounce(searchValue, 500);
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem('userId');
   const [findUserByEmail] = useFindUserByEmailLazyQuery();
   const [createContact, {loading}] = useCreateContactMutation();
 
@@ -59,11 +63,15 @@ const AddContactModal: FC<Props> = ({
     return () => setLoading(false);
   }, [loading]);
 
-  const addContact = async (option: ResultsType) => {
-    await createContact({
+  const handleSelectContact = (option: ResultsType) => {
+    setSelectedContact(option);
+  };
+
+  const addContact = async () => {
+    !!selectedContact && await createContact({
       variables: {
         user_one: userId!,
-        user_two: option._id
+        user_two: selectedContact._id
       },
       update(cache, { data }) {
         const {getSentContactRequests} = cache.readQuery<GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables>({
@@ -101,8 +109,11 @@ const AddContactModal: FC<Props> = ({
   }
 
   return (
-    <div className="w-[600px]">
+    <div className="flex flex-col items-center min-w-[300px] md:min-w-[384px] h-[272px] px-10 py-5 relative">
+      <p className="text-mgb text-xl font-semibold mb-1">Add a new Contact</p>
+      <p className="text-base text-dgb mb-4">Send invitation email to your friend</p>
       <Autocomplete
+        className="w-full mb-2"
         filterOptions={(x) => x}
         freeSolo
         loading={isSearching}
@@ -112,7 +123,7 @@ const AddContactModal: FC<Props> = ({
           const target = e.target as HTMLInputElement;
           return setSearchValue(target.value)
         })}
-        onChange={(e, option: ResultsType | null | string) => addContact(option as ResultsType)}
+        onChange={(e, option: ResultsType | null | string) => handleSelectContact(option as ResultsType)}
         renderInput={(params) =>
           <TextField
             {...params}
@@ -129,6 +140,24 @@ const AddContactModal: FC<Props> = ({
           />
         }
       />
+      {/* TODO the input below doing nothing right now */}
+      <BaseInput
+        id="message"
+        multiline
+        minRows={2}
+        maxRows={3}
+        className="mb-5"
+        inputClasses="rounded"
+        placeholder="Enter a message"
+        value={message}
+        onChange={setMessage}
+      />
+      <BaseButton
+        variant="contained"
+        onClick={addContact}
+      >
+        Send
+      </BaseButton>
     </div>
   )
 }

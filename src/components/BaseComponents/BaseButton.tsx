@@ -32,7 +32,7 @@ const BaseButton = React.forwardRef<HTMLButtonElement, Props>((
     const initialClasses = `disabled:bg-unavaliable normal-case ${className || ''}`;
     const outlinedClasses = 'text-gb hover:text-blue dark:hover:text-white border border-br-stroke hover:border-blue dark:border-br-dark dark:hover:border-white';
     const containedClasses = 'text-white bg-blue hover:text-white';
-    const iconButtonClasses = 'text-gb hover:text-blue dark:hover:text-white';
+    const iconButtonClasses = 'bg-transparent';
 
     if (variant === 'outlined') {
       return initialClasses.concat(' ', outlinedClasses);

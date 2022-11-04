@@ -72,25 +72,17 @@ const EditItemForm: FC<Props> = ({
           onChange={(val) => handleChange(val, "name")}
           onBlur={(e) => handleBlur(e, formFieldsRules.name)}
         />*/}
-{/*      <BaseInput
-        id="name"
-        variant="standard"
-        errors={formData.name.errors}
-        label={t('name')}
-        value={formData.name.value}
-        onChange={(val) => handleChange(val, "name")}
-        onBlur={(e) => handleBlur(e, formFieldsRules.name)}
-      />*/}
       <BaseInput
         id="name"
         variant="standard"
         label={t('name')}
         placeholder={t('name')}
-        inputClasses="text-xl"
+        inputClasses="text-xl dark:text-white"
         errors={formData.name.errors}
         value={formData.name.value}
         onChange={(val) => handleChange(val, "name")}
         onBlur={(e) => handleBlur(e, formFieldsRules.name)}
+        required
       />
       <BaseInputOld
         id="type"
@@ -117,9 +109,12 @@ const EditItemForm: FC<Props> = ({
         id="description"
         variant="standard"
         placeholder={t('description')}
+        inputClasses="dark:text-white"
         label={t('description')}
         value={formData.description.value}
         multiline
+        minRows={2}
+        maxRows={4}
         onChange={(val) => handleChange(val, "description")}
         className="my-4"
       />

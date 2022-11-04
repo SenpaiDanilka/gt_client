@@ -44,7 +44,7 @@ const EntityActions: FC<Props> = ({
             key={button.id}
             variant={buttonVariant}
             buttonType={isMobileBreakpoint ? "icon" : undefined}
-            className="first:mr-2.5 p-2.5"
+            className="first:mr-2.5 p-2.5 text-gb hover:text-blue"
             onClick={button.onClick}
           >
             <div className="text-base flex items-center">

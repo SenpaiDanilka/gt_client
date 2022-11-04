@@ -5,7 +5,7 @@ import BaseMenu from "../components/BaseComponents/BaseMenu";
 import {GET_CONTACTS_BY_USER_ID, GET_SENT_CONTACT_REQUESTS} from '../services/UsersService'
 import {ApolloCache, NetworkStatus} from '@apollo/client';
 import BaseModal from '../components/BaseComponents/BaseModal'
-import AddContactModal from "../components/AddContactModal";
+import AddContactModal from "../components/contacts/AddContactModal";
 import { useLoading } from "../contexts/LoadingContext";
 import SubmitActionModal from "../components/SubmitActionModal";
 import {useDeleteContactMutation, useGetContactsByUserIdQuery, useGetSentContactRequestsQuery} from "../generated/apollo-functions";
@@ -233,8 +233,7 @@ const Contacts = () => {
               <Tooltip title={t('delete', { ns: 'common' })}>
                 <BaseButton
                   buttonType="icon"
-                  size="small"
-                  className="text-gb hover:text-blue dark:hover:text-white"
+                  className="text-gb hover:text-blue dark:hover:text-white w-[40px] h-[40px]"
                   onClick={() => handleOnDeleteClick(contact._id)}
                 >
                   <CloseIcon className="text-3xl md:text-xl" />
@@ -248,6 +247,7 @@ const Contacts = () => {
       <BaseModal
         open={open}
         onClose={handleClose}
+        showCloseButton
       >
         <AddContactModal handleClose={handleClose} />
       </BaseModal>

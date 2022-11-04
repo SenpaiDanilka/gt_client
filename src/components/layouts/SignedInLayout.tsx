@@ -26,7 +26,7 @@ const SignedInLayout = () => {
         <NavSideBar />
       </div>
       <div className="w-full">
-        <div className="h-[80px] flex items-center justify-end py-5 px-5 md:px-10 space-x-10">
+        <div className="w-full bg-white dark:bg-dark-bg fixed md:static h-20 flex items-center justify-end py-5 px-5 md:px-10 space-x-10">
           <div className="flex-1">
             <BaseButton
               buttonType="icon"
@@ -40,7 +40,9 @@ const SignedInLayout = () => {
           <ThemeSwitcher />
           <UserMenu />
         </div>
-        <Outlet />
+        <div className="mt-20 md:mt-0">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

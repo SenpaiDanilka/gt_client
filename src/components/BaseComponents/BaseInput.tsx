@@ -1,8 +1,13 @@
-import React, {FC, ReactNode, SyntheticEvent, useCallback, useRef, useState} from "react";
+import React, {FC, ReactNode, SyntheticEvent, useCallback} from "react";
 import {ValidationError} from "../../models/CommonModels";
 import {useTranslation} from "react-i18next";
 
-/*TODO WIP CUSTOM INPUT*/
+const fonts = {
+  'text-xs': 12,
+  'text-base': 16,
+  'text-lg': 19,
+  'text-xl': 24
+};
 
 interface Props {
   id?: string;
@@ -22,8 +27,13 @@ interface Props {
   iconStart?: ReactNode;
   iconEnd?: ReactNode;
   multiline?: boolean;
-  rows?: number;
+  minRows?: number;
+  maxRows?: number;
   className?: string;
+  fontSize?: string;
+  inputPadding?: string;
+  autoFocus?: boolean;
+  required?: boolean;
 }
 
 const BaseInput: FC<Props> = ({
@@ -43,15 +53,20 @@ const BaseInput: FC<Props> = ({
   iconStart,
   iconEnd,
   multiline,
-  rows,
-  className
+  minRows = 1,
+  maxRows= 1,
+  className,
+  fontSize= 'text-base',
+  inputPadding = 'px-2',
+  autoFocus,
+  required
 }) => {
   const {t} = useTranslation('validations');
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const inputClassList = useCallback(() => {
     const errorClasses = 'border-error';
-    const initialClasses = `p-2 text-mgb placeholder-gb !outline-none w-full dark:bg-dark-bg dark:text-white focus:border-transparent ${inputClasses} ${!!errors.length ? errorClasses : 'border-gb'} ${multiline && 'resize-none overflow-hidden'}`;
+    const multilineClasses = 'resize-none overflow-x-hidden'
+    const initialClasses = `py-2 text-mgb placeholder-gb !outline-none w-full bg-transparent focus:border-transparent ${inputClasses} ${inputPadding} ${!!errors.length ? errorClasses : 'border-gb'} ${multiline && multilineClasses}`;
     const outlinedClasses = 'border group-hover:border-blue focus:shadow-input-focus rounded-lg';
     const standardClasses = 'border-b group-hover:border-blue focus:shadow-standard-input-focus';
 
@@ -70,28 +85,37 @@ const BaseInput: FC<Props> = ({
 
   const onTextAreaChangeHandler = function(e: SyntheticEvent) {
     const target = e.target as HTMLTextAreaElement;
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = "0px";
-      const scrollHeight = textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = scrollHeight + "px";
+    const lineHeight = fonts[fontSize as keyof typeof fonts];
+    const setRows = (val: number) => {
+      target.setAttribute('rows', val.toString());
     }
+    const padding = 16;
+    const scrollHeight = target.scrollHeight;
+    const rowsCount = Math.round((scrollHeight - padding) / lineHeight);
+      if (minRows > rowsCount) {
+        setRows(minRows);
+      } else if (rowsCount < maxRows) {
+        setRows(rowsCount);
+      } else {
+        setRows(maxRows);
+      }
     onChange(target.value);
   };
 
   return (
-    <div className={`group w-full ${className}`}>
+    <div className={`group w-full ${className} ${fontSize}`}>
       {
-        <label
+        label && <label
           htmlFor={id}
-          className={`cursor-text block px-1 mb-1 text-base text-gb group-focus-within:text-blue dark:text-white ${labelClasses}`}
+          className={`cursor-text block px-1 mb-1 text-gb group-focus-within:text-blue ${labelClasses}`}
         >
-          {label}
+          {`${label}${required ? '*' : ''}`}
         </label>
       }
       <div className="relative">
         {
           iconStart && (
-            <div className="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
+            <div className="flex absolute inset-y-0 left-0 items-center pl-2 pointer-events-none">
               {iconStart}
             </div>
           )
@@ -100,21 +124,23 @@ const BaseInput: FC<Props> = ({
           multiline
             ? (
               <textarea
-                ref={textareaRef}
                 id={id}
-                rows={1}
+                rows={minRows}
                 disabled={disabled}
                 placeholder={placeholder}
+                autoComplete="off"
                 value={value}
                 onChange={onTextAreaChangeHandler}
                 onBlur={onBlur}
                 className={inputClassList()}
+                spellCheck={false}
               />
             )
             : (
               <input
                 id={id}
                 disabled={disabled}
+                autoFocus={autoFocus}
                 type={type}
                 placeholder={placeholder}
                 value={value}
@@ -127,7 +153,7 @@ const BaseInput: FC<Props> = ({
 
         {
           iconEnd && (
-            <div className="flex absolute inset-y-0 right-0 items-center pr-3">
+            <div className="flex absolute inset-y-0 right-0 items-center pr-2">
               {iconEnd}
             </div>
           )
@@ -135,7 +161,7 @@ const BaseInput: FC<Props> = ({
       </div>
       {
         errorText && (
-          <p className={`p-2 text-error text-base ${errorTextClasses}`}>
+          <p className={`px-2 mt-1 text-error text-base ${errorTextClasses}`}>
             {errorText}
           </p>
         )

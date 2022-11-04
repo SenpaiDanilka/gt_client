@@ -2,6 +2,7 @@ import React, {ReactNode} from "react";
 import BaseInputOld from "./BaseInputOld";
 import {useTranslation} from "react-i18next";
 import {ValidationError, ValidationFunction} from "../../models/CommonModels";
+import BaseInput from "./BaseInput";
 
 type FormFieldsData = {
   id: string;
@@ -37,15 +38,15 @@ const BaseForm: React.FC<Props> = ({
     <form
       noValidate
       className={
-      `${className} border-box flex flex-col items-center justify-between rounded-xl`
+      `${className} flex flex-col items-center justify-between rounded-xl`
     }
       onKeyDown={onKeyDown}
       onSubmit={onSubmit}
     >
-      <div className="space-y-4">
+      <div className="space-y-4 w-full mb-4">
         {
           formFieldsData.map(field => (
-            <BaseInputOld
+            <BaseInput
               id={field.id}
               label={t(field.id)}
               value={field.data.value}
@@ -57,6 +58,7 @@ const BaseForm: React.FC<Props> = ({
               errors={field.data.errors}
               key={field.id}
               required
+              inputPadding={`${!!field.iconEnd ? 'pl-2 pr-10' : 'px-2'}`}
             />
           ))
         }

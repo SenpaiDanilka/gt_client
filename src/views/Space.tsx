@@ -323,7 +323,7 @@ export default function Space() {
                   variant="text"
                   text="Add item"
                   onClick={(e) => handleAddClick(e, 'items')}
-                  className="mt-2"
+                  className="mt-2 text-gb hover:text-blue"
                 />
               </>
             </div>
@@ -359,7 +359,7 @@ export default function Space() {
               variant="text"
               text="Add user"
               onClick={(e) => handleAddClick(e, 'users')}
-              className="mt-2"
+              className="mt-2 text-gb hover:text-blue"
             />
             <PopperWithAutocomplete
               options={
