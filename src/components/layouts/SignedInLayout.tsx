@@ -1,94 +1,49 @@
-import {Link, Navigate, Outlet, useNavigate} from "react-router-dom";
-import BaseMenu from "../BaseComponents/BaseMenu";
+import {Navigate, Outlet} from "react-router-dom";
 import LanguageSelect from "../LanguageSelect";
 import React, {useContext} from "react";
-import {useTranslation} from "react-i18next";
-import { logout } from "../../services/AuthService";
 import {AuthContext} from "../../App";
+import NavSideBar from "./NavSideBar";
+import ThemeSwitcher from "../ThemeSwitcher";
+import UserMenu from "../UserMenu";
+import MenuIcon from '@mui/icons-material/Menu';
+import BaseButton from "../BaseComponents/BaseButton";
 
 const SignedInLayout = () => {
-  const {t} = useTranslation('common');
-  const navigate = useNavigate();
   const cookies = useContext(AuthContext);
 
   if (!cookies) {
     return <Navigate to="/sign_in" />;
   }
 
+  const handleMenuToggle = () => {
+    const menu = document.querySelector("#mobile-menu");
+    menu!.classList.toggle('hidden');
+  };
+
   return (
-    <div className="w-screen h-screen bg-gray-100 overflow-x-hidden">
-      <div className="bg-blue-600 h-[70px] w-screen flex items-center justify-between">
-        <NavBar />
-        <BaseMenu
-          triggerBtnColor="text-white"
-          options={
-            [
-              {
-                children: <LanguageSelect />,
-                id: 'langChange'
-              },
-              {
-                children: t('settings'),
-                id: 'settings',
-                onClick: () => { navigate('/settings') }
-              },
-              {
-                children: t('signOut'),
-                id: 'signOut',
-                onClick: () => logout(navigate)
-              }
-            ]
-          } />
+    <div className="w-screen h-screen bg-white overflow-x-hidden dark:bg-dark-bg flex">
+      <div className="[&>:not(.hidden)]:fixed md:[&>:not(.hidden)]:static z-9999 md:z-0">
+        <NavSideBar />
       </div>
-      <Outlet />
-    </div>
-  );
-}
-
-function NavBar() {
-  const navigationRoutes = [
-    {
-      path: "/",
-      name: "Home",
-      id: "home"
-    },
-    {
-      path: "/items",
-      name: "My items",
-      id: "items"
-    },
-    {
-      path: "/spaces",
-      name: "My spaces",
-      id: "spaces"
-    },
-    {
-      path: "/contacts",
-      name: "My contacts",
-      id: "contacts"
-    },
-    {
-      path: "/contact_requests",
-      name: "Contact requests",
-      id: "contact_requests"
-    },
-  ];
-
-  return (
-    <div
-      className="flex flex-1 justify-center h-full divide-blue-800"
-    >
-      {
-        navigationRoutes.map(route => (
-          <Link
-            key={route.id}
-            className="border-blue-800 border-l-2 last:border-r-2 text-white hover:bg-blue-700 cursor-pointer w-[120px] text-center flex items-center justify-center"
-            to={route.path}
-          >
-            { route.name }
-          </Link>
-        ))
-      }
+      <div className="w-full">
+        <div className="w-full bg-white dark:bg-dark-bg fixed md:static h-20 flex items-center justify-end py-5 px-5 md:px-10 space-x-10">
+          <div className="flex-1">
+            <BaseButton
+              buttonType="icon"
+              onClick={handleMenuToggle}
+              className="text-gb hover:text-blue dark:hover:text-white md:hidden"
+            >
+              <MenuIcon />
+            </BaseButton>
+          </div>
+          <LanguageSelect />
+          <ThemeSwitcher />
+          <UserMenu />
+        </div>
+        <div className="mt-20 md:mt-0">
+          <Outlet />
+        </div>
+      </div>
     </div>
   );
 }

@@ -12,18 +12,10 @@
   "items": "Items",
   "users": "Users",
   "spaces": "Spaces",
-  "contacts": "Contacts",
-  "sent_requests": "Sent requests",
   "settings": "Settings",
   "save": "Save",
   "delete": "Delete",
   "edit": "Edit",
   "cancel": "Cancel",
-  "submit": "Submit",
-  "itemTypes": {
-    "ELECTRONICS": "Electronics",
-    "OTHER": "Other",
-    "REAL_ESTATE": "Real estate",
-    "VEHICLE": "Vehicle"
-  }
+  "submit": "Submit"
 }

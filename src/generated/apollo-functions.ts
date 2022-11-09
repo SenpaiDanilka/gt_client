@@ -210,6 +210,10 @@ export const GetItemsDocument = gql`
     description
     name
     type
+    owner {
+      _id
+      name
+    }
   }
 }
     `;
@@ -799,6 +803,7 @@ export const CreateContactDocument = gql`
     user_two {
       _id
       name
+      email
     }
     status
   }
@@ -886,6 +891,7 @@ export const GetContactsByUserIdDocument = gql`
     user_two {
       _id
       name
+      email
     }
   }
 }
@@ -930,6 +936,7 @@ export const GetSentContactRequestsDocument = gql`
     user_two {
       _id
       name
+      email
     }
   }
 }

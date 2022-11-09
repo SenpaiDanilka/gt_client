@@ -6,7 +6,7 @@ import BaseAvatar from "./BaseComponents/BaseAvatar";
 export interface OptionsDataType {
   optionId: string;
   name: string;
-  description?: string;
+  description?: string | null;
   type?: string;
   _id: string;
 }

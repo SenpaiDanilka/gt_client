@@ -1,11 +1,13 @@
 import React, {ReactNode} from "react";
 import Dialog from '@mui/material/Dialog';
-import Box from '@mui/material/Box';
+import CloseIcon from '@mui/icons-material/Close';
+import BaseButton from "./BaseButton";
 
 export interface BaseModalProps {
   open: boolean;
   children?: ReactNode;
   onClose: () => void;
+  showCloseButton?: boolean;
 }
 
 const BaseModal: React.FC<BaseModalProps> = (props) => {
@@ -16,10 +18,23 @@ const BaseModal: React.FC<BaseModalProps> = (props) => {
   };
 
   return (
-    <Dialog onClose={handleClose} open={open} maxWidth={false}>
-      <Box sx={{p: 2}}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth={false}
+    >
+      <div className="relative">
         {props.children}
-      </Box>
+        {props.showCloseButton ? (
+          <BaseButton
+            buttonType="icon"
+            onClick={handleClose}
+            className="absolute top-1 right-1"
+          >
+            <CloseIcon />
+          </BaseButton>
+        ) : null}
+      </div>
     </Dialog>
   );
 }

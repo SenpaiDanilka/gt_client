@@ -111,7 +111,6 @@ const Contacts = () => {
         <div className="mr-2">
           <Tooltip title={'Accept'}>
             <BaseButton
-              variant="contained"
               buttonType="icon"
               onClick={() => handleClick(contact!._id, ContactStatus.Accepted)}
             >
@@ -120,7 +119,6 @@ const Contacts = () => {
           </Tooltip>
           <Tooltip title={'Decline'}>
             <BaseButton
-              variant="contained"
               buttonType="icon"
               onClick={() => handleClick(contact!._id, ContactStatus.Declined)}
             >

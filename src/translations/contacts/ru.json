@@ -1,0 +1,9 @@
+{
+  "contacts": "Контакты",
+  "sent_requests": "Отправленные запросы",
+  "contactStatus": {
+    "ACCEPTED": "Принят",
+    "DECLINED": "Отклонён",
+    "PENDING": "Ожидает"
+  }
+}

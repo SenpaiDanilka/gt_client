@@ -1,10 +1,7 @@
-import React, {ReactNode, useEffect, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import BaseContainer from "../components/BaseComponents/BaseContainer";
-import {Tab, Tabs} from "@mui/material";
 import {useTranslation} from "react-i18next";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
-import BaseMenu from "../components/BaseComponents/BaseMenu";
 import PopperWithAutocomplete, {OptionsDataType} from "../components/PopperWithAutocomplete";
 import AddButton from "../components/AddButton";
 import {useLoading} from "../contexts/LoadingContext";
@@ -16,15 +13,24 @@ import EntityActions from "../components/EntityActions";
 import EditSpaceForm from "../components/spaces/EditSpaceForm";
 import {FormDataType} from "../models/CommonModels";
 import SubmitActionModal from "../components/SubmitActionModal";
-import {useDeleteSpaceMutation, useFindSpaceByIdQuery, useUpdateSpaceMutation} from "../generated/apollo-functions";
-import {AvailabilityModel} from "../generated/types";
+import {
+  useDeleteSpaceMutation,
+  useFindSpaceByIdQuery,
+  useGetModelItemsQuery,
+  useUpdateSpaceMutation
+} from "../generated/apollo-functions";
+import {AvailabilityModel, Item} from "../generated/types";
+import ItemsTable from "../components/items/ItemsTable";
+import Tooltip from "@mui/material/Tooltip";
+import BaseButton from "../components/BaseComponents/BaseButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function Space() {
   const {id} = useParams();
   const userId = localStorage.getItem('userId')
   const navigate = useNavigate();
   const {t} = useTranslation('common');
-  const [tab, setTab] = useState(0);
+  const [popperType, setPopperType] = useState('item');
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [availableItems, setAvailableItems] = useState<OptionsDataType[]>([]);
   const [availableUsers, setAvailableUsers] = useState<OptionsDataType[]>([]);
@@ -43,7 +49,7 @@ export default function Space() {
   useEffect(() => {
     if (findSpaceByIdData?.findSpaceByID?.contacts.data.length) {
       setSpaceUsers(findSpaceByIdData?.findSpaceByID.contacts.data.map((contactLink: any) => {
-        const contactUser = userId === contactLink.contact.user_one._id ? contactLink.contact.user_two : contactLink.contact.user_one 
+        const contactUser = userId === contactLink.contact.user_one._id ? contactLink.contact.user_two : contactLink.contact.user_one
         return {
           _id: contactLink._id,
           name: contactUser.name,
@@ -84,21 +90,21 @@ export default function Space() {
     }
   }, [userItemsData])
 
-  const {data: spaceItemsData, loading: getSpaceItemsLoading} = useQuery(GET_SPACE_ITEMS, {
+  const {data: spaceItemsData, loading: getSpaceItemsLoading} = useGetModelItemsQuery({
     variables: {
       model: AvailabilityModel.Space,
-      model_id: id
+      model_id: id!
     }
-  })
+  });
 
   useEffect(() => {
-    if (spaceItemsData?.getModelItems.length) {
-      setSpaceItems(spaceItemsData?.getModelItems.map((availableItem: any) => ({
+    if (spaceItemsData?.getModelItems?.length) {
+      setSpaceItems(spaceItemsData.getModelItems.map((availableItem) => ({
         _id: availableItem._id,
         name: availableItem.item.name,
         description: availableItem.item.description,
         type: availableItem.item.type,
-        optionId: availableItem.item._id
+        optionId: availableItem.item!._id
       })))
     }
   }, [spaceItemsData])
@@ -174,11 +180,8 @@ export default function Space() {
     });
   };
 
-  const handleSetTab = (event: React.SyntheticEvent, newValue: number) => {
-    setTab(newValue);
-  };
-
-  const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleAddClick = (e: React.MouseEvent<HTMLButtonElement>, key: string) => {
+    setPopperType(key);
     setAnchorEl(e.currentTarget);
   };
 
@@ -244,29 +247,37 @@ export default function Space() {
     }
   }
 
-  const deleteFromSpace = (id: string) => {
-    tab === 0
-      ? deleteItemFromSpace({
-        variables: {
-          id: id
-        }
-      }).then(_ => {
-        setSpaceItems((current) =>
-          current.filter((item) => item._id !== id))
-      })
-      : deleteContactFromSpace({
-        variables: {
-          id: id
-        }
-      }).then(_ => {
-        setSpaceUsers((current) =>
-          current.filter((item) => item._id !== id))
-      })
-    setAlertData({
-      isOpen: true,
-      text: 'Has been deleted',
-      type: 'success'
-    });
+  const handleDeleteItemFromSpace = (id: string) => {
+    deleteItemFromSpace({
+      variables: {
+        id: id
+      }
+    }).then(_ => {
+      setSpaceItems((current) =>
+        current.filter((item) => item._id !== id));
+      setAlertData({
+        isOpen: true,
+        text: 'Has been deleted',
+        type: 'success'
+      });
+    })
+
+  };
+  const handleDeleteContactFromSpace = (id: string) => {
+    deleteContactFromSpace({
+      variables: {
+        id: id
+      }
+    }).then(_ => {
+      setSpaceUsers((current) =>
+        current.filter((item) => item._id !== id));
+      setAlertData({
+        isOpen: true,
+        text: 'Has been deleted',
+        type: 'success'
+      });
+    })
+
   };
 
   const [createSpaceContactLink] = useMutation(CREATE_SPACE_CONTACT_LINK);
@@ -278,165 +289,104 @@ export default function Space() {
   const [deleteContactFromSpace] = useMutation(DELETE_SPACE_CONTACT_LINK);
 
   return (
-    <div className="p-4">
-      <BaseContainer className="p-4 relative">
-        {
-          isEdit
-            ? (
-              <EditSpaceForm
-                onSubmit={handleEditSpace}
-                onCancel={toggleEditSpace}
-                editData={{
-                  name: findSpaceByIdData!.findSpaceByID!.name,
-                  description: findSpaceByIdData!.findSpaceByID!.description || ''
-                }}
+    <div className="p-5 md:p-10 mx-auto my-4 relative">
+      {
+        isEdit
+          ? (
+            <EditSpaceForm
+              onSubmit={handleEditSpace}
+              onCancel={toggleEditSpace}
+              editData={{
+                name: findSpaceByIdData!.findSpaceByID!.name,
+                description: findSpaceByIdData!.findSpaceByID!.description || ''
+              }}
+            />
+          ) : findSpaceByIdData && findSpaceByIdData.findSpaceByID && (
+          <div className="text-base">
+            <p className="text-xl text-mgb dark:text-white mb-2">
+              {findSpaceByIdData.findSpaceByID.name}
+            </p>
+            <p className="text-gb">{findSpaceByIdData.findSpaceByID.description}</p>
+            <div className="my-10">
+              <ItemsTable
+                items={spaceItems.map(item => {
+                  const obj = {} as Partial<Item>;
+                  return {
+                    ...obj,
+                    ...item
+                  } as Item
+                })}
+                onDelete={handleDeleteItemFromSpace}
               />
-            ) : (
               <>
-                {
-                  findSpaceByIdData && findSpaceByIdData.findSpaceByID &&
-                  <>
-                    <div className="flex flex-col space-y-4 mb-2">
-                      <span>{findSpaceByIdData.findSpaceByID.name}</span>
-                      <span>{findSpaceByIdData.findSpaceByID.description}</span>
-                    </div>
-                    <div className="flex justify-center items-center">
-                      {
-                        tab === 0 && (
-                          <>
-                            <AddButton
-                              onClick={handleAddClick}
-                              className="mr-2 w-7 h-7"
-                            />
-                            <PopperWithAutocomplete
-                              options={memoizedAvailableItems}
-                              anchorEl={anchorEl}
-                              handleClose={handleClose}
-                              handleSelect={(val) => handleSelect(val, 'items')}
-                            />
-                          </>
-                        )
-                      }
-                      <Tabs
-                        value={tab}
-                        onChange={handleSetTab}
-                        centered
-                        className="max-w-[300px]"
-                      >
-                        <Tab label={t('items')} className="normal-case text-xl"/>
-                        <Tab label={t('users')} className="normal-case text-xl"/>
-                      </Tabs>
-                      {
-                        tab === 1 && (
-                          <>
-                            <AddButton
-                              onClick={handleAddClick}
-                              className="ml-2 w-7 h-7"
-                            />
-                            <PopperWithAutocomplete
-                              options={memoizedAvailableUsers}
-                              anchorEl={anchorEl}
-                              handleClose={handleClose}
-                              handleSelect={(val) => handleSelect(val, 'users')}
-                            />
-                          </>
-                        )
-                      }
-                    </div>
-                    {TabPanels(tab, spaceItems, spaceUsers, deleteFromSpace, navigate)}
-                  </>
-                }
-                <EntityActions
-                  onDelete={handleDeleteSpace}
-                  onEdit={toggleEditSpace}
-                  className="absolute top-5 right-5"
+                <AddButton
+                  variant="text"
+                  text="Add item"
+                  onClick={(e) => handleAddClick(e, 'items')}
+                  className="mt-2 text-gb hover:text-blue"
                 />
               </>
-            )
-        }
-        <SubmitActionModal
-          open={isApproveModalOpen}
-          onSubmit={deleteSpace}
-          onCancel={() => setIsApproveModalOpen(false)}
-        >
-          <p className="mb-4">Delete space ID: {
-            <span className="font-bold">{id}</span>
-          }?</p>
-        </SubmitActionModal>
-      </BaseContainer>
-    </div>
-  );
-}
-
-const TabPanels = (
-  tab: number,
-  spaceItems: OptionsDataType[],
-  spaceUsers: OptionsDataType[],
-  handleDelete: (id: string) => void,
-  navigate: Function
-): ReactNode => {
-
-
-  const menuOptions = (id: string) => ([
-    {
-      children: 'Delete from space',
-      id: 'delete',
-      onClick: () => handleDelete(id)
-    },
-    {
-      children: 'View page',
-      id: 'view',
-      onClick: () => {
-        navigate(`/${tab === 0 ? 'items' : 'contacts'}/${id}`)
-      }
-    }
-  ]);
-
-  return (
-    <div className="divide-y">
-      {
-        tab === 0
-          ? (
-            spaceItems.map((item) => (
-              <div
-                className="flex justify-between items-center"
-                key={item._id}
-              >
-                <div className="flex justify-between items-center p-4 w-full">
-                  <BaseAvatar
-                    alt={`Mocked Item ${item.name}`}
-                    size={40}
-                    variant="square"
-                    className="mr-2"
-                  />
-                  <div className="flex flex-col flex-1">
-                    <span>{item.name}</span>
-                    <span>{item.description}</span>
+            </div>
+            <p className="text-mgb dark:text-white font-semibold mb-2.5">Users</p>
+            {
+              spaceUsers.map((contact) => (
+                <div
+                  className="flex justify-between items-center text-base max-w-[300px]"
+                  key={contact._id}
+                >
+                  <div className="flex items-center p-4">
+                    <BaseAvatar
+                      alt={`${contact._id}`}
+                      size={24}
+                      className="mr-2"
+                    />
+                    <span className="text-dgb dark:text-white">{contact.name}</span>
                   </div>
-                  <span>{item.type}</span>
+                  <Tooltip title={t('delete', {ns: 'common'})}>
+                    <BaseButton
+                      buttonType="icon"
+                      size="small"
+                      className="text-gb hover:text-blue dark:hover:text-white"
+                      onClick={() => handleDeleteContactFromSpace(contact._id)}
+                    >
+                      <CloseIcon className="text-3xl md:text-xl"/>
+                    </BaseButton>
+                  </Tooltip>
                 </div>
-                <BaseMenu options={menuOptions(item._id)}/>
-              </div>
-            ))
-          )
-          : (
-            spaceUsers.map((user) => (
-              <div
-                className="flex justify-between items-center"
-                key={user._id}
-              >
-                <div className="flex items-center p-4">
-                  <BaseAvatar
-                    alt={user.name}
-                    size={40}
-                    className="mr-2"
-                  />
-                  {user.name}
-                </div>
-                <BaseMenu options={menuOptions(user._id)}/>
-              </div>
-            ))
-          )
+              ))
+            }
+            <AddButton
+              variant="text"
+              text="Add user"
+              onClick={(e) => handleAddClick(e, 'users')}
+              className="mt-2 text-gb hover:text-blue"
+            />
+            <PopperWithAutocomplete
+              options={
+                popperType === 'items'
+                  ? memoizedAvailableItems
+                  : memoizedAvailableUsers
+              }
+              anchorEl={anchorEl}
+              handleClose={handleClose}
+              handleSelect={(val) => handleSelect(val, popperType)}
+            />
+            <EntityActions
+              onDelete={handleDeleteSpace}
+              onEdit={toggleEditSpace}
+              className="absolute top-5 right-5"
+            />
+            <SubmitActionModal
+              open={isApproveModalOpen}
+              onSubmit={deleteSpace}
+              onCancel={() => setIsApproveModalOpen(false)}
+            >
+              <p className="mb-4">Delete space ID: {
+                <span className="font-bold">{id}</span>
+              }?</p>
+            </SubmitActionModal>
+          </div>
+        )
       }
     </div>
   );

@@ -1,0 +1,15 @@
+{
+  "itemsTable": {
+    "name": "Item Name",
+    "category": "Category",
+    "owner": "Owner",
+    "status": "Status",
+    "tenant": "Tenant"
+  },
+  "itemTypes": {
+    "ELECTRONICS": "Electronics",
+    "OTHER": "Other",
+    "REAL_ESTATE": "Real estate",
+    "VEHICLE": "Vehicle"
+  }
+}

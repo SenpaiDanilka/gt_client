@@ -28,6 +28,27 @@ const BaseButton = React.forwardRef<HTMLButtonElement, Props>((
     href,
     ...props
   }, ref) => {
+  const classList = () => {
+    const initialClasses = `disabled:bg-unavaliable normal-case ${className || ''}`;
+    const outlinedClasses = 'text-gb hover:text-blue dark:hover:text-white border border-br-stroke hover:border-blue dark:border-br-dark dark:hover:border-white';
+    const containedClasses = 'text-white bg-blue hover:text-white';
+    const iconButtonClasses = 'bg-transparent';
+
+    if (variant === 'outlined') {
+      return initialClasses.concat(' ', outlinedClasses);
+    }
+
+    if (variant === 'contained') {
+      return initialClasses.concat(' ', containedClasses);
+    }
+
+    if (buttonType === 'icon') {
+      return initialClasses.concat(' ', iconButtonClasses);
+    }
+
+    return initialClasses;
+  };
+
   if (buttonType === "icon") {
     return (
       <IconButton
@@ -35,7 +56,7 @@ const BaseButton = React.forwardRef<HTMLButtonElement, Props>((
         size={size}
         edge={edge}
         onClick={onClick}
-        className={className}
+        className={classList()}
         {...props}
       >
         {children}
@@ -50,7 +71,7 @@ const BaseButton = React.forwardRef<HTMLButtonElement, Props>((
       type={type}
       variant={variant}
       size={size}
-      className={'normal-case ' + className}
+      className={classList()}
       onClick={onClick}
       disabled={disabled}
       {...props}

@@ -1,0 +1,9 @@
+{
+  "contacts": "Contacts",
+  "sent_requests": "Sent requests",
+  "contactStatus": {
+    "ACCEPTED": "Accepted",
+    "DECLINED": "Declined",
+    "PENDING": "Pending"
+  }
+}

@@ -14,14 +14,19 @@ import SignedInLayout from "./components/layouts/SignedInLayout";
 import SignedOutLayout from "./components/layouts/SignedOutLayout";
 import Settings from "./views/Settings";
 import ItemNew from "./views/ItemNew";
-import React from "react";
+import React, {useEffect} from "react";
 import {useLoading} from "./contexts/LoadingContext";
 import {BaseLoader} from "./components/BaseComponents/BaseLoader";
 import {Alert, Snackbar} from "@mui/material";
+import {themeCheck} from "./utils/theme";
 
 export const AuthContext = React.createContext(false);
 
 export default function App() {
+  useEffect(() => {
+    themeCheck();
+  }, []);
+
   const cookies = !!Cookie.get('fauna-session');
   const routes = useRoutes([
     {

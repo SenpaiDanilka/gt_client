@@ -105,13 +105,13 @@ const SignUp = () => {
   ];
 
   return (
-    <BaseContainer className="p-8">
+    <BaseContainer className="p-8 w-full max-w-[360px]">
       <p className="text-center font-bold text-2xl">{t('signUp')}</p>
       <div className="flex justify-center my-4">
         <span className="mr-2">{t('haveAccount')}</span>
         <Link
           to="/sign_in"
-          className="text-blue-600 hover:underline"
+          className="text-blue hover:underline"
         >
           {t('signIn')}
         </Link>
@@ -123,7 +123,7 @@ const SignUp = () => {
         onBlur={handleBlur}
         onKeyDown={handleKeyPress}
         controls={<Controls disabled={isNotValidData}/>}
-        className="max-w-[360px] h-[280px]"
+        className="min-h-[280px]"
       />
     </BaseContainer>
   );

@@ -1,5 +1,4 @@
 import {useNavigate, useParams} from "react-router-dom";
-import BaseContainer from "../components/BaseComponents/BaseContainer";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {useEffect, useState} from "react";
 import {useLoading} from "../contexts/LoadingContext";
@@ -13,8 +12,10 @@ import {
   useUpdateItemMutation
 } from "../generated/apollo-functions";
 import {ItemType} from "../generated/types";
+import {useTranslation} from "react-i18next";
 
 export default function Item() {
+  const {t} = useTranslation(['items']);
   const {id} = useParams();
   const navigate = useNavigate();
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
@@ -83,7 +84,7 @@ export default function Item() {
   };
 
   return (
-    <BaseContainer className="p-4 mx-auto my-4 max-w-[700px] min-h-[400px] relative">
+    <div className="p-5 md:p-10 mx-auto my-4 relative">
       {
         isEdit
           ? <EditItemForm
@@ -95,36 +96,33 @@ export default function Item() {
               description: item!.description || ''
             }}
           />
-          : (
-            <>
+          : item &&
+          <>
+            <div className="text-base text-gb space-y-2">
+              <div className="flex">
+                <BaseAvatar
+                  alt={item.name}
+                  size={140}
+                  variant="square"
+                  className="mr-4"
+                />
+                <span className="mt-1 text-mgb dark:text-white text-xl font-bold">{item.name}</span>
+              </div>
               {
-                item &&
-                <>
-                  <div className="flex justify-between items-center w-full">
-                    <BaseAvatar
-                      alt={item.name}
-                      size={60}
-                      variant="square"
-                      className="mr-4"
-                    />
-                    <div className="flex flex-col flex-1 space-y-4">
-                      <span>{item.name}</span>
-                      <span>{item.type}</span>
-                    </div>
-                  </div>
-                  {
-                    item.description &&
-                    <p className="my-4">{item.description}</p>
-                  }
-                  <EntityActions
-                    onDelete={handleDeleteItem}
-                    onEdit={toggleEditItem}
-                    className="absolute top-5 right-5"
-                  />
-                </>
+                item.description &&
+                <p>{item.description}</p>
               }
-            </>
-          )
+              <div>
+                <span className="mr-2.5">Category: {t(`itemTypes.${item!.type}`)}</span>
+                <span>Status: Available</span>
+              </div>
+            </div>
+            <EntityActions
+              onDelete={handleDeleteItem}
+              onEdit={toggleEditItem}
+              className="absolute top-5 right-5"
+            />
+          </>
       }
       <SubmitActionModal
         open={isApproveModalOpen}
@@ -135,6 +133,6 @@ export default function Item() {
           <span className="font-bold">{id}</span>
         }?</p>
       </SubmitActionModal>
-    </BaseContainer>
+    </div>
   );
 };

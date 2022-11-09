@@ -1,5 +1,5 @@
-import React, {FC, FormEvent} from "react";
-import BaseInput from "../BaseComponents/BaseInput";
+import React, {FC, FormEvent, useState} from "react";
+import BaseInputOld from "../BaseComponents/BaseInputOld";
 import {MenuItem} from "@mui/material";
 import BaseButton from "../BaseComponents/BaseButton";
 import useForm from "../../hooks/useForm";
@@ -7,6 +7,9 @@ import {FormDataType} from "../../models/CommonModels";
 import {isRequired, minLength} from "../../utils/validate";
 import {useTranslation} from "react-i18next";
 import {ItemType} from "../../generated/types";
+import BaseInput from "../BaseComponents/BaseInput";
+import SearchIcon from "@mui/icons-material/Search";
+import PasswordVisibilityButton from "../PasswordVisibilityButton";
 
 const defaultFieldsState = {
   name: '',
@@ -35,7 +38,7 @@ const EditItemForm: FC<Props> = ({
   editData= defaultFieldsState,
   onCancel
 }) => {
-  const {t} = useTranslation('common');
+  const {t} = useTranslation(['common', 'items']);
   const {
     handleKeyPress,
     formData,
@@ -57,7 +60,7 @@ const EditItemForm: FC<Props> = ({
   return (
     <form
       noValidate
-      className="flex flex-col items-center space-y-4 p-4"
+      className="flex flex-col items-center space-y-4 p-4 w-[400px]"
       onKeyDown={handleKeyPress}
       onSubmit={handleSubmit}
     >
@@ -71,15 +74,21 @@ const EditItemForm: FC<Props> = ({
         />*/}
       <BaseInput
         id="name"
-        errors={formData.name.errors}
+        variant="standard"
         label={t('name')}
+        placeholder={t('name')}
+        inputClasses="text-xl dark:text-white"
+        errors={formData.name.errors}
         value={formData.name.value}
         onChange={(val) => handleChange(val, "name")}
         onBlur={(e) => handleBlur(e, formFieldsRules.name)}
+        required
       />
-      <BaseInput
+      <BaseInputOld
         id="type"
         isSelect
+        disableUnderline
+        variant="filled"
         errors={formData.type.errors}
         label={t('type')}
         value={formData.type.value}
@@ -91,16 +100,21 @@ const EditItemForm: FC<Props> = ({
               value={option}
               key={option}
             >
-              { t(`itemTypes.${option}`)}
+              { t(`itemTypes.${option}`, { ns: 'items' })}
             </MenuItem>
           ))
         }
-      </BaseInput>
+      </BaseInputOld>
       <BaseInput
+        id="description"
+        variant="standard"
+        placeholder={t('description')}
+        inputClasses="dark:text-white"
         label={t('description')}
         value={formData.description.value}
-        rows={4}
         multiline
+        minRows={2}
+        maxRows={4}
         onChange={(val) => handleChange(val, "description")}
         className="my-4"
       />

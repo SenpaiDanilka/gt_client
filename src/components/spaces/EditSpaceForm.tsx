@@ -1,10 +1,11 @@
 import React, {FC, FormEvent} from "react";
-import BaseInput from "../BaseComponents/BaseInput";
+import BaseInputOld from "../BaseComponents/BaseInputOld";
 import BaseButton from "../BaseComponents/BaseButton";
 import useForm from "../../hooks/useForm";
 import {FormDataType} from "../../models/CommonModels";
 import {isRequired, minLength} from "../../utils/validate";
 import {useTranslation} from "react-i18next";
+import BaseInput from "../BaseComponents/BaseInput";
 
 const defaultFieldsState = {
   name: '',
@@ -50,23 +51,32 @@ const EditSpaceForm: FC<Props> = ({
   return (
     <form
       noValidate
-      className="flex flex-col items-center space-y-4 p-4"
+      className="flex flex-col items-center space-y-4 p-4 w-[400px]"
       onKeyDown={handleKeyPress}
       onSubmit={handleSubmit}
     >
       <BaseInput
         id="name"
-        errors={formData.name.errors}
+        variant="standard"
         label={t('name')}
+        placeholder={t('name')}
+        inputClasses="text-xl dark:text-white"
+        errors={formData.name.errors}
         value={formData.name.value}
         onChange={(val) => handleChange(val, "name")}
         onBlur={(e) => handleBlur(e, formFieldsRules.name)}
+        required
       />
       <BaseInput
-        label="description"
+        id="description"
+        variant="standard"
+        placeholder={t('description')}
+        inputClasses="dark:text-white"
+        label={t('description')}
         value={formData.description.value}
-        rows={4}
         multiline
+        minRows={2}
+        maxRows={4}
         onChange={(val) => handleChange(val, "description")}
         className="my-4"
       />

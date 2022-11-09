@@ -5,26 +5,34 @@ import {classNames} from "../utils/helpers";
 
 interface Props {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  className?: string
+  className?: string;
+  text?: string;
+  variant?: "text" | "contained" | "outlined";
 }
 
 const AddButton = ({
   onClick,
-  className
+  className,
+  text,
+  variant = 'contained'
 }: Props) => {
   const classes = classNames(
-    'bg-blue-600 hover:bg-blue-700 text-white rounded-md',
+    'text-white text-base rounded-md',
+    variant === 'contained' && 'bg-blue',
     className
   );
 
   return (
     <BaseButton
-      variant="contained"
+      variant={variant}
       buttonType="icon"
       onClick={onClick}
       className={classes}
     >
-      <AddIcon fontSize="small"/>
+      <AddIcon className="text-base" />
+      {
+        text && <span className="ml-2">{ text }</span>
+      }
     </BaseButton>
   );
 }

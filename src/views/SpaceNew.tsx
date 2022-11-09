@@ -1,4 +1,3 @@
-import BaseContainer from "../components/BaseComponents/BaseContainer";
 import React, { useEffect } from "react";
 import {useLoading} from "../contexts/LoadingContext";
 import {useMutation} from "@apollo/client";
@@ -42,11 +41,11 @@ const SpaceNew = () => {
   }
 
   return (
-    <BaseContainer className="p-4 my-4 mx-4">
+    <div className="p-4 my-4 mx-4">
       <EditSpaceForm
         onSubmit={handleSave}
       />
-    </BaseContainer>
+    </div>
   );
 }
 

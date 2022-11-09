@@ -30,7 +30,11 @@ export const GET_ITEMS = gql`
       _id
       description
       name
-      type
+      type,
+      owner {
+        _id
+        name
+      }
     }
   }
 `;

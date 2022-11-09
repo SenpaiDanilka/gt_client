@@ -45,7 +45,7 @@ export type GetItemsQueryVariables = Exact<{
 }>;
 
 
-export type GetItemsQuery = { __typename?: 'Query', getItems?: Array<{ __typename?: 'Item', _id: string, description?: string | null, name: string, type: ItemType }> | null };
+export type GetItemsQuery = { __typename?: 'Query', getItems?: Array<{ __typename?: 'Item', _id: string, description?: string | null, name: string, type: ItemType, owner: { __typename?: 'User', _id: string, name: string } }> | null };
 
 export type GetModelItemsQueryVariables = Exact<{
   model: AvailabilityModel;
@@ -161,7 +161,7 @@ export type CreateContactMutationVariables = Exact<{
 }>;
 
 
-export type CreateContactMutation = { __typename?: 'Mutation', createContact?: { __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } } | null };
+export type CreateContactMutation = { __typename?: 'Mutation', createContact?: { __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string, email: string } } | null };
 
 export type PartialUpdateContactMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -176,14 +176,14 @@ export type GetContactsByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetContactsByUserIdQuery = { __typename?: 'Query', getContactsByUserId?: Array<{ __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } }> | null };
+export type GetContactsByUserIdQuery = { __typename?: 'Query', getContactsByUserId?: Array<{ __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string, email: string } }> | null };
 
 export type GetSentContactRequestsQueryVariables = Exact<{
   user_id: Scalars['String'];
 }>;
 
 
-export type GetSentContactRequestsQuery = { __typename?: 'Query', getSentContactRequests?: Array<{ __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string } }> | null };
+export type GetSentContactRequestsQuery = { __typename?: 'Query', getSentContactRequests?: Array<{ __typename?: 'Contact', _id: string, status: ContactStatus, user_one: { __typename?: 'User', _id: string, name: string }, user_two: { __typename?: 'User', _id: string, name: string, email: string } }> | null };
 
 export type GetIncomingContactRequestsQueryVariables = Exact<{
   user_id: Scalars['String'];
