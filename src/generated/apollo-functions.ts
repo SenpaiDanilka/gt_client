@@ -1,57 +1,6 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import {
-  CreateAvailableItemMutation,
-  CreateAvailableItemMutationVariables,
-  CreateContactMutation,
-  CreateContactMutationVariables,
-  CreateItemMutation,
-  CreateItemMutationVariables,
-  CreateSpaceContactLinkMutation,
-  CreateSpaceContactLinkMutationVariables,
-  CreateSpaceMutation,
-  CreateSpaceMutationVariables,
-  DeleteAvailableItemMutation,
-  DeleteAvailableItemMutationVariables,
-  DeleteContactMutation,
-  DeleteContactMutationVariables,
-  DeleteItemMutation,
-  DeleteItemMutationVariables,
-  DeleteSpaceContactLinkMutation,
-  DeleteSpaceContactLinkMutationVariables,
-  DeleteSpaceMutation,
-  DeleteSpaceMutationVariables, FindItemByIdQuery,
-  FindItemByIdQueryVariables,
-  FindSpaceByIdQuery, FindSpaceByIdQueryVariables,
-  FindUserByEmailQuery,
-  FindUserByEmailQueryVariables,
-  FindUserItemsByIdQuery,
-  FindUserItemsByIdQueryVariables,
-  FindUserSpacesByIdQuery,
-  FindUserSpacesByIdQueryVariables,
-  GetContactsByUserIdQuery,
-  GetContactsByUserIdQueryVariables,
-  GetIncomingContactRequestsQuery,
-  GetIncomingContactRequestsQueryVariables,
-  GetItemsQuery,
-  GetItemsQueryVariables,
-  GetModelItemsQuery,
-  GetModelItemsQueryVariables,
-  GetSentContactRequestsQuery,
-  GetSentContactRequestsQueryVariables,
-  GetUserByIdQuery,
-  GetUserByIdQueryVariables,
-  PartialUpdateContactMutation,
-  PartialUpdateContactMutationVariables,
-  UpdateItemMutation,
-  UpdateItemMutationVariables,
-  UpdateSpaceMutation,
-  UpdateSpaceMutationVariables,
-  UserLoginMutation,
-  UserLoginMutationVariables,
-  UserSignUpMutation,
-  UserSignUpMutationVariables
-} from "./operations";
+import { UserLoginMutation, UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables, DeleteItemMutation, DeleteItemMutationVariables, FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables, GetAvailableItemsQuery, GetAvailableItemsQueryVariables, GetModelItemsQuery, GetModelItemsQueryVariables, DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables, FindItemByIdQuery, FindItemByIdQueryVariables, CreateItemMutation, CreateItemMutationVariables, CreateAvailableItemMutation, CreateAvailableItemMutationVariables, UpdateItemMutation, UpdateItemMutationVariables, FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables, DeleteSpaceMutation, DeleteSpaceMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables, FindSpaceByIdQuery, FindSpaceByIdQueryVariables, UpdateSpaceMutation, UpdateSpaceMutationVariables, CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables, DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables, DeleteContactMutation, DeleteContactMutationVariables, CreateContactMutation, CreateContactMutationVariables, PartialUpdateContactMutation, PartialUpdateContactMutationVariables, GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables, GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables, GetIncomingContactRequestsQuery, GetIncomingContactRequestsQueryVariables, FindUserByEmailQuery, FindUserByEmailQueryVariables, GetUserByIdQuery, GetUserByIdQueryVariables } from './operations';
 const defaultOptions = {} as const;
 
 export const UserLoginDocument = gql`
@@ -203,9 +152,9 @@ export function useFindUserItemsByIdLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type FindUserItemsByIdQueryHookResult = ReturnType<typeof useFindUserItemsByIdQuery>;
 export type FindUserItemsByIdLazyQueryHookResult = ReturnType<typeof useFindUserItemsByIdLazyQuery>;
 export type FindUserItemsByIdQueryResult = Apollo.QueryResult<FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables>;
-export const GetItemsDocument = gql`
-    query GetItems($user_id: String!) {
-  getItems(user_id: $user_id) {
+export const GetAvailableItemsDocument = gql`
+    query GetAvailableItems($user_id: String!) {
+  getAvailableItems(user_id: $user_id) {
     _id
     description
     name
@@ -219,32 +168,32 @@ export const GetItemsDocument = gql`
     `;
 
 /**
- * __useGetItemsQuery__
+ * __useGetAvailableItemsQuery__
  *
- * To run a query within a React component, call `useGetItemsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAvailableItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAvailableItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetItemsQuery({
+ * const { data, loading, error } = useGetAvailableItemsQuery({
  *   variables: {
  *      user_id: // value for 'user_id'
  *   },
  * });
  */
-export function useGetItemsQuery(baseOptions: Apollo.QueryHookOptions<GetItemsQuery, GetItemsQueryVariables>) {
+export function useGetAvailableItemsQuery(baseOptions: Apollo.QueryHookOptions<GetAvailableItemsQuery, GetAvailableItemsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetItemsQuery, GetItemsQueryVariables>(GetItemsDocument, options);
+        return Apollo.useQuery<GetAvailableItemsQuery, GetAvailableItemsQueryVariables>(GetAvailableItemsDocument, options);
       }
-export function useGetItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetItemsQuery, GetItemsQueryVariables>) {
+export function useGetAvailableItemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAvailableItemsQuery, GetAvailableItemsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetItemsQuery, GetItemsQueryVariables>(GetItemsDocument, options);
+          return Apollo.useLazyQuery<GetAvailableItemsQuery, GetAvailableItemsQueryVariables>(GetAvailableItemsDocument, options);
         }
-export type GetItemsQueryHookResult = ReturnType<typeof useGetItemsQuery>;
-export type GetItemsLazyQueryHookResult = ReturnType<typeof useGetItemsLazyQuery>;
-export type GetItemsQueryResult = Apollo.QueryResult<GetItemsQuery, GetItemsQueryVariables>;
+export type GetAvailableItemsQueryHookResult = ReturnType<typeof useGetAvailableItemsQuery>;
+export type GetAvailableItemsLazyQueryHookResult = ReturnType<typeof useGetAvailableItemsLazyQuery>;
+export type GetAvailableItemsQueryResult = Apollo.QueryResult<GetAvailableItemsQuery, GetAvailableItemsQueryVariables>;
 export const GetModelItemsDocument = gql`
     query GetModelItems($model: AvailabilityModel!, $model_id: String!) {
   getModelItems(model: $model, model_id: $model_id) {
@@ -1057,6 +1006,7 @@ export const GetUserByIdDocument = gql`
     spaces_count
     items_count
     contacts_count
+    available_items_count
     contact_requests_count
   }
 }

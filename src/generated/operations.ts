@@ -1,13 +1,4 @@
-import {
-  AvailabilityModel,
-  ContactStatus,
-  Exact, ItemInput,
-  ItemType,
-  PartialUpdateContactInput,
-  Scalars,
-  SpaceContactLinkInput,
-  SpaceInput
-} from "./types";
+import { Exact, Scalars, ItemType, AvailabilityModel, ItemInput, ContactStatus, SpaceInput, SpaceContactLinkInput, PartialUpdateContactInput } from "./types";
 
 export type UserLoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -40,12 +31,12 @@ export type FindUserItemsByIdQueryVariables = Exact<{
 
 export type FindUserItemsByIdQuery = { __typename?: 'Query', findUserByID?: { __typename?: 'User', _id: string, items: { __typename?: 'ItemPage', data: Array<{ __typename?: 'Item', _id: string, description?: string | null, name: string, type: ItemType } | null> } } | null };
 
-export type GetItemsQueryVariables = Exact<{
+export type GetAvailableItemsQueryVariables = Exact<{
   user_id: Scalars['String'];
 }>;
 
 
-export type GetItemsQuery = { __typename?: 'Query', getItems?: Array<{ __typename?: 'Item', _id: string, description?: string | null, name: string, type: ItemType, owner: { __typename?: 'User', _id: string, name: string } }> | null };
+export type GetAvailableItemsQuery = { __typename?: 'Query', getAvailableItems?: Array<{ __typename?: 'Item', _id: string, description?: string | null, name: string, type: ItemType, owner: { __typename?: 'User', _id: string, name: string } }> | null };
 
 export type GetModelItemsQueryVariables = Exact<{
   model: AvailabilityModel;
@@ -204,4 +195,4 @@ export type GetUserByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetUserByIdQuery = { __typename?: 'Query', getUserById?: { __typename?: 'ShortUser', name: string, email: string, spaces_count: number, items_count: number, contacts_count: number, contact_requests_count: number } | null };
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById?: { __typename?: 'ShortUser', name: string, email: string, spaces_count: number, items_count: number, contacts_count: number, available_items_count: number, contact_requests_count: number } | null };

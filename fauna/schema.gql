@@ -108,6 +108,7 @@ type ShortUser @embedded {
   spaces_count: Int!
   items_count: Int!
   contacts_count: Int!
+  available_items_count: Int!
   contact_requests_count: Int!
 }
 
@@ -119,5 +120,5 @@ type Query {
   getIncomingContactRequests(user_id: String!): [Contact!] @resolver(name: "GetIncomingContactRequests")
   getSentContactRequests(user_id: String!): [Contact!] @resolver(name: "GetSentContactRequests")
   getContactsByUserId(user_id: String!): [Contact!] @resolver(name: "GetContactsByUserId")
-  getItems(user_id: String): [Item!] @resolver(name: "GetItems")
+  getAvailableItems(user_id: String): [Item!] @resolver(name: "GetAvailableItems")
 }

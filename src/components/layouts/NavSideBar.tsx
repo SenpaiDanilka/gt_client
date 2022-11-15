@@ -70,7 +70,7 @@ const NavBar = () => {
       name: "Available",
       id: "available",
       icon: <SentimentSatisfiedAltIcon />,
-      counter: 17 //Mocked
+      counter: user.available_items_count
     },
     {
       path: "/spaces",

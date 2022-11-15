@@ -24,9 +24,9 @@ export const GET_USER_ITEMS = gql`
   }
 `;
 
-export const GET_ITEMS = gql`
-  query GetItems($user_id: String!) {
-    getItems(user_id: $user_id) {
+export const GET_AVAILABLE_ITEMS = gql`
+  query GetAvailableItems($user_id: String!) {
+    getAvailableItems(user_id: $user_id) {
       _id
       description
       name

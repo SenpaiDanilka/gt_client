@@ -1,7 +1,7 @@
 import { NetworkStatus } from '@apollo/client';
 import {useLoading} from "../contexts/LoadingContext";
 import {useEffect} from "react";
-import {useGetItemsQuery} from "../generated/apollo-functions";
+import {useGetAvailableItemsQuery} from "../generated/apollo-functions";
 import {Link} from "react-router-dom";
 import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import {useTranslation} from "react-i18next";
@@ -11,7 +11,7 @@ const Home = () => {
   const {t} = useTranslation(['common', 'items']);
   const { isMobileBreakpoint } = useGetCurrentBreakpoint();
   const userId = localStorage.getItem("userId");
-  const {data: getItemsData, loading: getItemsLoading, networkStatus} = useGetItemsQuery({
+  const {data: getAvailableItemsData, loading: getAvailableItemsLoading, networkStatus} = useGetAvailableItemsQuery({
     variables: {
       user_id: userId!
     },
@@ -19,11 +19,11 @@ const Home = () => {
   });
   const { setLoading } = useLoading();
 
-  const items = getItemsData?.getItems || [];
+  const items = getAvailableItemsData?.getAvailableItems || [];
 
   useEffect(() => {
-    setLoading(networkStatus === NetworkStatus.refetch || getItemsLoading)
-  }, [networkStatus, getItemsLoading]);
+    setLoading(networkStatus === NetworkStatus.refetch || getAvailableItemsLoading)
+  }, [networkStatus, getAvailableItemsLoading]);
 
   const columns = ['name', 'category', 'owner', 'status'];
 

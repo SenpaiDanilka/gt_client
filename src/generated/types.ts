@@ -359,6 +359,7 @@ export type PartialUpdateItemInput = {
 
 /** 'ShortUser' input values */
 export type PartialUpdateShortUserInput = {
+  available_items_count?: InputMaybe<Scalars['Int']>;
   contact_requests_count?: InputMaybe<Scalars['Int']>;
   contacts_count?: InputMaybe<Scalars['Int']>;
   email?: InputMaybe<Scalars['String']>;
@@ -414,9 +415,9 @@ export type Query = {
   findUserByEmail?: Maybe<User>;
   /** Find a document from the collection of 'User' by its id. */
   findUserByID?: Maybe<User>;
+  getAvailableItems?: Maybe<Array<Item>>;
   getContactsByUserId?: Maybe<Array<Contact>>;
   getIncomingContactRequests?: Maybe<Array<Contact>>;
-  getItems?: Maybe<Array<Item>>;
   getModelItems?: Maybe<Array<AvailableItem>>;
   getSentContactRequests?: Maybe<Array<Contact>>;
   getUserByEmail?: Maybe<ShortUser>;
@@ -459,6 +460,11 @@ export type QueryFindUserByIdArgs = {
 };
 
 
+export type QueryGetAvailableItemsArgs = {
+  user_id?: InputMaybe<Scalars['String']>;
+};
+
+
 export type QueryGetContactsByUserIdArgs = {
   user_id: Scalars['String'];
 };
@@ -466,11 +472,6 @@ export type QueryGetContactsByUserIdArgs = {
 
 export type QueryGetIncomingContactRequestsArgs = {
   user_id: Scalars['String'];
-};
-
-
-export type QueryGetItemsArgs = {
-  user_id?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -496,6 +497,7 @@ export type QueryGetUserByIdArgs = {
 
 export type ShortUser = {
   __typename?: 'ShortUser';
+  available_items_count: Scalars['Int'];
   contact_requests_count: Scalars['Int'];
   contacts_count: Scalars['Int'];
   email: Scalars['String'];
@@ -506,6 +508,7 @@ export type ShortUser = {
 
 /** 'ShortUser' input values */
 export type ShortUserInput = {
+  available_items_count: Scalars['Int'];
   contact_requests_count: Scalars['Int'];
   contacts_count: Scalars['Int'];
   email: Scalars['String'];
