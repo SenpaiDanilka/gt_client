@@ -5,6 +5,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.6.9",
+    "@auth0/auth0-react": "^1.12.0",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@graphql-codegen/cli": "^2.13.5",
@@ -60,13 +61,13 @@
     ]
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.8",
-    "gh-pages": "^4.0.0",
-    "postcss": "^8.4.16",
-    "tailwindcss": "^3.1.8",
     "@graphql-codegen/cli": "^2.13.5",
     "@graphql-codegen/typescript": "^2.7.3",
     "@graphql-codegen/typescript-operations": "^2.5.3",
-    "@graphql-codegen/typescript-react-apollo": "^3.3.3"
+    "@graphql-codegen/typescript-react-apollo": "^3.3.3",
+    "autoprefixer": "^10.4.8",
+    "gh-pages": "^4.0.0",
+    "postcss": "^8.4.16",
+    "tailwindcss": "^3.1.8"
   }
 }

@@ -10,6 +10,7 @@ import BaseContainer from "../components/BaseComponents/BaseContainer";
 import {Link, useNavigate} from "react-router-dom";
 import {useLoading} from "../contexts/LoadingContext";
 import {useUserLoginMutation} from "../generated/apollo-functions";
+import { useAuth0 } from '@auth0/auth0-react'
 
 const initialState = {
   email: '',
@@ -102,6 +103,8 @@ const SignIn = () => {
     }
   ];
 
+  const { loginWithRedirect } = useAuth0()
+
   return (
     <BaseContainer className="p-8 w-full max-w-[360px]">
       <p className="text-center font-bold text-2xl">{t('signIn')}</p>
@@ -114,6 +117,7 @@ const SignIn = () => {
           {t('signUp')}
         </Link>
       </div>
+      <button onClick={loginWithRedirect}>login</button>
       <BaseForm
         formFieldsData={formFieldsData}
         onSubmit={doLogin}
