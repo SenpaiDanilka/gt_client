@@ -1,6 +1,53 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-import { UserLoginMutation, UserLoginMutationVariables, UserSignUpMutation, UserSignUpMutationVariables, DeleteItemMutation, DeleteItemMutationVariables, FindUserItemsByIdQuery, FindUserItemsByIdQueryVariables, GetAvailableItemsQuery, GetAvailableItemsQueryVariables, GetModelItemsQuery, GetModelItemsQueryVariables, DeleteAvailableItemMutation, DeleteAvailableItemMutationVariables, FindItemByIdQuery, FindItemByIdQueryVariables, CreateItemMutation, CreateItemMutationVariables, CreateAvailableItemMutation, CreateAvailableItemMutationVariables, UpdateItemMutation, UpdateItemMutationVariables, FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables, DeleteSpaceMutation, DeleteSpaceMutationVariables, CreateSpaceMutation, CreateSpaceMutationVariables, FindSpaceByIdQuery, FindSpaceByIdQueryVariables, UpdateSpaceMutation, UpdateSpaceMutationVariables, CreateSpaceContactLinkMutation, CreateSpaceContactLinkMutationVariables, DeleteSpaceContactLinkMutation, DeleteSpaceContactLinkMutationVariables, DeleteContactMutation, DeleteContactMutationVariables, CreateContactMutation, CreateContactMutationVariables, PartialUpdateContactMutation, PartialUpdateContactMutationVariables, GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables, GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables, GetIncomingContactRequestsQuery, GetIncomingContactRequestsQueryVariables, FindUserByEmailQuery, FindUserByEmailQueryVariables, GetUserByIdQuery, GetUserByIdQueryVariables } from './operations';
+import {
+  CreateAvailableItemMutation,
+  CreateAvailableItemMutationVariables,
+  CreateContactMutation,
+  CreateContactMutationVariables,
+  CreateItemMutation,
+  CreateItemMutationVariables,
+  CreateSpaceContactLinkMutation,
+  CreateSpaceContactLinkMutationVariables,
+  CreateSpaceMutation, CreateSpaceMutationVariables,
+  DeleteAvailableItemMutation,
+  DeleteAvailableItemMutationVariables,
+  DeleteContactMutation,
+  DeleteContactMutationVariables,
+  DeleteItemMutation,
+  DeleteItemMutationVariables,
+  DeleteSpaceContactLinkMutation,
+  DeleteSpaceContactLinkMutationVariables,
+  DeleteSpaceMutation,
+  DeleteSpaceMutationVariables, FindItemByIdQuery,
+  FindItemByIdQueryVariables,
+  FindSpaceByIdQuery, FindSpaceByIdQueryVariables,
+  FindUserByEmailQuery,
+  FindUserByEmailQueryVariables,
+  FindUserItemsByIdQuery,
+  FindUserItemsByIdQueryVariables,
+  GetAvailableItemsQuery,
+  GetAvailableItemsQueryVariables, GetContactsByUserIdQuery, GetContactsByUserIdQueryVariables,
+  GetIncomingContactRequestsQuery,
+  GetIncomingContactRequestsQueryVariables,
+  GetModelItemsQuery,
+  GetModelItemsQueryVariables,
+  GetSentContactRequestsQuery,
+  GetSentContactRequestsQueryVariables,
+  GetSpacesByUserIdQuery,
+  GetSpacesByUserIdQueryVariables,
+  GetUserByIdQuery,
+  GetUserByIdQueryVariables,
+  PartialUpdateContactMutation,
+  PartialUpdateContactMutationVariables,
+  UpdateItemMutation,
+  UpdateItemMutationVariables,
+  UpdateSpaceMutation,
+  UpdateSpaceMutationVariables,
+  UserLoginMutation,
+  UserLoginMutationVariables,
+  UserSignUpMutation, UserSignUpMutationVariables
+} from "./operations";
 const defaultOptions = {} as const;
 
 export const UserLoginDocument = gql`
@@ -428,48 +475,45 @@ export function useUpdateItemMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateItemMutationHookResult = ReturnType<typeof useUpdateItemMutation>;
 export type UpdateItemMutationResult = Apollo.MutationResult<UpdateItemMutation>;
 export type UpdateItemMutationOptions = Apollo.BaseMutationOptions<UpdateItemMutation, UpdateItemMutationVariables>;
-export const FindUserSpacesByIdDocument = gql`
-    query FindUserSpacesByID($id: ID!) {
-  findUserByID(id: $id) {
-    _id
-    spaces {
-      data {
-        _id
-        description
-        name
-      }
-    }
+export const GetSpacesByUserIdDocument = gql`
+    query GetSpacesByUserId($user_id: String!) {
+  getSpacesByUserId(user_id: $user_id) {
+    id
+    description
+    name
+    items_count
+    users_count
   }
 }
     `;
 
 /**
- * __useFindUserSpacesByIdQuery__
+ * __useGetSpacesByUserIdQuery__
  *
- * To run a query within a React component, call `useFindUserSpacesByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindUserSpacesByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetSpacesByUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSpacesByUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFindUserSpacesByIdQuery({
+ * const { data, loading, error } = useGetSpacesByUserIdQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      user_id: // value for 'user_id'
  *   },
  * });
  */
-export function useFindUserSpacesByIdQuery(baseOptions: Apollo.QueryHookOptions<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>) {
+export function useGetSpacesByUserIdQuery(baseOptions: Apollo.QueryHookOptions<GetSpacesByUserIdQuery, GetSpacesByUserIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>(FindUserSpacesByIdDocument, options);
+        return Apollo.useQuery<GetSpacesByUserIdQuery, GetSpacesByUserIdQueryVariables>(GetSpacesByUserIdDocument, options);
       }
-export function useFindUserSpacesByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>) {
+export function useGetSpacesByUserIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSpacesByUserIdQuery, GetSpacesByUserIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>(FindUserSpacesByIdDocument, options);
+          return Apollo.useLazyQuery<GetSpacesByUserIdQuery, GetSpacesByUserIdQueryVariables>(GetSpacesByUserIdDocument, options);
         }
-export type FindUserSpacesByIdQueryHookResult = ReturnType<typeof useFindUserSpacesByIdQuery>;
-export type FindUserSpacesByIdLazyQueryHookResult = ReturnType<typeof useFindUserSpacesByIdLazyQuery>;
-export type FindUserSpacesByIdQueryResult = Apollo.QueryResult<FindUserSpacesByIdQuery, FindUserSpacesByIdQueryVariables>;
+export type GetSpacesByUserIdQueryHookResult = ReturnType<typeof useGetSpacesByUserIdQuery>;
+export type GetSpacesByUserIdLazyQueryHookResult = ReturnType<typeof useGetSpacesByUserIdLazyQuery>;
+export type GetSpacesByUserIdQueryResult = Apollo.QueryResult<GetSpacesByUserIdQuery, GetSpacesByUserIdQueryVariables>;
 export const DeleteSpaceDocument = gql`
     mutation DeleteSpace($id: ID!) {
   deleteSpace(id: $id) {

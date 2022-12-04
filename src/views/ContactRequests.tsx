@@ -4,7 +4,11 @@ import BaseAvatar from "../components/BaseComponents/BaseAvatar";
 import BaseButton from "../components/BaseComponents/BaseButton"
 import {NetworkStatus} from '@apollo/client';
 import { useLoading } from "../contexts/LoadingContext";
-import {useGetIncomingContactRequestsQuery, usePartialUpdateContactMutation} from "../generated/apollo-functions";
+import {
+  useGetIncomingContactRequestsQuery,
+  useGetUserByIdQuery,
+  usePartialUpdateContactMutation
+} from "../generated/apollo-functions";
 import { ContactStatus } from "../generated/types";
 import { ShortContact } from "../models/ContactModels";
 import DoneIcon from '@mui/icons-material/Done';
@@ -20,6 +24,11 @@ const Contacts = () => {
   const [searchValue, setSearchValue] = useState('');
   const [contacts, setContacts] = useState<ShortContact[]>([]);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+  const {refetch: refetchUserData} = useGetUserByIdQuery({
+    variables: {
+      id: userId!
+    }
+  });
 
   const {data, loading: contactsLoading, networkStatus} = useGetIncomingContactRequestsQuery({
     variables: {
@@ -76,7 +85,8 @@ const Contacts = () => {
           }
         });
       },
-      onQueryUpdated: () => {
+      onQueryUpdated: async () => {
+        await refetchUserData();
         setAlertData({
           isOpen: true,
           text: 'Contact has been deleted',

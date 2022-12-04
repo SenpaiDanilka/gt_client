@@ -5,8 +5,11 @@ const config: CodegenConfig = {
   schema: {
     "https://graphql.eu.fauna.com/graphql": {
       headers: {
+        //NOT WORKING
         //Authorization: `Bearer ${process.env.REACT_APP_PUBLIC_FAUNA_SECRET}`
-        Authorization: "Bearer fnAExKx3I6AA0dcGlAW-sy6YSeWkTdmFVHaySXxv"
+        //OLD
+        //Authorization: "Bearer fnAExKx3I6AA0dcGlAW-sy6YSeWkTdmFVHaySXxv"
+        Authorization: "Bearer fnAE2VPpMMAA0MIqMklHExQcV9Wq0P8sP0fgX2MR"
       }
     }
   },

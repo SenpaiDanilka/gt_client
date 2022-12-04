@@ -112,6 +112,15 @@ type ShortUser @embedded {
   contact_requests_count: Int!
 }
 
+type ShortSpace @embedded {
+  id: ID!,
+  name: String!
+  description: String,
+  owner: User!,
+  items_count: Int!
+  users_count: Int!
+}
+
 type Query {
   findUserByEmail(email: String): User
   getUserByEmail(email: String): ShortUser @resolver(name: "GetUserByEmail")
@@ -121,4 +130,5 @@ type Query {
   getSentContactRequests(user_id: String!): [Contact!] @resolver(name: "GetSentContactRequests")
   getContactsByUserId(user_id: String!): [Contact!] @resolver(name: "GetContactsByUserId")
   getAvailableItems(user_id: String): [Item!] @resolver(name: "GetAvailableItems")
+  getSpacesByUserId(user_id: String!): [ShortSpace] @resolver(name:"GetSpacesByUserId")
 }

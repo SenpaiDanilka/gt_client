@@ -23,21 +23,23 @@ const SubmitActionModal: FC<Props> = ({
       open={open}
       onClose={onCancel}
     >
-      {children}
-      <div className="flex justify-center">
-        <BaseButton
-          variant="contained"
-          className="mr-2"
-          onClick={onSubmit}
-        >
-          {t('submit')}
-        </BaseButton>
-        <BaseButton
-          variant="outlined"
-          onClick={onCancel}
-        >
-          {t('cancel')}
-        </BaseButton>
+      <div className="p-4">
+        {children}
+        <div className="flex justify-center">
+          <BaseButton
+            variant="contained"
+            className="mr-2"
+            onClick={onSubmit}
+          >
+            {t('submit')}
+          </BaseButton>
+          <BaseButton
+            variant="outlined"
+            onClick={onCancel}
+          >
+            {t('cancel')}
+          </BaseButton>
+        </div>
       </div>
     </BaseModal>
   );

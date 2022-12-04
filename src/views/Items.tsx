@@ -4,11 +4,12 @@ import {NetworkStatus} from '@apollo/client';
 import {GET_USER_ITEMS} from "../services/ItemsService";
 import {useLoading} from "../contexts/LoadingContext";
 import SubmitActionModal from "../components/SubmitActionModal";
-import {useDeleteItemMutation, useFindUserItemsByIdQuery} from "../generated/apollo-functions";
+import {useDeleteItemMutation, useFindUserItemsByIdQuery, useGetUserByIdQuery} from "../generated/apollo-functions";
 import {FindUserItemsByIdQuery} from "../generated/operations";
 import {Item} from "../generated/types";
 import AddButton from "../components/AddButton";
 import ItemsTable from "../components/items/ItemsTable";
+import {GET_USER_BY_ID} from "../services/UsersService";
 
 const Items = () => {
   const navigate = useNavigate();
@@ -23,6 +24,11 @@ const Items = () => {
   });
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [deleteItemId, setDeleteItemId] = useState('');
+  const {refetch: refetchUserData} = useGetUserByIdQuery({
+    variables: {
+      id: userId!
+    }
+  });
 
   const handleOnDeleteClick = (id: string) => {
     setDeleteItemId(id);
@@ -36,6 +42,12 @@ const Items = () => {
 
   const [deleteItem, {loading: deleteLoading}] = useDeleteItemMutation({
     variables: {id: deleteItemId},
+    refetchQueries: [{
+      query: GET_USER_BY_ID,
+      variables: {
+        id: userId!
+      }
+    }],
     update(cache, {data}) {
       const {findUserByID} = cache.readQuery<FindUserItemsByIdQuery>({
         query: GET_USER_ITEMS,
@@ -59,7 +71,8 @@ const Items = () => {
         }
       });
     },
-    onQueryUpdated: () => {
+    onQueryUpdated: async () => {
+      await refetchUserData();
       setAlertData({
         isOpen: true,
         text: 'Item has been deleted',

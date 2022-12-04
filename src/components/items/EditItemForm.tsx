@@ -1,6 +1,4 @@
-import React, {FC, FormEvent, useState} from "react";
-import BaseInputOld from "../BaseComponents/BaseInputOld";
-import {MenuItem} from "@mui/material";
+import React, {FC, FormEvent} from "react";
 import BaseButton from "../BaseComponents/BaseButton";
 import useForm from "../../hooks/useForm";
 import {FormDataType} from "../../models/CommonModels";
@@ -8,8 +6,7 @@ import {isRequired, minLength} from "../../utils/validate";
 import {useTranslation} from "react-i18next";
 import {ItemType} from "../../generated/types";
 import BaseInput from "../BaseComponents/BaseInput";
-import SearchIcon from "@mui/icons-material/Search";
-import PasswordVisibilityButton from "../PasswordVisibilityButton";
+import BaseSelect from "../BaseComponents/BaseSelect";
 
 const defaultFieldsState = {
   name: '',
@@ -28,12 +25,14 @@ const formFieldsRules = {
 };
 
 interface Props {
+  isNew?: boolean;
   onSubmit: (formData: FormDataType) => void;
   editData?: {[K: string]: string};
   onCancel?: () => void;
 }
 
 const EditItemForm: FC<Props> = ({
+  isNew,
   onSubmit,
   editData= defaultFieldsState,
   onCancel
@@ -51,7 +50,10 @@ const EditItemForm: FC<Props> = ({
     onSubmit: () => onSubmit(formData),
     rules: formFieldsRules
   });
-  const typeOptions = Object.values(ItemType);
+  const typeOptions = Object.values(ItemType).map(type => ({
+    text: t(`itemTypes.${type}`, { ns: 'items' }),
+    value: type
+  }));
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     !validateAll() && onSubmit(formData);
@@ -84,27 +86,15 @@ const EditItemForm: FC<Props> = ({
         onBlur={(e) => handleBlur(e, formFieldsRules.name)}
         required
       />
-      <BaseInputOld
-        id="type"
-        isSelect
-        disableUnderline
-        variant="filled"
-        errors={formData.type.errors}
+      <BaseSelect
         label={t('type')}
+        placeholder={t('type')}
+        options={typeOptions}
         value={formData.type.value}
-        onChange={(val) => handleChange(val, "type")}
-      >
-        {
-          typeOptions.map(option => (
-            <MenuItem
-              value={option}
-              key={option}
-            >
-              { t(`itemTypes.${option}`, { ns: 'items' })}
-            </MenuItem>
-          ))
-        }
-      </BaseInputOld>
+        selectClasses="text-mgb dark:text-white dark:bg-mgb"
+        errors={formData.type.errors}
+        onSelect={(val) => handleChange(val, "type")}
+      />
       <BaseInput
         id="description"
         variant="standard"
@@ -125,7 +115,7 @@ const EditItemForm: FC<Props> = ({
           disabled={isNotValidData}
           className="mr-4"
         >
-          {t('save')}
+          {t(!isNew ? 'save' : 'create')}
         </BaseButton>
         {
           !!onCancel && (

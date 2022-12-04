@@ -6,17 +6,21 @@ import {GET_CONTACTS_BY_USER_ID, GET_SENT_CONTACT_REQUESTS} from '../services/Us
 import {ApolloCache, NetworkStatus} from '@apollo/client';
 import BaseModal from '../components/BaseComponents/BaseModal'
 import AddContactModal from "../components/contacts/AddContactModal";
-import { useLoading } from "../contexts/LoadingContext";
+import {useLoading} from "../contexts/LoadingContext";
 import SubmitActionModal from "../components/SubmitActionModal";
-import {useDeleteContactMutation, useGetContactsByUserIdQuery, useGetSentContactRequestsQuery} from "../generated/apollo-functions";
+import {
+  useDeleteContactMutation,
+  useGetContactsByUserIdQuery,
+  useGetSentContactRequestsQuery, useGetUserByIdQuery
+} from "../generated/apollo-functions";
 import {
   DeleteContactMutation,
   GetContactsByUserIdQuery,
   GetContactsByUserIdQueryVariables,
   GetSentContactRequestsQuery, GetSentContactRequestsQueryVariables
 } from "../generated/operations";
-import { ShortContact } from "../models/ContactModels";
-import { useTranslation } from "react-i18next";
+import {ShortContact} from "../models/ContactModels";
+import {useTranslation} from "react-i18next";
 import Tooltip from "@mui/material/Tooltip";
 import BaseButton from "../components/BaseComponents/BaseButton";
 import CloseIcon from '@mui/icons-material/Close';
@@ -31,6 +35,11 @@ const Contacts = () => {
   const [sentRequests, setSentRequests] = useState<ShortContact[]>([]);
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [deleteContactId, setDeleteContactId] = useState('');
+  const {refetch: refetchUserData} = useGetUserByIdQuery({
+    variables: {
+      id: userId!
+    }
+  });
 
   const handleOnDeleteClick = (id: string) => {
     setDeleteContactId(id);
@@ -52,7 +61,7 @@ const Contacts = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  
+
   const [deleteItem, {loading: deleteLoading}] = useDeleteContactMutation();
 
   const {data, loading: contactsLoading, networkStatus} = useGetContactsByUserIdQuery({
@@ -61,8 +70,8 @@ const Contacts = () => {
     },
     fetchPolicy: 'cache-and-network'
   });
-  
-  useEffect(()=> {
+
+  useEffect(() => {
     if (data?.getContactsByUserId) {
       setContacts(data.getContactsByUserId.map((contact) => {
         const user = contact.user_two;
@@ -84,8 +93,8 @@ const Contacts = () => {
     },
     fetchPolicy: 'cache-and-network'
   });
-  
-  useEffect(()=> {
+
+  useEffect(() => {
     if (sentRequestsData?.getSentContactRequests) {
       setSentRequests(sentRequestsData.getSentContactRequests.map((contact) => {
         const user = contact.user_two;
@@ -145,7 +154,8 @@ const Contacts = () => {
             ? updateSentContacts(cache, data)
             : updateContacts(cache, data);
         },
-        onQueryUpdated: () => {
+        onQueryUpdated: async () => {
+          !tab && await refetchUserData();
           setAlertData({
             isOpen: true,
             text: 'Contact has been deleted',
@@ -163,18 +173,26 @@ const Contacts = () => {
       })
   };
 
-  const menuOptions = (id: string) => ([
-    {
-      children: 'Resend',
-      id: 'resend',
-      onClick: () => { console.log('resend to id', id) }
-    },
-    {
-      children: 'Delete',
-      id: 'delete',
-      onClick: () => handleOnDeleteClick(id)
-    },
-  ]);
+  const menuOptions = (contact: ShortContact) => {
+    const options = [
+      {
+        children: 'Delete',
+        id: 'delete',
+        onClick: () => handleOnDeleteClick(contact._id)
+      }
+    ];
+
+    if (contact.status === 'DECLINED') {
+      options.unshift({
+        children: 'Resend',
+        id: 'resend',
+        onClick: () => {
+          console.log('resend to id', contact._id)
+        }})
+    }
+
+    return options;
+  };
 
   useEffect(() => {
     setLoading(networkStatus === NetworkStatus.refetch || contactsLoading || sentRequestsLoading || deleteLoading);
@@ -183,7 +201,7 @@ const Contacts = () => {
   return (
     <div className="p-4">
       <div id="controls" className="flex justify-end mb-4">
-        <AddButton text="Add contact" onClick={handleClickOpen} />
+        <AddButton text="Add contact" onClick={handleClickOpen}/>
       </div>
 
       <div className="mb-10">
@@ -205,7 +223,7 @@ const Contacts = () => {
                 <span className="text-dgb dark:text-white">{contact.email}</span>
               </div>
               <span className="text-gb">{t(`contactStatus.${contact.status}`)}</span>
-              <BaseMenu options={menuOptions(String(contact._id))}/>
+              <BaseMenu options={menuOptions(contact)}/>
             </div>
           ))
         }
@@ -230,13 +248,13 @@ const Contacts = () => {
                 <span className="text-dgb dark:text-white">{contact.name}</span>
               </div>
               <span className="text-gb">{contact.email}</span>
-              <Tooltip title={t('delete', { ns: 'common' })}>
+              <Tooltip title={t('delete', {ns: 'common'})}>
                 <BaseButton
                   buttonType="icon"
                   className="text-gb hover:text-blue dark:hover:text-white w-[40px] h-[40px]"
                   onClick={() => handleOnDeleteClick(contact._id)}
                 >
-                  <CloseIcon className="text-3xl md:text-xl" />
+                  <CloseIcon className="text-3xl md:text-xl"/>
                 </BaseButton>
               </Tooltip>
             </div>
@@ -249,7 +267,7 @@ const Contacts = () => {
         onClose={handleClose}
         showCloseButton
       >
-        <AddContactModal handleClose={handleClose} />
+        <AddContactModal handleClose={handleClose}/>
       </BaseModal>
       <SubmitActionModal
         open={isApproveModalOpen}

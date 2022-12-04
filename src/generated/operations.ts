@@ -1,4 +1,13 @@
-import { Exact, Scalars, ItemType, AvailabilityModel, ItemInput, ContactStatus, SpaceInput, SpaceContactLinkInput, PartialUpdateContactInput } from "./types";
+import {
+  AvailabilityModel,
+  ContactStatus,
+  Exact, ItemInput,
+  ItemType,
+  PartialUpdateContactInput,
+  Scalars,
+  SpaceContactLinkInput,
+  SpaceInput
+} from "./types";
 
 export type UserLoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -87,12 +96,12 @@ export type UpdateItemMutationVariables = Exact<{
 
 export type UpdateItemMutation = { __typename?: 'Mutation', updateItem?: { __typename?: 'Item', _id: string, name: string, description?: string | null, type: ItemType } | null };
 
-export type FindUserSpacesByIdQueryVariables = Exact<{
-  id: Scalars['ID'];
+export type GetSpacesByUserIdQueryVariables = Exact<{
+  user_id: Scalars['String'];
 }>;
 
 
-export type FindUserSpacesByIdQuery = { __typename?: 'Query', findUserByID?: { __typename?: 'User', _id: string, spaces: { __typename?: 'SpacePage', data: Array<{ __typename?: 'Space', _id: string, description?: string | null, name: string } | null> } } | null };
+export type GetSpacesByUserIdQuery = { __typename?: 'Query', getSpacesByUserId?: Array<{ __typename?: 'ShortSpace', id: string, description?: string | null, name: string, owner: string, items_count: number, users_count: number }> | null };
 
 export type DeleteSpaceMutationVariables = Exact<{
   id: Scalars['ID'];

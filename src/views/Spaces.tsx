@@ -1,11 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import { GET_USER_SPACES } from "../services/SpacesService";
+import { GET_SPACES_BY_USER_ID } from "../services/SpacesService";
 import {NetworkStatus} from '@apollo/client';
 import {useLoading} from "../contexts/LoadingContext";
 import SubmitActionModal from "../components/SubmitActionModal";
-import {useDeleteSpaceMutation, useFindUserSpacesByIdQuery} from "../generated/apollo-functions";
-import {FindUserSpacesByIdQuery} from "../generated/operations";
+import {
+  useDeleteSpaceMutation,
+  useGetSpacesByUserIdQuery, useGetUserByIdQuery
+} from "../generated/apollo-functions";
+import {GetSpacesByUserIdQuery} from "../generated/operations";
 import AddButton from "../components/AddButton";
 import {useTranslation} from "react-i18next";
 import SpaceCard from "../components/spaces/SpaceCard";
@@ -18,6 +21,11 @@ const Spaces = () => {
   const [searchValue, setSearchValue] = useState('');
   const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
   const [deleteSpaceId, setDeleteSpaceId] = useState('');
+  const {refetch: refetchUserData} = useGetUserByIdQuery({
+    variables: {
+      id: userId!
+    }
+  });
 
   const handleOnDeleteClick = (id: string) => {
     setDeleteSpaceId(id);
@@ -27,40 +35,36 @@ const Spaces = () => {
     setIsApproveModalOpen(false);
   };
 
-  const {data, networkStatus} = useFindUserSpacesByIdQuery({
+  const {data, networkStatus} = useGetSpacesByUserIdQuery({
     variables: {
-      id: userId!
+      user_id: userId!
     },
     fetchPolicy: 'cache-and-network'
   });
-  const spaces = data?.findUserByID?.spaces.data;
+
+  const spaces = data?.getSpacesByUserId;
 
   const [deleteSpace] = useDeleteSpaceMutation({
     variables: {id: deleteSpaceId},
     update(cache, {data}) {
-      const {findUserByID} = cache.readQuery<FindUserSpacesByIdQuery>({
-        query: GET_USER_SPACES,
+      const {getSpacesByUserId} = cache.readQuery<GetSpacesByUserIdQuery>({
+        query: GET_SPACES_BY_USER_ID,
         variables: {
-          id: userId
+          user_id: userId
         }
-      }) || ({} as Partial<FindUserSpacesByIdQuery>);
+      }) || ({} as Partial<GetSpacesByUserIdQuery>);
       cache.writeQuery({
-        query: GET_USER_SPACES,
+        query: GET_SPACES_BY_USER_ID,
         variables: {
-          id: userId
+          user_id: userId
         },
         data: {
-          findUserByID: {
-            ...findUserByID,
-            spaces: {
-              ...findUserByID?.spaces,
-              data: findUserByID?.spaces.data.filter((space) => space!._id !== data!.deleteSpace!._id)
-            }
-          }
+          getSpacesByUserId: getSpacesByUserId?.filter((space) => space!.id !== data!.deleteSpace!._id)
         }
       });
     },
-    onQueryUpdated: () => {
+    onQueryUpdated: async () => {
+      await refetchUserData();
       setAlertData({
         isOpen: true,
         text: 'Item has been deleted',
@@ -81,19 +85,6 @@ const Spaces = () => {
     setLoading(networkStatus === NetworkStatus.loading)
   }, [networkStatus]);
 
-  const menuOptions = (id: string) => ([
-    {
-      children: 'Delete',
-      id: 'delete',
-      onClick: () => handleOnDeleteClick(id)
-    },
-    {
-      children: 'View space',
-      id: 'view',
-      onClick: () => { navigate(`/spaces/${id}`) }
-    }
-  ]);
-
   return (
     <div>
       <div id="controls" className="flex justify-end p-4">
@@ -103,9 +94,9 @@ const Spaces = () => {
         {
           spaces && spaces.map((space) => (
             <SpaceCard
-              key={space!._id}
+              key={space!.id}
               space={space!}
-              onDelete={() => handleOnDeleteClick(space!._id)}
+              onDelete={() => handleOnDeleteClick(space!.id)}
             />
           ))
         }

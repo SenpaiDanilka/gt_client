@@ -357,6 +357,16 @@ export type PartialUpdateItemInput = {
   type?: InputMaybe<ItemType>;
 };
 
+/** 'ShortSpace' input values */
+export type PartialUpdateShortSpaceInput = {
+  description?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['ID']>;
+  items_count?: InputMaybe<Scalars['Int']>;
+  name?: InputMaybe<Scalars['String']>;
+  owner?: InputMaybe<Scalars['String']>;
+  users_count?: InputMaybe<Scalars['Int']>;
+};
+
 /** 'ShortUser' input values */
 export type PartialUpdateShortUserInput = {
   available_items_count?: InputMaybe<Scalars['Int']>;
@@ -420,6 +430,7 @@ export type Query = {
   getIncomingContactRequests?: Maybe<Array<Contact>>;
   getModelItems?: Maybe<Array<AvailableItem>>;
   getSentContactRequests?: Maybe<Array<Contact>>;
+  getSpacesByUserId?: Maybe<Array<ShortSpace>>;
   getUserByEmail?: Maybe<ShortUser>;
   getUserById?: Maybe<ShortUser>;
 };
@@ -486,6 +497,11 @@ export type QueryGetSentContactRequestsArgs = {
 };
 
 
+export type QueryGetSpacesByUserIdArgs = {
+  user_id: Scalars['String'];
+};
+
+
 export type QueryGetUserByEmailArgs = {
   email?: InputMaybe<Scalars['String']>;
 };
@@ -493,6 +509,26 @@ export type QueryGetUserByEmailArgs = {
 
 export type QueryGetUserByIdArgs = {
   id?: InputMaybe<Scalars['String']>;
+};
+
+export type ShortSpace = {
+  __typename?: 'ShortSpace';
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  items_count: Scalars['Int'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  users_count: Scalars['Int'];
+};
+
+/** 'ShortSpace' input values */
+export type ShortSpaceInput = {
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  items_count: Scalars['Int'];
+  name: Scalars['String'];
+  owner: Scalars['String'];
+  users_count: Scalars['Int'];
 };
 
 export type ShortUser = {

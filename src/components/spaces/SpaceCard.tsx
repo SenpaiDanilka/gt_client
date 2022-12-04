@@ -1,5 +1,5 @@
 import React from "react";
-import {Space} from "../../generated/types";
+import {ShortSpace} from "../../generated/types";
 import BaseAvatar from "../BaseComponents/BaseAvatar";
 import Tooltip from "@mui/material/Tooltip";
 import BaseButton from "../BaseComponents/BaseButton";
@@ -8,7 +8,7 @@ import {Link} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 
 interface Props {
-  space: Partial<Space>;
+  space: Partial<ShortSpace>;
   onDelete: () => void;
 }
 
@@ -24,7 +24,7 @@ const SpaceCard: React.FC<Props> = ({
 
   return (
     <Link
-      to={`/spaces/${space!._id}`}
+      to={`/spaces/${space!.id}`}
       className="w-[200px] h-[200px] shadow-card-shadow dark:bg-mgb rounded-lg p-5 relative"
     >
       <BaseAvatar
@@ -36,9 +36,8 @@ const SpaceCard: React.FC<Props> = ({
         <span className="text-xl text-mgb dark:text-white">{space!.name}</span>
         <span className="text-xs text-gb mb-1">{space!.description}</span>
         <div>
-          {/*TODO mocked data*/}
-          <span className="text-base text-gb mr-4">Items: 3</span>
-          <span className="text-base text-gb">Users: 3</span>
+          <span className="text-base text-gb mr-4">Items: {space!.items_count}</span>
+          <span className="text-base text-gb">Users: {space!.users_count}</span>
         </div>
       </div>
       <Tooltip

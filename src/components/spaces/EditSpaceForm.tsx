@@ -1,5 +1,4 @@
 import React, {FC, FormEvent} from "react";
-import BaseInputOld from "../BaseComponents/BaseInputOld";
 import BaseButton from "../BaseComponents/BaseButton";
 import useForm from "../../hooks/useForm";
 import {FormDataType} from "../../models/CommonModels";
@@ -20,6 +19,7 @@ const formFieldsRules = {
 };
 
 interface Props {
+  isNew?: boolean;
   onSubmit: (formData: FormDataType) => void;
   editData?: {[K: string]: string};
   onCancel?: () => void;
@@ -28,7 +28,8 @@ interface Props {
 const EditSpaceForm: FC<Props> = ({
   onSubmit,
   editData= defaultFieldsState,
-  onCancel
+  onCancel,
+  isNew
 }) => {
   const {t} = useTranslation('common');
   const {
@@ -87,7 +88,7 @@ const EditSpaceForm: FC<Props> = ({
           disabled={isNotValidData}
           className="mr-4"
         >
-          {t('save')}
+          {t(!isNew ? 'save' : 'create')}
         </BaseButton>
         {
           !!onCancel && (

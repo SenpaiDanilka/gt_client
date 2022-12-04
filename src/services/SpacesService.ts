@@ -1,16 +1,13 @@
 import {gql} from '@apollo/client';
 
-export const GET_USER_SPACES = gql`
-  query FindUserSpacesByID($id: ID!) {
-    findUserByID(id: $id) {
-      _id
-      spaces {
-        data {
-          _id
-          description
-          name
-        }
-      }
+export const GET_SPACES_BY_USER_ID = gql`
+  query GetSpacesByUserId($user_id: String!) {
+    getSpacesByUserId(user_id: $user_id) {
+      id
+      description
+      name
+      items_count
+      users_count
     }
   }
 `;

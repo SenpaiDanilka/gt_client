@@ -26,7 +26,7 @@ const SignedInLayout = () => {
         <NavSideBar />
       </div>
       <div className="w-full">
-        <div className="w-full bg-white dark:bg-dark-bg fixed md:static h-20 flex items-center justify-end py-5 px-5 md:px-10 space-x-10">
+        <div className="w-full bg-white dark:bg-dark-bg fixed z-9999 md:z-0 md:static h-20 flex items-center justify-end py-5 px-5 md:px-10 space-x-10">
           <div className="flex-1">
             <BaseButton
               buttonType="icon"

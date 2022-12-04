@@ -24,6 +24,7 @@ module.exports = {
       unavaliable: '#95ABD6',
       reserved: '#F77750',
       'br-stroke': '#EBECF0',
+      'bg-stroke': '#F0F4F7',
       'br-dark': '#1F2334',
       blue: '#6284FF',
       error: '#DC2626',

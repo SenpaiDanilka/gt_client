@@ -5,11 +5,13 @@ import {useNavigate} from "react-router-dom";
 import {CREATE_SPACE} from '../services/SpacesService'
 import EditSpaceForm from "../components/spaces/EditSpaceForm";
 import {FormDataType} from "../models/CommonModels";
+import {GET_USER_BY_ID} from "../services/UsersService";
 
 const SpaceNew = () => {
   const [createSpaceFunc, {loading}] = useMutation(CREATE_SPACE);
   const navigate = useNavigate();
   const {setLoading, setAlertData} = useLoading();
+  const userId = localStorage.getItem("userId")!;
 
   useEffect(() => {
     setLoading(loading);
@@ -22,7 +24,13 @@ const SpaceNew = () => {
         name: formData.name.value,
         description: formData.description.value,
         owner: localStorage.getItem("userId")
-      }
+      },
+      refetchQueries: [{
+        query: GET_USER_BY_ID,
+        variables: {
+          id: userId
+        }
+      }]
     }).then((res) => {
       setAlertData({
         isOpen: true,
@@ -43,6 +51,7 @@ const SpaceNew = () => {
   return (
     <div className="p-4 my-4 mx-4">
       <EditSpaceForm
+        isNew
         onSubmit={handleSave}
       />
     </div>
