@@ -103,7 +103,14 @@ const SignIn = () => {
     }
   ];
 
-  const { loginWithRedirect } = useAuth0()
+  const { loginWithRedirect, getAccessTokenSilently } = useAuth0()
+
+  useEffect(() => {
+    debugger
+    getAccessTokenSilently().then((token) => {
+      console.log(token)
+    })
+  }, [])
 
   return (
     <BaseContainer className="p-8 w-full max-w-[360px]">
@@ -118,7 +125,7 @@ const SignIn = () => {
         </Link>
       </div>
       <button onClick={loginWithRedirect}>login</button>
-      <BaseForm
+      {/* <BaseForm
         formFieldsData={formFieldsData}
         onSubmit={doLogin}
         onChange={handleChange}
@@ -126,7 +133,7 @@ const SignIn = () => {
         onKeyDown={handleKeyPress}
         controls={<Controls disabled={isNotValidData}/>}
         className="min-h-[220px]"
-      />
+      /> */}
     </BaseContainer>
   );
 }
